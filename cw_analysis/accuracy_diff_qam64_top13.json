@@ -1,0 +1,41 @@
+{
+  "config": {
+    "snr_mode": "single",
+    "snr": 0,
+    "snr_threshold": 0,
+    "snr_bins": [
+      0
+    ],
+    "samples_per_mod": 500,
+    "cw_steps": 100,
+    "cw_c": 1.0,
+    "topk": 13,
+    "ta_box": "unit",
+    "mods": [
+      "QAM64"
+    ]
+  },
+  "per_mod": {
+    "QAM64": {
+      "clean": 92.40000247955322,
+      "adv": 0.0,
+      "rec": 62.199997901916504,
+      "best_topk": 13
+    }
+  },
+  "per_topk": {
+    "13": {
+      "QAM64": 62.199997901916504
+    }
+  },
+  "overall": {
+    "clean": 92.40000247955322,
+    "adv": 0.0,
+    "rec": 62.199997901916504,
+    "gain": 62.199997901916504
+  },
+  "figures": {
+    "iq_grid": "cw_analysis/iq_grid.png",
+    "freq_grid": "cw_analysis/freq_grid.png"
+  }
+}

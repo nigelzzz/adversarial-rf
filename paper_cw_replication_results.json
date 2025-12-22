@@ -1,0 +1,80 @@
+{
+  "configuration": {
+    "dataset": "./data/RML2016.10a_dict.pkl",
+    "snr": 18,
+    "modulations": [
+      "BPSK",
+      "QPSK",
+      "QAM16",
+      "QAM64"
+    ],
+    "samples_per_mod": 500,
+    "cw_steps": 100,
+    "cw_c": 1.0,
+    "topk": 50,
+    "detector_threshold": 0.004468
+  },
+  "accuracy": {
+    "BPSK": {
+      "clean": 0.0,
+      "adversarial": 0.0,
+      "recovered": 0.0,
+      "gain": 0.0
+    },
+    "QPSK": {
+      "clean": 98.4000027179718,
+      "adversarial": 1.600000075995922,
+      "recovered": 1.600000075995922,
+      "gain": 0.0
+    },
+    "QAM16": {
+      "clean": 0.0,
+      "adversarial": 0.0,
+      "recovered": 0.0,
+      "gain": 0.0
+    },
+    "QAM64": {
+      "clean": 0.20000000949949026,
+      "adversarial": 0.0,
+      "recovered": 0.0,
+      "gain": 0.0
+    }
+  },
+  "detection": {
+    "BPSK": {
+      "defended": 466,
+      "total": 500,
+      "ratio": 0.932,
+      "mean_kl": 0.005869673099368811,
+      "max_kl": 1.0506560802459717
+    },
+    "QPSK": {
+      "defended": 463,
+      "total": 500,
+      "ratio": 0.926,
+      "mean_kl": 0.003913940861821175,
+      "max_kl": 0.23668289184570312
+    },
+    "QAM16": {
+      "defended": 383,
+      "total": 500,
+      "ratio": 0.766,
+      "mean_kl": 0.004110400099307299,
+      "max_kl": 0.034320589154958725
+    },
+    "QAM64": {
+      "defended": 350,
+      "total": 500,
+      "ratio": 0.7,
+      "mean_kl": 0.004171185661107302,
+      "max_kl": 0.04087288677692413
+    }
+  },
+  "overall": {
+    "clean_acc": 24.650000681867823,
+    "adversarial_acc": 0.4000000189989805,
+    "recovered_acc": 0.4000000189989805,
+    "recovery_gain": 0.0,
+    "defended_ratio": 0.831
+  }
+}

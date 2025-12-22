@@ -1,0 +1,489 @@
+{
+  "config": {
+    "snr_bins": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18
+    ],
+    "samples_per_mod": 80,
+    "mods": [
+      "8PSK",
+      "AM-DSB",
+      "AM-SSB",
+      "BPSK",
+      "CPFSK",
+      "GFSK",
+      "PAM4",
+      "QAM16",
+      "QAM64",
+      "QPSK",
+      "WBFM"
+    ],
+    "cw_steps": 10,
+    "cw_c": 1.0,
+    "topk": 20,
+    "methods": {
+      "A": "energy-aware envelope notch",
+      "B": "wide soft notch",
+      "C": "noise-floor lowband notch",
+      "D": "soft topk + notch"
+    }
+  },
+  "overall": {
+    "clean": {
+      "correct": 759,
+      "error": 121,
+      "acc": 86.25
+    },
+    "cw": {
+      "correct": 337,
+      "error": 543,
+      "acc": 38.29545454545455
+    },
+    "top20": {
+      "correct": 504,
+      "error": 376,
+      "acc": 57.27272727272727
+    },
+    "A": {
+      "correct": 82,
+      "error": 798,
+      "acc": 9.318181818181818
+    },
+    "B": {
+      "correct": 72,
+      "error": 808,
+      "acc": 8.181818181818182
+    },
+    "C": {
+      "correct": 81,
+      "error": 799,
+      "acc": 9.204545454545455
+    },
+    "D": {
+      "correct": 81,
+      "error": 799,
+      "acc": 9.204545454545455
+    }
+  },
+  "per_mod": {
+    "8PSK": {
+      "clean": {
+        "correct": 75,
+        "error": 5,
+        "acc": 93.75
+      },
+      "cw": {
+        "correct": 4,
+        "error": 76,
+        "acc": 5.0
+      },
+      "top20": {
+        "correct": 18,
+        "error": 62,
+        "acc": 22.5
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "AM-DSB": {
+      "clean": {
+        "correct": 79,
+        "error": 1,
+        "acc": 98.75
+      },
+      "cw": {
+        "correct": 44,
+        "error": 36,
+        "acc": 55.0
+      },
+      "top20": {
+        "correct": 68,
+        "error": 12,
+        "acc": 85.0
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "AM-SSB": {
+      "clean": {
+        "correct": 76,
+        "error": 4,
+        "acc": 95.0
+      },
+      "cw": {
+        "correct": 4,
+        "error": 76,
+        "acc": 5.0
+      },
+      "top20": {
+        "correct": 1,
+        "error": 79,
+        "acc": 1.25
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "BPSK": {
+      "clean": {
+        "correct": 75,
+        "error": 5,
+        "acc": 93.75
+      },
+      "cw": {
+        "correct": 63,
+        "error": 17,
+        "acc": 78.75
+      },
+      "top20": {
+        "correct": 64,
+        "error": 16,
+        "acc": 80.0
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "CPFSK": {
+      "clean": {
+        "correct": 80,
+        "error": 0,
+        "acc": 100.0
+      },
+      "cw": {
+        "correct": 69,
+        "error": 11,
+        "acc": 86.25
+      },
+      "top20": {
+        "correct": 68,
+        "error": 12,
+        "acc": 85.0
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "GFSK": {
+      "clean": {
+        "correct": 80,
+        "error": 0,
+        "acc": 100.0
+      },
+      "cw": {
+        "correct": 31,
+        "error": 49,
+        "acc": 38.75
+      },
+      "top20": {
+        "correct": 69,
+        "error": 11,
+        "acc": 86.25
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 1,
+        "error": 79,
+        "acc": 1.25
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "PAM4": {
+      "clean": {
+        "correct": 76,
+        "error": 4,
+        "acc": 95.0
+      },
+      "cw": {
+        "correct": 69,
+        "error": 11,
+        "acc": 86.25
+      },
+      "top20": {
+        "correct": 75,
+        "error": 5,
+        "acc": 93.75
+      },
+      "A": {
+        "correct": 3,
+        "error": 77,
+        "acc": 3.75
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 3,
+        "error": 77,
+        "acc": 3.75
+      },
+      "D": {
+        "correct": 2,
+        "error": 78,
+        "acc": 2.5
+      }
+    },
+    "QAM16": {
+      "clean": {
+        "correct": 71,
+        "error": 9,
+        "acc": 88.75
+      },
+      "cw": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "top20": {
+        "correct": 23,
+        "error": 57,
+        "acc": 28.75
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 10,
+        "error": 70,
+        "acc": 12.5
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "QAM64": {
+      "clean": {
+        "correct": 72,
+        "error": 8,
+        "acc": 90.0
+      },
+      "cw": {
+        "correct": 3,
+        "error": 77,
+        "acc": 3.75
+      },
+      "top20": {
+        "correct": 59,
+        "error": 21,
+        "acc": 73.75
+      },
+      "A": {
+        "correct": 79,
+        "error": 1,
+        "acc": 98.75
+      },
+      "B": {
+        "correct": 61,
+        "error": 19,
+        "acc": 76.25
+      },
+      "C": {
+        "correct": 78,
+        "error": 2,
+        "acc": 97.5
+      },
+      "D": {
+        "correct": 79,
+        "error": 1,
+        "acc": 98.75
+      }
+    },
+    "QPSK": {
+      "clean": {
+        "correct": 75,
+        "error": 5,
+        "acc": 93.75
+      },
+      "cw": {
+        "correct": 50,
+        "error": 30,
+        "acc": 62.5
+      },
+      "top20": {
+        "correct": 56,
+        "error": 24,
+        "acc": 70.0
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    },
+    "WBFM": {
+      "clean": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "cw": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "top20": {
+        "correct": 3,
+        "error": 77,
+        "acc": 3.75
+      },
+      "A": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "B": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "C": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      },
+      "D": {
+        "correct": 0,
+        "error": 80,
+        "acc": 0.0
+      }
+    }
+  },
+  "figures": {
+    "iq": "cw_analysis/notch_variants_iq.png",
+    "freq": "cw_analysis/notch_variants_freq.png"
+  }
+}

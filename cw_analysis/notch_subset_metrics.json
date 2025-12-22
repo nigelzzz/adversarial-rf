@@ -1,0 +1,221 @@
+{
+  "config": {
+    "snr_bins": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18
+    ],
+    "samples_per_mod": 100,
+    "mods": [
+      "8PSK",
+      "AM-DSB",
+      "AM-SSB",
+      "BPSK",
+      "CPFSK",
+      "GFSK",
+      "PAM4",
+      "QAM16",
+      "QAM64",
+      "QPSK",
+      "WBFM"
+    ],
+    "cw_steps": 10,
+    "cw_c": 1.0,
+    "notch_params": {
+      "fmax": 0.08,
+      "ref_band": [
+        0.15,
+        0.5
+      ],
+      "tau": 2.0,
+      "max_width_bins": 3,
+      "depth_max": 0.8,
+      "trans": 4
+    }
+  },
+  "overall": {
+    "total": 1100,
+    "clean": {
+      "correct": 954,
+      "error": 146,
+      "acc": 86.72727272727273
+    },
+    "cw": {
+      "correct": 429,
+      "error": 671,
+      "acc": 39.0
+    },
+    "notch": {
+      "correct": 100,
+      "error": 1000,
+      "acc": 9.090909090909092
+    }
+  },
+  "per_mod": {
+    "8PSK": {
+      "clean": {
+        "correct": 95,
+        "error": 5
+      },
+      "cw": {
+        "correct": 7,
+        "error": 93
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "AM-DSB": {
+      "clean": {
+        "correct": 98,
+        "error": 2
+      },
+      "cw": {
+        "correct": 55,
+        "error": 45
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "AM-SSB": {
+      "clean": {
+        "correct": 96,
+        "error": 4
+      },
+      "cw": {
+        "correct": 6,
+        "error": 94
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "BPSK": {
+      "clean": {
+        "correct": 94,
+        "error": 6
+      },
+      "cw": {
+        "correct": 79,
+        "error": 21
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "CPFSK": {
+      "clean": {
+        "correct": 100,
+        "error": 0
+      },
+      "cw": {
+        "correct": 87,
+        "error": 13
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "GFSK": {
+      "clean": {
+        "correct": 100,
+        "error": 0
+      },
+      "cw": {
+        "correct": 40,
+        "error": 60
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "PAM4": {
+      "clean": {
+        "correct": 96,
+        "error": 4
+      },
+      "cw": {
+        "correct": 89,
+        "error": 11
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "QAM16": {
+      "clean": {
+        "correct": 90,
+        "error": 10
+      },
+      "cw": {
+        "correct": 0,
+        "error": 100
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "QAM64": {
+      "clean": {
+        "correct": 91,
+        "error": 9
+      },
+      "cw": {
+        "correct": 3,
+        "error": 97
+      },
+      "notch": {
+        "correct": 100,
+        "error": 0
+      }
+    },
+    "QPSK": {
+      "clean": {
+        "correct": 94,
+        "error": 6
+      },
+      "cw": {
+        "correct": 63,
+        "error": 37
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    },
+    "WBFM": {
+      "clean": {
+        "correct": 0,
+        "error": 100
+      },
+      "cw": {
+        "correct": 0,
+        "error": 100
+      },
+      "notch": {
+        "correct": 0,
+        "error": 100
+      }
+    }
+  },
+  "figures": {
+    "iq": "cw_analysis/notch_subset_iq.png",
+    "freq": "cw_analysis/notch_subset_freq.png"
+  }
+}

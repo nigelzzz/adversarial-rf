@@ -1,0 +1,21 @@
+{
+  "config": {
+    "mod": "BPSK",
+    "snr": 18,
+    "num_samples": 500,
+    "cw_steps": 50,
+    "cw_c": 1.0,
+    "topk": 50,
+    "scale": 0.8
+  },
+  "acc": {
+    "clean": 98.4000027179718,
+    "cw": 29.399999976158142,
+    "topk_drop": 57.59999752044678,
+    "topk_scale": 0.0
+  },
+  "figures": {
+    "freq": "cw_analysis/topk_variants_freq.png",
+    "iq": "cw_analysis/topk_variants_iq.png"
+  }
+}
