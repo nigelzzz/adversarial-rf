@@ -91,6 +91,7 @@ if __name__ == "__main__":
     parser.add_argument('--snr_min', type=float, default=None, help='Minimum SNR to keep (e.g., 0 for >=0)')
     parser.add_argument('--freq_percents', type=str, default='0.1,0.2,0.3,0.4,0.5',
                         help='Comma-separated percents (0..1] for fft_topk_percent in freq_topk_eval mode')
+    parser.add_argument('--dir_name', type=str, default=None, help='Directory name for experiment')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -101,6 +102,7 @@ if __name__ == "__main__":
         args.freq_percents = [float(p) for p in freq_pct.split(',') if p]
 
     cfg = Config(args.dataset, train=(args.mode == 'train'))
+    cfg.init_dir(args.dir_name)
     cfg = merge_args2cfg(cfg, vars(args))
     logger = create_logger(os.path.join(cfg.log_dir, 'log.txt'))
     log_exp_settings(logger, cfg)
