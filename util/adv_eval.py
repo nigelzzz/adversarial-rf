@@ -86,13 +86,22 @@ def Run_Adv_Eval(model,
             sample = sample.to(cfg.device)
             label = label.to(cfg.device)
 
-            if cfg.attack == 'cw':
-                backend = getattr(cfg, 'attack_backend', 'torchattacks')
-                if backend == 'torchattacks':
-                    try:
-                        import torchattacks
-                        # Use 01+4D wrapper per gpt.md to respect torchattacks' [0,1] box-constraint
-                        wrapped_model = Model01Wrapper(model).eval()
+            backend = getattr(cfg, 'attack_backend', 'torchattacks')
+            if backend == 'torchattacks':
+                try:
+                    import torchattacks
+                    
+                    wrapped_model = Model01Wrapper(model).eval()
+
+                    if cfg.attack == 'apgd':
+                        atk = torchattacks.APGD(wrapped_model)
+                    elif cfg.attack == 'apgdt':
+                        atk = torchattacks.APGDT(wrapped_model)
+                    elif cfg.attack == 'autoattack':
+                        atk = torchattacks.AutoAttack(wrapped_model)
+                    elif cfg.attack == 'bim':
+                        atk = torchattacks.BIM(wrapped_model)
+                    elif cfg.attack == 'cw':
                         atk = torchattacks.CW(
                             wrapped_model,
                             c=getattr(cfg, 'cw_c', 1.0),
@@ -100,38 +109,104 @@ def Run_Adv_Eval(model,
                             steps=getattr(cfg, 'cw_steps', 100),
                             lr=getattr(cfg, 'cw_lr', 1e-2),
                         )
-                        box = str(getattr(cfg, 'ta_box', 'unit')).lower()
-                        if box == 'minmax':
-                            from util.adv_attack import iq_to_ta_input_minmax, ta_output_to_iq_minmax
-                            x01_4d, a, b = iq_to_ta_input_minmax(sample)
-                            wrapped_model.set_minmax(a, b)
-                            adv01_4d = atk(x01_4d, label)
-                            adv = ta_output_to_iq_minmax(adv01_4d, a, b)
-                            wrapped_model.clear_minmax()
-                        else:
-                            x01_4d = iq_to_ta_input(sample)
-                            adv01_4d = atk(x01_4d, label)
-                            adv = ta_output_to_iq(adv01_4d)
-                        if getattr(cfg, 'lowpass', True):
-                            delta = adv - sample
-                            delta = _lowpass_filter(delta, kernel_size=getattr(cfg, 'lowpass_kernel', 17))
-                            # clip to observed batch range
-                            clip_min = sample.amin(dim=(1, 2), keepdim=True)
-                            clip_max = sample.amax(dim=(1, 2), keepdim=True)
-                            adv = _batch_clip(sample + delta, clip_min, clip_max)
-                        # Optional post scaling to reduce attack magnitude
-                        cw_scale = getattr(cfg, 'cw_scale', None)
-                        if cw_scale is not None:
-                            try:
-                                s = float(cw_scale)
-                                if s < 1.0:
-                                    delta = adv - sample
-                                    adv = _batch_clip(sample + s * delta,
-                                                      sample.amin(dim=(1, 2), keepdim=True),
-                                                      sample.amax(dim=(1, 2), keepdim=True))
-                            except Exception:
-                                pass
-                    except Exception as e:
+                    elif cfg.attack == 'deepfool':
+                        atk = torchattacks.DeepFool(wrapped_model)
+                    elif cfg.attack == 'difgsm':
+                        atk = torchattacks.DIFGSM(wrapped_model)
+                    elif cfg.attack == 'eaden':
+                        atk = torchattacks.EADEN(wrapped_model)
+                    elif cfg.attack == 'eadl1':
+                        atk = torchattacks.EADL1(wrapped_model)
+                    elif cfg.attack == 'eotpgd':
+                        atk = torchattacks.EOTPGD(wrapped_model)
+                    elif cfg.attack == 'fab':
+                        atk = torchattacks.FAB(wrapped_model)
+                    elif cfg.attack == 'ffgsm':
+                        atk = torchattacks.FFGSM(wrapped_model)
+                    elif cfg.attack == 'fgsm':
+                        atk = torchattacks.FGSM(wrapped_model)
+                    elif cfg.attack == 'gn':
+                        atk = torchattacks.GN(wrapped_model)
+                    elif cfg.attack == 'jitter':
+                        atk = torchattacks.Jitter(wrapped_model)
+                    elif cfg.attack == 'jsma':
+                        atk = torchattacks.JSMA(wrapped_model)
+                    elif cfg.attack == 'mifgsm':
+                        atk = torchattacks.MIFGSM(wrapped_model)
+                    elif cfg.attack == 'nifgsm':
+                        atk = torchattacks.NIFGSM(wrapped_model)
+                    elif cfg.attack == 'onepixel':
+                        atk = torchattacks.OnePixel(wrapped_model)
+                    elif cfg.attack == 'pgd':
+                        atk = torchattacks.PGD(wrapped_model)
+                    elif cfg.attack == 'pgdl2':
+                        atk = torchattacks.PGDL2(wrapped_model)
+                    elif cfg.attack == 'pgdrs':
+                        atk = torchattacks.PGDRS(wrapped_model)
+                    elif cfg.attack == 'pgdrsl2':
+                        atk = torchattacks.PGDRSL2(wrapped_model)
+                    elif cfg.attack == 'pifgsm':
+                        atk = torchattacks.PIFGSM(wrapped_model)
+                    elif cfg.attack == 'pifgsmpp':
+                        atk = torchattacks.PIFGSMPP(wrapped_model)
+                    elif cfg.attack == 'pixle':
+                        atk = torchattacks.Pixle(wrapped_model)
+                    elif cfg.attack == 'rfgsm':
+                        atk = torchattacks.RFGSM(wrapped_model)
+                    elif cfg.attack == 'sinifgsm':
+                        atk = torchattacks.SINIFGSM(wrapped_model)
+                    elif cfg.attack == 'sparsefool':
+                        atk = torchattacks.SparseFool(wrapped_model)
+                    elif cfg.attack == 'spsa':
+                        atk = torchattacks.SPSA(wrapped_model)
+                    elif cfg.attack == 'square':
+                        atk = torchattacks.Square(wrapped_model)
+                    elif cfg.attack == 'tifgsm':
+                        atk = torchattacks.TIFGSM(wrapped_model)
+                    elif cfg.attack == 'tpgd':
+                        atk = torchattacks.TPGD(wrapped_model)
+                    elif cfg.attack == 'upgd':
+                        atk = torchattacks.UPGD(wrapped_model)
+                    elif cfg.attack == 'vmifgsm':
+                        atk = torchattacks.VMIFGSM(wrapped_model)
+                    elif cfg.attack == 'vnifgsm':
+                        atk = torchattacks.VNIFGSM(wrapped_model)
+                    else:
+                        raise NotImplementedError(f"Unknown attack: {cfg.attack}")
+                    # Use 01+4D wrapper per gpt.md to respect torchattacks' [0,1] box-constraint
+                    box = str(getattr(cfg, 'ta_box', 'unit')).lower()
+                    if box == 'minmax':
+                        from util.adv_attack import iq_to_ta_input_minmax, ta_output_to_iq_minmax
+                        x01_4d, a, b = iq_to_ta_input_minmax(sample)
+                        wrapped_model.set_minmax(a, b)
+                        adv01_4d = atk(x01_4d, label)
+                        adv = ta_output_to_iq_minmax(adv01_4d, a, b)
+                        wrapped_model.clear_minmax()
+                    else:
+                        x01_4d = iq_to_ta_input(sample)
+                        adv01_4d = atk(x01_4d, label)
+                        adv = ta_output_to_iq(adv01_4d)
+                    if getattr(cfg, 'lowpass', True):
+                        delta = adv - sample
+                        delta = _lowpass_filter(delta, kernel_size=getattr(cfg, 'lowpass_kernel', 17))
+                        # clip to observed batch range
+                        clip_min = sample.amin(dim=(1, 2), keepdim=True)
+                        clip_max = sample.amax(dim=(1, 2), keepdim=True)
+                        adv = _batch_clip(sample + delta, clip_min, clip_max)
+                    # Optional post scaling to reduce attack magnitude
+                    cw_scale = getattr(cfg, 'cw_scale', None)
+                    if cw_scale is not None:
+                        try:
+                            s = float(cw_scale)
+                            if s < 1.0:
+                                delta = adv - sample
+                                adv = _batch_clip(sample + s * delta,
+                                                    sample.amin(dim=(1, 2), keepdim=True),
+                                                    sample.amax(dim=(1, 2), keepdim=True))
+                        except Exception:
+                            pass
+                except Exception as e:
+                    if cfg.attack == 'cw':
                         logger.info(f"Falling back to internal CW due to: {e}")
                         adv = cw_l2_attack(
                             model,
@@ -146,7 +221,10 @@ def Run_Adv_Eval(model,
                             lowpass_kernel=getattr(cfg, 'lowpass_kernel', 17),
                             device=cfg.device,
                         )
-                else:
+                    else:
+                        raise e
+            else:
+                if cfg.attack == 'cw':
                     adv = cw_l2_attack(
                         model,
                         sample,
@@ -168,43 +246,44 @@ def Run_Adv_Eval(model,
                             if s < 1.0:
                                 delta = adv - sample
                                 adv = _batch_clip(sample + s * delta,
-                                                  sample.amin(dim=(1, 2), keepdim=True),
-                                                  sample.amax(dim=(1, 2), keepdim=True))
+                                                    sample.amin(dim=(1, 2), keepdim=True),
+                                                    sample.amax(dim=(1, 2), keepdim=True))
                         except Exception:
                             pass
-            elif cfg.attack == 'spectral':
-                # Add spectrally-shaped perturbations without model-based optimization
-                spec_type = getattr(cfg, 'spec_type', 'cw_tone')
-                kwargs = dict(
-                    spec_type=spec_type,
-                    spec_eps=getattr(cfg, 'spec_eps', 0.1),
-                    jnr_db=getattr(cfg, 'spec_jnr_db', None),
-                    tone_freq=getattr(cfg, 'tone_freq', None),
-                )
-                # Optional band and mask
-                if spec_type in ('psd_band', 'band'):
-                    kwargs['band'] = (
-                        getattr(cfg, 'spec_band_low', 0.05),
-                        getattr(cfg, 'spec_band_high', 0.25),
+            
+                elif cfg.attack == 'spectral':
+                    # Add spectrally-shaped perturbations without model-based optimization
+                    spec_type = getattr(cfg, 'spec_type', 'cw_tone')
+                    kwargs = dict(
+                        spec_type=spec_type,
+                        spec_eps=getattr(cfg, 'spec_eps', 0.1),
+                        jnr_db=getattr(cfg, 'spec_jnr_db', None),
+                        tone_freq=getattr(cfg, 'tone_freq', None),
                     )
-                if spec_type in ('psd_mask', 'mask'):
-                    mask_path = getattr(cfg, 'spec_mask_path', None)
-                    if mask_path is not None:
-                        import numpy as _np
-                        try:
-                            mask_np = _np.load(mask_path)
-                            import torch as _torch
-                            mask_t = _torch.as_tensor(mask_np)
-                        except Exception as e:
-                            logger.info(f"Failed to load PSD mask from {mask_path}: {e}")
+                    # Optional band and mask
+                    if spec_type in ('psd_band', 'band'):
+                        kwargs['band'] = (
+                            getattr(cfg, 'spec_band_low', 0.05),
+                            getattr(cfg, 'spec_band_high', 0.25),
+                        )
+                    if spec_type in ('psd_mask', 'mask'):
+                        mask_path = getattr(cfg, 'spec_mask_path', None)
+                        if mask_path is not None:
+                            import numpy as _np
+                            try:
+                                mask_np = _np.load(mask_path)
+                                import torch as _torch
+                                mask_t = _torch.as_tensor(mask_np)
+                            except Exception as e:
+                                logger.info(f"Failed to load PSD mask from {mask_path}: {e}")
+                                mask_t = None
+                        else:
                             mask_t = None
-                    else:
-                        mask_t = None
-                    kwargs['psd_mask'] = mask_t
+                        kwargs['psd_mask'] = mask_t
 
-                adv = spectral_noise_attack(sample, **kwargs)
-            else:
-                raise NotImplementedError(f"Unknown attack: {cfg.attack}")
+                    adv = spectral_noise_attack(sample, **kwargs)
+                else:
+                    raise NotImplementedError(f"Unknown attack: {cfg.attack}")
 
             # Optional FFT-domain defense
             adv_def = None

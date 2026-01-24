@@ -62,8 +62,12 @@ class Config:
         else:
             raise NotImplementedError(f'Not Implement dataset:{self.dataset}')
 
+    def init_dir(self, dir_name=None):
         index = get_log_dir_index(self.base_dir)
-        self.cfg_dir = '%s/%s' % (self.base_dir, self.dataset + index)
+        self.cfg_dir = '%s/%s' % (
+            self.base_dir,
+            self.dataset + index if dir_name is None else dir_name
+        )
         self.model_dir = '%s/models' % self.cfg_dir
         self.log_dir = '%s/log' % self.cfg_dir
         self.result_dir = '%s/result' % self.cfg_dir
