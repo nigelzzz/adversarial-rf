@@ -92,6 +92,17 @@ if __name__ == "__main__":
     parser.add_argument('--freq_percents', type=str, default='0.1,0.2,0.3,0.4,0.5',
                         help='Comma-separated percents (0..1] for fft_topk_percent in freq_topk_eval mode')
     parser.add_argument('--dir_name', type=str, default=None, help='Directory name for experiment')
+    # Multi-attack evaluation
+    parser.add_argument('--attack_list', type=str, default=None,
+                        help='Comma-separated attack names for multi_attack_eval (default: all 15)')
+    parser.add_argument('--eval_limit_per_cell', type=int, default=None,
+                        help='Max samples per (SNR, mod) cell for multi_attack_eval')
+    parser.add_argument('--attack_eps', type=float, default=0.3,
+                        help='Epsilon for Linf attacks (default: 0.3 for IQ data)')
+    parser.add_argument('--plot_freq', action='store_true',
+                        help='Plot frequency domain comparison (clean vs adversarial)')
+    parser.add_argument('--plot_n_samples', type=int, default=3,
+                        help='Number of individual samples to plot for freq comparison')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -336,4 +347,25 @@ if __name__ == "__main__":
             Labels_test,
             cfg,
             logger,
+        )
+
+    elif args.mode == 'multi_attack_eval':
+        from util.multi_attack_eval import run_multi_attack_snr_mod_eval
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        # Parse attack list if provided
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        run_multi_attack_snr_mod_eval(
+            model,
+            Signals_test,
+            Labels_test,
+            SNRs,
+            test_idx,
+            cfg,
+            logger,
+            attacks=attack_list,
+            eval_limit_per_cell=args.eval_limit_per_cell,
+            plot_freq=args.plot_freq,
+            plot_n_samples=args.plot_n_samples,
         )

@@ -124,6 +124,49 @@ python main.py --mode train_detector --dataset 2016.10a --det_epochs 10
 python main.py --mode calibrate_detector --dataset 2016.10a --detector_ckpt ./checkpoint/detector_ae.pth
 ```
 
+### Multi-Attack Evaluation with FFT Recovery
+
+Evaluates multiple attacks and compares attack accuracy vs FFT Top-K recovery accuracy, broken down by modulation and SNR.
+
+```bash
+# Full evaluation with all 15 attacks
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint
+
+# Subset of attacks
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --attack_list "fgsm,pgd,cw,deepfool"
+
+# Filter by modulation and SNR
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --mod_filter QAM64 --snr_filter 18 --attack_list fgsm
+
+# Speed up with sample limit per (SNR, mod) cell
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --eval_limit_per_cell 50
+
+# With frequency domain comparison plots
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --mod_filter QAM64 --snr_filter 18 --attack_list fgsm --plot_freq --plot_n_samples 5
+```
+
+**Available attacks** (15 total):
+`fgsm`, `pgd`, `bim`, `cw`, `deepfool`, `apgd`, `mifgsm`, `rfgsm`, `upgd`, `eotpgd`, `vmifgsm`, `vnifgsm`, `jitter`, `ffgsm`, `pgdl2`
+
+**Key parameters**:
+- `--attack_list <attacks>`: Comma-separated attack names (default: all 15)
+- `--attack_eps <float>`: Epsilon for Linf attacks (default: 0.3 for IQ data)
+- `--eval_limit_per_cell <int>`: Max samples per (SNR, mod) cell
+- `--plot_freq`: Generate frequency domain comparison plots
+- `--plot_n_samples <int>`: Number of individual samples to plot (default: 3)
+
+**Output**:
+- CSV: `inference/<dataset>_*/result/multi_attack_snr_mod_eval.csv`
+  - Columns: `attack, snr, modulation, n_samples, attack_acc, top10_acc, top20_acc`
+- Plots (if `--plot_freq`): `inference/<dataset>_*/result/freq_plots/`
+  - `<attack>_<mod>_snr<snr>_sample<n>.png`: Individual sample spectra
+  - `<attack>_<mod>_snr<snr>_avg.png`: Average spectra across samples
+  - `<attack>_<mod>_snr<snr>_overlay.png`: Clean vs adversarial overlay
+
 ### Other Modes
 ```bash
 # Compare spectral profiles

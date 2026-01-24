@@ -11,10 +11,12 @@
 
 ## Build, Test, and Development Commands
 - Environment: Python ≥ 3.6; PyTorch ≥ 1.7 (tested 1.8.1).
-- Install deps (example): `pip install torch numpy pandas scikit-learn matplotlib seaborn tqdm h5py pyyaml`
+- Install deps (example): `pip install torch numpy pandas scikit-learn matplotlib seaborn tqdm h5py pyyaml torchattacks`
 - Train: `python main.py --mode train --dataset 2016.10a`
 - Evaluate: `python main.py --mode eval --dataset 2016.10a --ckpt_path ./checkpoint`
 - Visualize: `python main.py --mode visualize --dataset 2016.10a`
+- Adversarial eval: `python main.py --mode adv_eval --dataset 2016.10a --ckpt_path ./checkpoint --attack cw`
+- Multi-attack eval: `python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint --attack_list fgsm,pgd,cw --plot_freq`
 - Device: `--device cuda` or `--device cpu` (e.g., `CUDA_VISIBLE_DEVICES=0`).
 
 ## Coding Style & Naming Conventions

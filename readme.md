@@ -47,12 +47,42 @@ Here’s a concise README snippet you can drop in.
   - Spectrum/energy summary for a few samples:
       - python analyze_freq_spectrum.py
 
+  Multi-Attack Evaluation with FFT Recovery
+
+  Evaluates multiple attacks (fgsm, pgd, bim, cw, deepfool, etc.) and compares:
+  - Attack accuracy (after attack, before recovery)
+  - Top-10 FFT recovery accuracy
+  - Top-20 FFT recovery accuracy
+
+  Broken down by modulation type and SNR level.
+
+  - Full evaluation (all 15 attacks):
+      - python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint
+  - Subset of attacks:
+      - python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint --attack_list "fgsm,pgd,cw"
+  - Filter by mod/SNR:
+      - python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint --mod_filter QAM64 --snr_filter 18 --attack_list fgsm
+  - With frequency comparison plots:
+      - python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint --mod_filter QAM64 --snr_filter 18 --attack_list fgsm --plot_freq
+  - Speed up with sample limit:
+      - Add --eval_limit_per_cell 50
+
+  Available attacks: fgsm, pgd, bim, cw, deepfool, apgd, mifgsm, rfgsm, upgd, eotpgd, vmifgsm, vnifgsm, jitter, ffgsm, pgdl2
+
+  Key parameters:
+  - --attack_eps <float>: Epsilon for Linf attacks (default: 0.3 for IQ data, much larger than image default 8/255)
+  - --plot_freq: Generate frequency domain comparison plots (clean vs adversarial)
+  - --plot_n_samples <int>: Number of individual samples to plot (default: 3)
+
+  Output:
+  - CSV: inference/<dataset>_*/result/multi_attack_snr_mod_eval.csv
+  - Plots: inference/<dataset>_*/result/freq_plots/ (if --plot_freq)
+
   Tips
 
   - Use --mod_filter and --snr_filter to focus on a slice (e.g., QPSK @ SNR=0/18).
   - Use --eval_limit to speed up quick checks.
-  - For smoother CW that’s easier to notch, try --lowpass True --lowpass_kernel 33 and smaller --cw_scale.
+  - For smoother CW that's easier to notch, try --lowpass True --lowpass_kernel 33 and smaller --cw_scale.
   - Frequency top-k eval (keep top 10-50% FFT bins, SNR>=0, GPU):
       - python main.py --mode freq_topk_eval --dataset 2016.10a --ckpt_path ./checkpoint --snr_min 0 --freq_percents 0.1,0.2,0.3,0.4,0.5 --device cuda
       - Saves per-mod/overall accuracies to training/<run>/result/freq_topk/freq_topk_eval.json
-To continue this session, run codex resume 019a3356-647e-7b21-a4e2-a02409892434.
