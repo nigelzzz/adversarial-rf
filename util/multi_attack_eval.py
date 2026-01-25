@@ -26,7 +26,10 @@ try:
 except ImportError:
     torchattacks = None
 
-from util.adv_attack import Model01Wrapper, iq_to_ta_input, ta_output_to_iq
+from util.adv_attack import (
+    Model01Wrapper, iq_to_ta_input, ta_output_to_iq,
+    iq_to_ta_input_minmax, ta_output_to_iq_minmax,
+)
 from util.defense import fft_topk_denoise_normalized
 
 
@@ -236,11 +239,232 @@ def plot_overlay_comparison(
     plt.close()
 
 
-# Default attack list
+def plot_iq_distribution(
+    x_clean: torch.Tensor,
+    x_adv: torch.Tensor,
+    attack_name: str,
+    snr: int,
+    mod: str,
+    save_dir: str,
+    n_samples: int = 5,
+) -> None:
+    """
+    Plot IQ scatter distribution comparing clean and adversarial signals.
+
+    Args:
+        x_clean: Clean signals [N, 2, T]
+        x_adv: Adversarial signals [N, 2, T]
+        attack_name: Name of the attack
+        snr: SNR value
+        mod: Modulation type
+        save_dir: Directory to save plots
+        n_samples: Number of samples to plot individually
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    x_clean = x_clean.detach().cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
+    n_samples = min(n_samples, x_clean.shape[0])
+
+    # Plot individual samples
+    for i in range(n_samples):
+        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        fig.suptitle(f'{attack_name.upper()} | {mod} | SNR={snr}dB | Sample {i+1}', fontsize=14)
+
+        I_clean, Q_clean = x_clean[i, 0, :], x_clean[i, 1, :]
+        I_adv, Q_adv = x_adv[i, 0, :], x_adv[i, 1, :]
+
+        # Clean IQ
+        axes[0].scatter(I_clean, Q_clean, s=3, alpha=0.6, c='blue')
+        axes[0].set_title('Clean IQ')
+        axes[0].set_xlabel('I (In-phase)')
+        axes[0].set_ylabel('Q (Quadrature)')
+        axes[0].grid(True, alpha=0.3)
+        axes[0].axis('equal')
+
+        # Adversarial IQ
+        axes[1].scatter(I_adv, Q_adv, s=3, alpha=0.6, c='red')
+        axes[1].set_title('Adversarial IQ')
+        axes[1].set_xlabel('I (In-phase)')
+        axes[1].set_ylabel('Q (Quadrature)')
+        axes[1].grid(True, alpha=0.3)
+        axes[1].axis('equal')
+
+        # Overlay
+        axes[2].scatter(I_clean, Q_clean, s=3, alpha=0.5, c='blue', label='Clean')
+        axes[2].scatter(I_adv, Q_adv, s=3, alpha=0.5, c='red', label='Adversarial')
+        axes[2].set_title('Overlay')
+        axes[2].set_xlabel('I (In-phase)')
+        axes[2].set_ylabel('Q (Quadrature)')
+        axes[2].legend(markerscale=3)
+        axes[2].grid(True, alpha=0.3)
+        axes[2].axis('equal')
+
+        plt.tight_layout()
+        save_path = os.path.join(save_dir, f'{attack_name}_{mod}_snr{snr}_iq_sample{i+1}.png')
+        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        plt.close()
+
+
+def plot_iq_distribution_all(
+    x_clean: torch.Tensor,
+    x_adv: torch.Tensor,
+    attack_name: str,
+    snr: int,
+    mod: str,
+    save_dir: str,
+) -> None:
+    """
+    Plot aggregated IQ scatter distribution across all samples.
+
+    Args:
+        x_clean: Clean signals [N, 2, T]
+        x_adv: Adversarial signals [N, 2, T]
+        attack_name: Name of the attack
+        snr: SNR value
+        mod: Modulation type
+        save_dir: Directory to save plots
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    x_clean = x_clean.cpu().numpy()
+    x_adv = x_adv.cpu().numpy()
+    N = x_clean.shape[0]
+
+    # Flatten all samples
+    I_clean = x_clean[:, 0, :].flatten()
+    Q_clean = x_clean[:, 1, :].flatten()
+    I_adv = x_adv[:, 0, :].flatten()
+    Q_adv = x_adv[:, 1, :].flatten()
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    fig.suptitle(f'{attack_name.upper()} | {mod} | SNR={snr}dB | All {N} samples', fontsize=14)
+
+    # Subsample for plotting if too many points
+    max_points = 10000
+    if len(I_clean) > max_points:
+        idx = np.random.choice(len(I_clean), max_points, replace=False)
+        I_clean_plot, Q_clean_plot = I_clean[idx], Q_clean[idx]
+        I_adv_plot, Q_adv_plot = I_adv[idx], Q_adv[idx]
+    else:
+        I_clean_plot, Q_clean_plot = I_clean, Q_clean
+        I_adv_plot, Q_adv_plot = I_adv, Q_adv
+
+    # Clean IQ
+    axes[0].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue')
+    axes[0].set_title('Clean IQ (all samples)')
+    axes[0].set_xlabel('I (In-phase)')
+    axes[0].set_ylabel('Q (Quadrature)')
+    axes[0].grid(True, alpha=0.3)
+    axes[0].axis('equal')
+
+    # Adversarial IQ
+    axes[1].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red')
+    axes[1].set_title('Adversarial IQ (all samples)')
+    axes[1].set_xlabel('I (In-phase)')
+    axes[1].set_ylabel('Q (Quadrature)')
+    axes[1].grid(True, alpha=0.3)
+    axes[1].axis('equal')
+
+    # Overlay
+    axes[2].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue', label='Clean')
+    axes[2].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red', label='Adversarial')
+    axes[2].set_title('Overlay (all samples)')
+    axes[2].set_xlabel('I (In-phase)')
+    axes[2].set_ylabel('Q (Quadrature)')
+    axes[2].legend(markerscale=5)
+    axes[2].grid(True, alpha=0.3)
+    axes[2].axis('equal')
+
+    plt.tight_layout()
+    save_path = os.path.join(save_dir, f'{attack_name}_{mod}_snr{snr}_iq_all.png')
+    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.close()
+
+
+def plot_iq_density(
+    x_clean: torch.Tensor,
+    x_adv: torch.Tensor,
+    attack_name: str,
+    snr: int,
+    mod: str,
+    save_dir: str,
+    bins: int = 100,
+) -> None:
+    """
+    Plot 2D histogram (density) of IQ distribution.
+
+    Args:
+        x_clean: Clean signals [N, 2, T]
+        x_adv: Adversarial signals [N, 2, T]
+        attack_name: Name of the attack
+        snr: SNR value
+        mod: Modulation type
+        save_dir: Directory to save plots
+        bins: Number of bins for histogram
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    x_clean = x_clean.cpu().numpy()
+    x_adv = x_adv.cpu().numpy()
+    N = x_clean.shape[0]
+
+    # Flatten all samples
+    I_clean = x_clean[:, 0, :].flatten()
+    Q_clean = x_clean[:, 1, :].flatten()
+    I_adv = x_adv[:, 0, :].flatten()
+    Q_adv = x_adv[:, 1, :].flatten()
+
+    # Compute common range
+    all_I = np.concatenate([I_clean, I_adv])
+    all_Q = np.concatenate([Q_clean, Q_adv])
+    range_I = [all_I.min(), all_I.max()]
+    range_Q = [all_Q.min(), all_Q.max()]
+
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    fig.suptitle(f'{attack_name.upper()} | {mod} | SNR={snr}dB | IQ Density ({N} samples)', fontsize=14)
+
+    # Clean density
+    h1 = axes[0].hist2d(I_clean, Q_clean, bins=bins, range=[range_I, range_Q], cmap='Blues')
+    axes[0].set_title('Clean IQ Density')
+    axes[0].set_xlabel('I (In-phase)')
+    axes[0].set_ylabel('Q (Quadrature)')
+    plt.colorbar(h1[3], ax=axes[0])
+
+    # Adversarial density
+    h2 = axes[1].hist2d(I_adv, Q_adv, bins=bins, range=[range_I, range_Q], cmap='Reds')
+    axes[1].set_title('Adversarial IQ Density')
+    axes[1].set_xlabel('I (In-phase)')
+    axes[1].set_ylabel('Q (Quadrature)')
+    plt.colorbar(h2[3], ax=axes[1])
+
+    # Difference density
+    H_clean, xedges, yedges = np.histogram2d(I_clean, Q_clean, bins=bins, range=[range_I, range_Q])
+    H_adv, _, _ = np.histogram2d(I_adv, Q_adv, bins=bins, range=[range_I, range_Q])
+    H_diff = H_adv - H_clean
+
+    im = axes[2].imshow(H_diff.T, origin='lower', extent=[range_I[0], range_I[1], range_Q[0], range_Q[1]],
+                        aspect='auto', cmap='RdBu_r')
+    axes[2].set_title('Density Difference (Adv - Clean)')
+    axes[2].set_xlabel('I (In-phase)')
+    axes[2].set_ylabel('Q (Quadrature)')
+    plt.colorbar(im, ax=axes[2])
+
+    plt.tight_layout()
+    save_path = os.path.join(save_dir, f'{attack_name}_{mod}_snr{snr}_iq_density.png')
+    plt.savefig(save_path, dpi=150, bbox_inches='tight')
+    plt.close()
+
+
+# Default attack list (17 attacks including EADL1 and EADEN)
 DEFAULT_ATTACKS = [
     'fgsm', 'pgd', 'bim', 'cw', 'deepfool', 'apgd', 'mifgsm',
-    'rfgsm', 'upgd', 'eotpgd', 'vmifgsm', 'vnifgsm', 'jitter', 'ffgsm', 'pgdl2'
+    'rfgsm', 'upgd', 'eotpgd', 'vmifgsm', 'vnifgsm', 'jitter', 'ffgsm', 'pgdl2',
+    'eadl1', 'eaden'
 ]
+
+# Attacks that require fixed batch sizes (will be handled with padding)
+FIXED_BATCH_ATTACKS = {'apgd'}
 
 
 def build_snr_mod_index(
@@ -301,8 +525,18 @@ def create_attack(
 
     name = attack_name.lower()
 
-    # Get epsilon from config (default 0.3 for IQ data, much larger than image default 8/255)
-    eps = getattr(cfg, 'attack_eps', 0.3)
+    # Get epsilon from config (default 0.03 for IQ data)
+    # Note: IQ signals have typical amplitude ~0.02 in [-1,1] space, so eps=0.03 is appropriate
+    # The old default of 0.3 was 15x larger than signal amplitude, overwhelming the attack
+    eps = getattr(cfg, 'attack_eps', 0.03)
+
+    # Warn if epsilon seems too large for IQ data
+    if eps > 0.1:
+        import logging
+        logging.getLogger(__name__).warning(
+            f"attack_eps={eps} may be too large for IQ data (typical amplitude ~0.02). "
+            f"Consider --ta_box minmax or smaller eps (e.g., 0.03)."
+        )
     alpha = eps / 4  # step size typically eps/4 for iterative attacks
     steps = 10
 
@@ -316,16 +550,18 @@ def create_attack(
         return torchattacks.BIM(wrapped_model, eps=eps, alpha=alpha, steps=steps)
 
     elif name == 'cw':
-        c = getattr(cfg, 'cw_c', 1.0)
-        cw_steps = getattr(cfg, 'cw_steps', 100)
-        cw_lr = getattr(cfg, 'cw_lr', 0.01)
+        # Hardcoded CW parameters (or use cfg values as fallback)
+        c = 10.0         # Confidence: higher = stronger attack
+        cw_steps = 200   # Optimization steps
+        cw_lr = 0.005    # Learning rate
         return torchattacks.CW(wrapped_model, c=c, steps=cw_steps, lr=cw_lr)
 
     elif name == 'deepfool':
         return torchattacks.DeepFool(wrapped_model, steps=50, overshoot=0.02)
 
     elif name == 'apgd':
-        return torchattacks.APGD(wrapped_model, eps=eps, steps=steps)
+        # APGD can have batch size issues - use n_restarts=1 for stability
+        return torchattacks.APGD(wrapped_model, eps=eps, steps=steps, n_restarts=1)
 
     elif name == 'mifgsm':
         return torchattacks.MIFGSM(wrapped_model, eps=eps, steps=steps, decay=1.0)
@@ -356,6 +592,42 @@ def create_attack(
         eps_l2 = eps * 10  # L2 bound (larger than Linf)
         return torchattacks.PGDL2(wrapped_model, eps=eps_l2, alpha=eps_l2 / 5, steps=steps)
 
+    elif name == 'eadl1':
+        # EAD L1 attack - uses kappa (confidence), lr, max_iterations
+        kappa = getattr(cfg, 'ead_kappa', 0)
+        lr = getattr(cfg, 'ead_lr', 0.01)
+        max_iterations = getattr(cfg, 'ead_max_iterations', 100)
+        binary_search_steps = getattr(cfg, 'ead_binary_search_steps', 9)
+        initial_const = getattr(cfg, 'ead_initial_const', 0.001)
+        beta = getattr(cfg, 'ead_beta', 0.001)
+        return torchattacks.EADL1(
+            wrapped_model,
+            kappa=kappa,
+            lr=lr,
+            max_iterations=max_iterations,
+            binary_search_steps=binary_search_steps,
+            initial_const=initial_const,
+            beta=beta,
+        )
+
+    elif name == 'eaden':
+        # EAD Elastic Net attack - uses kappa (confidence), lr, max_iterations
+        kappa = getattr(cfg, 'ead_kappa', 0)
+        lr = getattr(cfg, 'ead_lr', 0.01)
+        max_iterations = getattr(cfg, 'ead_max_iterations', 100)
+        binary_search_steps = getattr(cfg, 'ead_binary_search_steps', 9)
+        initial_const = getattr(cfg, 'ead_initial_const', 0.001)
+        beta = getattr(cfg, 'ead_beta', 0.001)
+        return torchattacks.EADEN(
+            wrapped_model,
+            kappa=kappa,
+            lr=lr,
+            max_iterations=max_iterations,
+            binary_search_steps=binary_search_steps,
+            initial_const=initial_const,
+            beta=beta,
+        )
+
     else:
         raise ValueError(f"Unknown attack: {attack_name}")
 
@@ -364,30 +636,104 @@ def generate_adversarial(
     attack,
     x_iq: torch.Tensor,
     labels: torch.Tensor,
+    wrapped_model: Optional[nn.Module] = None,
+    ta_box: str = 'unit',
+    pad_to_batch_size: Optional[int] = None,
+    fallback_to_single: bool = True,
 ) -> torch.Tensor:
     """
     Generate adversarial examples using torchattacks.
 
-    Handles IQ <-> torchattacks format conversion.
+    Handles IQ <-> torchattacks format conversion with support for
+    different normalization modes.
 
     Args:
         attack: torchattacks attack object
         x_iq: Input IQ tensor [N, 2, T] in [-1, 1]
         labels: True labels [N]
+        wrapped_model: Model01Wrapper instance (required for 'minmax' mode)
+        ta_box: Normalization mode - 'unit' (default) or 'minmax'
+            - 'unit': Maps [-1,1] to [0,1] using (x+1)/2. Simple but eps is in
+              [0,1] space where signal only spans ~2% of range.
+            - 'minmax': Per-sample min-max normalization to [0,1]. eps is
+              relative to actual signal range, making attacks more effective.
+        pad_to_batch_size: If set, pad batch to this size (for attacks like APGD
+                          that need fixed batch sizes), then trim result
+        fallback_to_single: If True and batch attack fails, process samples one by one
 
     Returns:
         Adversarial IQ tensor [N, 2, T] in [-1, 1]
     """
-    # Convert IQ to torchattacks format
-    x_ta = iq_to_ta_input(x_iq)  # [N, 2, T, 1] in [0, 1]
+    original_size = x_iq.shape[0]
+    box = str(ta_box).lower()
 
-    # Run attack
-    x_adv_ta = attack(x_ta, labels)
+    # Pad if needed (for attacks that require fixed batch sizes)
+    x_iq_padded = x_iq
+    labels_padded = labels
+    if pad_to_batch_size is not None and original_size < pad_to_batch_size:
+        pad_size = pad_to_batch_size - original_size
+        # Handle case where we need to repeat multiple times
+        if pad_size > original_size:
+            repeats = (pad_size // original_size) + 1
+            x_pad = x_iq.repeat(repeats, 1, 1)[:pad_size]
+            labels_pad = labels.repeat(repeats)[:pad_size]
+        else:
+            x_pad = x_iq[:pad_size]
+            labels_pad = labels[:pad_size]
+        x_iq_padded = torch.cat([x_iq, x_pad], dim=0)
+        labels_padded = torch.cat([labels, labels_pad], dim=0)
 
-    # Convert back to IQ format
-    x_adv_iq = ta_output_to_iq(x_adv_ta)  # [N, 2, T] in [-1, 1]
+    try:
+        if box == 'minmax':
+            # Per-sample min-max normalization - eps is relative to signal range
+            if wrapped_model is None:
+                raise ValueError("wrapped_model required for ta_box='minmax'")
+            x_ta, a, b = iq_to_ta_input_minmax(x_iq_padded)  # [N, 2, T, 1] in [0, 1]
+            wrapped_model.set_minmax(a, b)
+            try:
+                x_adv_ta = attack(x_ta, labels_padded)
+                x_adv_iq = ta_output_to_iq_minmax(x_adv_ta, a, b)
+            finally:
+                wrapped_model.clear_minmax()
+        else:
+            # Unit normalization - simple [-1,1] -> [0,1] mapping
+            x_ta = iq_to_ta_input(x_iq_padded)  # [N, 2, T, 1] in [0, 1]
+            x_adv_ta = attack(x_ta, labels_padded)
+            x_adv_iq = ta_output_to_iq(x_adv_ta)  # [N, 2, T] in [-1, 1]
 
-    return x_adv_iq
+        # Trim back to original size if we padded
+        if pad_to_batch_size is not None and original_size < pad_to_batch_size:
+            x_adv_iq = x_adv_iq[:original_size]
+
+        return x_adv_iq
+
+    except RuntimeError as e:
+        if not fallback_to_single:
+            raise
+        # Fallback: process samples one by one
+        # This is slower but handles problematic attacks like APGD
+        adv_samples = []
+        for i in range(original_size):
+            x_single = x_iq[i:i+1]
+            label_single = labels[i:i+1]
+            try:
+                if box == 'minmax':
+                    x_ta_s, a_s, b_s = iq_to_ta_input_minmax(x_single)
+                    wrapped_model.set_minmax(a_s, b_s)
+                    try:
+                        x_adv_ta_s = attack(x_ta_s, label_single)
+                        x_adv_s = ta_output_to_iq_minmax(x_adv_ta_s, a_s, b_s)
+                    finally:
+                        wrapped_model.clear_minmax()
+                else:
+                    x_ta_s = iq_to_ta_input(x_single)
+                    x_adv_ta_s = attack(x_ta_s, label_single)
+                    x_adv_s = ta_output_to_iq(x_adv_ta_s)
+                adv_samples.append(x_adv_s)
+            except Exception:
+                # If even single sample fails, use original
+                adv_samples.append(x_single)
+        return torch.cat(adv_samples, dim=0)
 
 
 @torch.no_grad()
@@ -414,6 +760,7 @@ def run_multi_attack_snr_mod_eval(
     attacks: Optional[List[str]] = None,
     eval_limit_per_cell: Optional[int] = None,
     plot_freq: bool = False,
+    plot_iq: bool = False,
     plot_n_samples: int = 3,
 ) -> pd.DataFrame:
     """
@@ -430,7 +777,8 @@ def run_multi_attack_snr_mod_eval(
         attacks: List of attack names (defaults to all 15)
         eval_limit_per_cell: Max samples per (SNR, mod) cell
         plot_freq: If True, save frequency domain comparison plots
-        plot_n_samples: Number of individual samples to plot (if plot_freq=True)
+        plot_iq: If True, save IQ distribution comparison plots
+        plot_n_samples: Number of individual samples to plot (if plot_freq/plot_iq=True)
 
     Returns:
         DataFrame with columns: attack, snr, modulation, n_samples, attack_acc, top10_acc, top20_acc
@@ -457,6 +805,14 @@ def run_multi_attack_snr_mod_eval(
     wrapped_model.to(device)
     wrapped_model.eval()
 
+    # Get normalization mode from config
+    ta_box = str(getattr(cfg, 'ta_box', 'unit')).lower()
+    logger.info(f"Using ta_box={ta_box} normalization for torchattacks")
+    if ta_box == 'minmax':
+        logger.info("minmax mode: eps is relative to per-sample signal range")
+    else:
+        logger.info("unit mode: eps is in [0,1] space (signal uses ~2% of range)")
+
     results = []
 
     for attack_name in attacks:
@@ -468,6 +824,11 @@ def run_multi_attack_snr_mod_eval(
         except Exception as e:
             logger.warning(f"Failed to create attack {attack_name}: {e}")
             continue
+
+        # Check if this attack needs fixed batch sizes
+        needs_padding = attack_name.lower() in FIXED_BATCH_ATTACKS
+        # Use a reasonable padding size for cell-based evaluation
+        pad_batch_size = 128 if needs_padding else None
 
         for snr in all_snrs:
             for mod in all_mods:
@@ -491,7 +852,12 @@ def run_multi_attack_snr_mod_eval(
 
                 # Generate adversarial examples
                 try:
-                    x_adv = generate_adversarial(attack, x_cell, y_cell)
+                    x_adv = generate_adversarial(
+                        attack, x_cell, y_cell,
+                        wrapped_model=wrapped_model,
+                        ta_box=ta_box,
+                        pad_to_batch_size=pad_batch_size,
+                    )
                 except Exception as e:
                     logger.warning(f"Attack failed for ({snr}, {mod}): {e}")
                     continue
@@ -517,6 +883,25 @@ def run_multi_attack_snr_mod_eval(
                         x_cell, x_adv, attack_name, snr, mod, freq_plot_dir
                     )
                     logger.info(f"Saved freq plots to {freq_plot_dir}")
+
+                # Plot IQ distribution comparison if requested
+                if plot_iq:
+                    iq_plot_dir = os.path.join(cfg.result_dir, 'iq_plots')
+                    logger.info(f"Generating IQ plots for {attack_name}/{mod}/SNR={snr} -> {iq_plot_dir}")
+                    # Plot individual samples
+                    plot_iq_distribution(
+                        x_cell, x_adv, attack_name, snr, mod,
+                        iq_plot_dir, n_samples=plot_n_samples
+                    )
+                    # Plot all samples aggregated
+                    plot_iq_distribution_all(
+                        x_cell, x_adv, attack_name, snr, mod, iq_plot_dir
+                    )
+                    # Plot density histogram
+                    plot_iq_density(
+                        x_cell, x_adv, attack_name, snr, mod, iq_plot_dir
+                    )
+                    logger.info(f"Saved IQ plots to {iq_plot_dir}")
 
                 # Apply Top-10 FFT recovery
                 x_top10 = fft_topk_denoise_normalized(

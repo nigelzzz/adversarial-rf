@@ -97,12 +97,24 @@ if __name__ == "__main__":
                         help='Comma-separated attack names for multi_attack_eval (default: all 15)')
     parser.add_argument('--eval_limit_per_cell', type=int, default=None,
                         help='Max samples per (SNR, mod) cell for multi_attack_eval')
-    parser.add_argument('--attack_eps', type=float, default=0.3,
-                        help='Epsilon for Linf attacks (default: 0.3 for IQ data)')
+    parser.add_argument('--attack_eps', type=float, default=0.03,
+                        help='Epsilon for Linf attacks (default: 0.03 for IQ data)')
     parser.add_argument('--plot_freq', action='store_true',
                         help='Plot frequency domain comparison (clean vs adversarial)')
+    parser.add_argument('--plot_iq', action='store_true',
+                        help='Plot IQ distribution comparison (clean vs adversarial)')
     parser.add_argument('--plot_n_samples', type=int, default=3,
-                        help='Number of individual samples to plot for freq comparison')
+                        help='Number of individual samples to plot for freq/IQ comparison')
+    # SigGuard evaluation params
+    parser.add_argument('--sigguard_topk', type=int, default=50, help='Top-K for SigGuard defense')
+    parser.add_argument('--no_plot_iq', action='store_true', help='Disable IQ distribution plots in sigguard_eval')
+    # EAD attack params (EADL1, EADEN)
+    parser.add_argument('--ead_kappa', type=float, default=0, help='EAD confidence/kappa parameter')
+    parser.add_argument('--ead_lr', type=float, default=0.01, help='EAD learning rate')
+    parser.add_argument('--ead_max_iterations', type=int, default=100, help='EAD max iterations')
+    parser.add_argument('--ead_binary_search_steps', type=int, default=9, help='EAD binary search steps')
+    parser.add_argument('--ead_initial_const', type=float, default=0.001, help='EAD initial constant')
+    parser.add_argument('--ead_beta', type=float, default=0.001, help='EAD beta (L1/L2 tradeoff)')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -367,5 +379,28 @@ if __name__ == "__main__":
             attacks=attack_list,
             eval_limit_per_cell=args.eval_limit_per_cell,
             plot_freq=args.plot_freq,
+            plot_iq=args.plot_iq,
+            plot_n_samples=args.plot_n_samples,
+        )
+
+    elif args.mode == 'sigguard_eval':
+        from util.sigguard_eval import run_sigguard_eval
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        # Parse attack list if provided
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        # IQ plots enabled by default for sigguard_eval (use --no_plot_iq to disable)
+        should_plot_iq = not getattr(args, 'no_plot_iq', False)
+        run_sigguard_eval(
+            model,
+            Signals_test,
+            Labels_test,
+            cfg,
+            logger,
+            attacks=attack_list,
+            topk=args.sigguard_topk,
+            eval_limit=args.eval_limit,
+            plot_iq=should_plot_iq,
             plot_n_samples=args.plot_n_samples,
         )

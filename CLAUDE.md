@@ -149,12 +149,13 @@ python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpo
   --mod_filter QAM64 --snr_filter 18 --attack_list fgsm --plot_freq --plot_n_samples 5
 ```
 
-**Available attacks** (15 total):
-`fgsm`, `pgd`, `bim`, `cw`, `deepfool`, `apgd`, `mifgsm`, `rfgsm`, `upgd`, `eotpgd`, `vmifgsm`, `vnifgsm`, `jitter`, `ffgsm`, `pgdl2`
+**Available attacks** (17 total):
+`fgsm`, `pgd`, `bim`, `cw`, `deepfool`, `apgd`, `mifgsm`, `rfgsm`, `upgd`, `eotpgd`, `vmifgsm`, `vnifgsm`, `jitter`, `ffgsm`, `pgdl2`, `eadl1`, `eaden`
 
 **Key parameters**:
-- `--attack_list <attacks>`: Comma-separated attack names (default: all 15)
-- `--attack_eps <float>`: Epsilon for Linf attacks (default: 0.3 for IQ data)
+- `--attack_list <attacks>`: Comma-separated attack names (default: all 17)
+- `--attack_eps <float>`: Epsilon for Linf attacks (default: 0.03 for IQ data)
+- `--ta_box <unit|minmax>`: Normalization mode for torchattacks (default: unit)
 - `--eval_limit_per_cell <int>`: Max samples per (SNR, mod) cell
 - `--plot_freq`: Generate frequency domain comparison plots
 - `--plot_n_samples <int>`: Number of individual samples to plot (default: 3)
@@ -166,6 +167,66 @@ python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpo
   - `<attack>_<mod>_snr<snr>_sample<n>.png`: Individual sample spectra
   - `<attack>_<mod>_snr<snr>_avg.png`: Average spectra across samples
   - `<attack>_<mod>_snr<snr>_overlay.png`: Clean vs adversarial overlay
+
+### SigGuard-Style Evaluation
+
+Produces a table comparing attack accuracy with/without FFT Top-K defense, similar to academic paper format. Also generates IQ distribution plots comparing clean vs adversarial signals by default.
+
+```bash
+# Default: All 15 attacks with IQ plots
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint
+
+# With minmax normalization for better attack effectiveness
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --ta_box minmax --attack_eps 0.1
+
+# Custom attack list
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --attack_list "cw,fgsm,pgd,deepfool"
+
+# Faster evaluation with sample limit
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --sigguard_topk 30 --eval_limit 1000
+
+# Disable IQ plots for faster runs
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --no_plot_iq
+```
+
+**Available attacks** (17 total, all run by default):
+`fgsm`, `pgd`, `bim`, `cw`, `deepfool`, `apgd`, `mifgsm`, `rfgsm`, `upgd`, `eotpgd`, `vmifgsm`, `vnifgsm`, `jitter`, `ffgsm`, `pgdl2`, `eadl1`, `eaden`
+
+**Output format:**
+```
+  AWN - SigGuard Evaluation (Top-50)
+  ==================================================
+  Sample Type         Disabled      Enabled
+  --------------------------------------------------
+  Intact              92.61%        92.20%
+  FGSM                 7.20%         9.32%
+  PGD                  5.10%        12.45%
+  CW                   0.86%        80.43%
+  EADL1                0.00%        78.34%
+  EADEN                0.00%        74.01%
+  ...                   ...           ...
+  ==================================================
+```
+
+**Key parameters:**
+- `--attack_list <attacks>`: Comma-separated attacks (default: all 17)
+- `--sigguard_topk <int>`: Top-K value for FFT defense (default: 50)
+- `--ta_box <unit|minmax>`: Normalization mode (default: unit)
+- `--eval_limit <int>`: Limit test samples for faster evaluation
+- `--no_plot_iq`: Disable IQ distribution plots
+- `--plot_n_samples <int>`: Number of individual samples to plot (default: 3)
+
+**Output files:**
+- `inference/<dataset>_*/result/sigguard_eval.csv`: Raw CSV data
+- `inference/<dataset>_*/result/sigguard_eval_table.txt`: Formatted table
+- `inference/<dataset>_*/result/iq_plots/`: IQ distribution plots
+  - `<attack>_iq_sample1.png`, ...: Individual sample scatter plots
+  - `<attack>_iq_all.png`: Aggregated scatter plot
+  - `<attack>_iq_density.png`: 2D histogram density comparison
 
 ### Other Modes
 ```bash
@@ -203,6 +264,47 @@ The codebase now uses the **torchattacks** library (https://github.com/Harry24k/
 - `--detector_ckpt <path>`: Path to pretrained autoencoder (train with `--mode train_detector`)
 - `--detector_threshold <float>`: KL divergence threshold (calibrate with `--mode calibrate_detector`)
 - `--def_topk <int>`: Number of FFT components to keep (default 50)
+
+### Epsilon Configuration for RF IQ Data
+
+RF IQ signals require different epsilon values than images. Key differences:
+
+**The Problem with Default Image Epsilon:**
+- torchattacks is designed for images in [0, 1] range
+- IQ signals are in [-1, 1] but have typical amplitude ~±0.02 (very small)
+- After unit conversion `(x+1)/2`: values are ~[0.49, 0.51] (only 2% of range)
+- Using `eps=0.3` (old default, common for images) is 15x larger than signal amplitude
+- Result: perturbation overwhelms signal → effectively random noise → no accuracy drop
+
+**Normalization Modes (`--ta_box`):**
+
+| Mode | Mapping | Epsilon Interpretation | Best For |
+|------|---------|----------------------|----------|
+| `unit` | `(x+1)/2` | Absolute in [0,1] space | Simple, needs small eps (~0.03) |
+| `minmax` | Per-sample min-max to [0,1] | Relative to signal range | More intuitive eps values |
+
+**Recommended Epsilon Values:**
+
+| Mode | Epsilon | Effect |
+|------|---------|--------|
+| `unit` | 0.01-0.03 | Subtle perturbation |
+| `unit` | 0.05-0.1 | Moderate attack |
+| `minmax` | 0.05-0.1 | Subtle perturbation |
+| `minmax` | 0.2-0.3 | Moderate attack |
+
+**Example Commands:**
+
+```bash
+# Recommended: minmax mode with moderate epsilon
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --attack_list fgsm --ta_box minmax --attack_eps 0.1
+
+# Alternative: unit mode with small absolute epsilon
+python main.py --mode multi_attack_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --attack_list fgsm --attack_eps 0.03
+```
+
+**Verification:** A working attack should show `attack_acc` significantly lower than clean accuracy (e.g., 60-90% → 20-40%).
 
 ## Development Notes
 
