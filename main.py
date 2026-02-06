@@ -1,5 +1,6 @@
 import argparse
 import os.path
+import sys
 
 import numpy as np
 import torch
@@ -9,13 +10,14 @@ from util.config import Config, merge_args2cfg
 from util.evaluation import Run_Eval
 from util.adv_eval import Run_Adv_Eval
 from util.training import Trainer
-from util.utils import fix_seed, log_exp_settings, create_AWN_model
+from util.utils import fix_seed, log_exp_settings, create_AWN_model, create_model
 from util.logger import create_logger
 # Lazy import visualize utilities only when needed to avoid optional deps
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='train')  # train ,eval or visualize
+    parser.add_argument('--model', type=str, default='awn', help='Model architecture: awn or mcldnn')
     parser.add_argument('--dataset', type=str, default='2016.10a')  # 2016.10a, 2016.10b, 2018.01a
     parser.add_argument('--seed', type=int, default=2022)
     parser.add_argument('--device', type=str,
@@ -124,15 +126,25 @@ if __name__ == "__main__":
     if isinstance(freq_pct, str):
         args.freq_percents = [float(p) for p in freq_pct.split(',') if p]
 
+    # Default ta_box to minmax for MCLDNN (LSTM models need stronger perturbations)
+    model_name = args.model.lower()
+    if model_name == 'mcldnn' and '--ta_box' not in sys.argv:
+        args.ta_box = 'minmax'
+
     cfg = Config(args.dataset, train=(args.mode == 'train'))
     cfg.init_dir(args.dir_name)
     cfg = merge_args2cfg(cfg, vars(args))
     logger = create_logger(os.path.join(cfg.log_dir, 'log.txt'))
     log_exp_settings(logger, cfg)
 
-    model = create_AWN_model(cfg)
+    model = create_model(cfg, model_name)
+    logger.info(f">>> Model: {model_name.upper()}")
     logger.info(">>> total params: {:.2f}M".format(
         sum(p.numel() for p in list(model.parameters())) / 1000000.0))
+
+    # Helper to get checkpoint filename
+    def get_ckpt_name():
+        return f"{cfg.dataset}_{model_name.upper()}.pkl"
 
     Signals, Labels, SNRs, snrs, mods = Load_Dataset(cfg.dataset, logger, mod_filter=args.mod_filter, snr_filter=args.snr_filter)
     train_set, test_set, val_set, test_idx = Dataset_Split(
@@ -149,12 +161,13 @@ if __name__ == "__main__":
                           train_loader,
                           val_loader,
                           cfg,
-                          logger)
+                          logger,
+                          model_name=model_name)
         trainer.loop()
         from util.visualize import save_training_process
         save_training_process(trainer.epochs_stats, cfg)
 
-        save_model_name = cfg.dataset + '_' + 'AWN' + '.pkl'
+        save_model_name = get_ckpt_name()
         model.load_state_dict(torch.load(os.path.join(cfg.model_dir, save_model_name), map_location=cfg.device))
         Run_Eval(model,
                  Signals_test,
@@ -165,7 +178,7 @@ if __name__ == "__main__":
                  logger)
 
     elif args.mode == 'eval':
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         Run_Eval(model,
                  Signals_test,
                  Labels_test,
@@ -176,7 +189,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'visualize':
         from util.visualize import Visualize_LiftingScheme
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         for i in range(0, 8):
             index = np.random.randint(0, Signals_test.shape[0])
             test_sample = Signals_test[index]
@@ -184,7 +197,7 @@ if __name__ == "__main__":
             Visualize_LiftingScheme(model, test_sample, cfg, index)
 
     elif args.mode == 'adv_eval':
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         Run_Adv_Eval(model,
                      Signals_test,
                      Labels_test,
@@ -195,7 +208,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'freq_compare':
         from util.freq_compare import run_freq_compare
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         run_freq_compare(
             model,
             Signals_test,
@@ -213,7 +226,7 @@ if __name__ == "__main__":
         )
     elif args.mode == 'freq_topk_eval':
         from util.freq_topk_eval import run_freq_topk_eval
-        model_path = os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl')
+        model_path = os.path.join(args.ckpt_path, get_ckpt_name())
         model.load_state_dict(torch.load(model_path, map_location=cfg.device))
         run_freq_topk_eval(
             model,
@@ -233,7 +246,7 @@ if __name__ == "__main__":
         )
     elif args.mode == 'freq_topk_adv_eval':
         from util.freq_topk_adv_eval import run_freq_topk_adv_eval
-        model_path = os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl')
+        model_path = os.path.join(args.ckpt_path, get_ckpt_name())
         model.load_state_dict(torch.load(model_path, map_location=cfg.device))
         run_freq_topk_adv_eval(
             model,
@@ -352,7 +365,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'adv_bench':
         from util.bench import run_attack_bench
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         run_attack_bench(
             model,
             Signals_test,
@@ -363,7 +376,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'multi_attack_eval':
         from util.multi_attack_eval import run_multi_attack_snr_mod_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         # Parse attack list if provided
         attack_list = None
         if args.attack_list is not None:
@@ -385,7 +398,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'sigguard_eval':
         from util.sigguard_eval import run_sigguard_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, cfg.dataset + '_' + 'AWN' + '.pkl'), map_location=cfg.device))
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
         # Parse attack list if provided
         attack_list = None
         if args.attack_list is not None:

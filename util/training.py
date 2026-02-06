@@ -17,7 +17,8 @@ class Trainer:
                  train_loader,
                  val_loader,
                  cfg,
-                 logger):
+                 logger,
+                 model_name='awn'):
         super(Trainer, self).__init__()
 
         self.epochs_stats = None
@@ -41,6 +42,7 @@ class Trainer:
         self.val_loader = val_loader
         self.cfg = cfg
         self.logger = logger
+        self.model_name = model_name.upper()
 
         self.iter = 0
 
@@ -163,7 +165,7 @@ class Trainer:
         if self.cfg.monitor == 'acc':
             if self.val_acc.avg >= self.best_monitor:
                 self.best_monitor = self.val_acc.avg
-                save_model_name = self.cfg.dataset + '_' + 'AWN' + '.pkl'
+                save_model_name = self.cfg.dataset + '_' + self.model_name + '.pkl'
                 torch.save(self.model.state_dict(), os.path.join(self.cfg.model_dir, save_model_name))
         else:
             raise NotImplementedError(f'Not Implement monitor: {self.cfg.monitor}')

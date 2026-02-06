@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 import torchattacks
 from util.adv_attack import Model01Wrapper, iq_to_ta_input, ta_output_to_iq
+from util.utils import recover_constellation
 
 print('='*70)
 print('Replicating Paper CW Attack Experiment')
@@ -271,6 +272,52 @@ print(f'  ✓ Saved: paper_cw_replication.png')
 
 plt.savefig('paper_cw_replication.pdf', bbox_inches='tight')
 print(f'  ✓ Saved: paper_cw_replication.pdf')
+
+# Generate recovered constellation plots
+print(f'\n  Generating recovered constellation plots...')
+
+fig2 = plt.figure(figsize=(16, 12))
+gs2 = GridSpec(4, 3, figure=fig2, hspace=0.35, wspace=0.25)
+
+fig2.suptitle('Recovered Constellation (MF + Symbol Timing + Phase Recovery)\n'
+             f'(SNR={SNR} dB, sps=8, RRC beta=0.35)',
+             fontsize=14, fontweight='bold')
+
+for idx, mod in enumerate(MODULATIONS):
+    mod_name = mod.decode()
+    X_clean_np = X_dict[mod].numpy()
+    X_adv_np = X_adv_dict[mod].numpy()
+    X_rec_np = X_rec_dict[mod].numpy()
+
+    for col, (data, color, label) in enumerate([
+        (X_clean_np, 'blue', 'Intact'),
+        (X_adv_np, 'red', 'CW Attack'),
+        (X_rec_np, 'green', 'After Recovery'),
+    ]):
+        Is, Qs = [], []
+        for j in range(data.shape[0]):
+            ic, qc = recover_constellation(data[j, 0, :], data[j, 1, :], sps=8)
+            Is.append(ic)
+            Qs.append(qc)
+        I_all = np.concatenate(Is)
+        Q_all = np.concatenate(Qs)
+        if len(I_all) > 12000:
+            sel = np.random.choice(len(I_all), 12000, replace=False)
+            I_all, Q_all = I_all[sel], Q_all[sel]
+
+        ax = fig2.add_subplot(gs2[idx, col])
+        ax.scatter(I_all, Q_all, c=color, alpha=0.4, s=5, edgecolors='none')
+        ax.set_title(f'{mod_name}\n{label}', fontsize=11, fontweight='bold')
+        ax.set_xlabel('I', fontsize=9)
+        ax.set_ylabel('Q', fontsize=9)
+        ax.grid(True, alpha=0.2)
+        ax.set_aspect('equal', adjustable='box')
+
+plt.savefig('paper_cw_constellation.png', dpi=300, bbox_inches='tight')
+print(f'  ✓ Saved: paper_cw_constellation.png')
+plt.savefig('paper_cw_constellation.pdf', bbox_inches='tight')
+print(f'  ✓ Saved: paper_cw_constellation.pdf')
+plt.close(fig2)
 
 # Print summary
 print(f'\n{"="*70}')

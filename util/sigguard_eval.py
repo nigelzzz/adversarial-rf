@@ -24,6 +24,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+from util.utils import recover_constellation
+
 try:
     import torchattacks
 except ImportError:
@@ -33,7 +35,7 @@ from util.adv_attack import (
     Model01Wrapper, iq_to_ta_input, ta_output_to_iq,
     iq_to_ta_input_minmax, ta_output_to_iq_minmax,
 )
-from util.defense import fft_topk_denoise_normalized
+from util.defense import fft_topk_denoise
 
 
 # All 17 attacks (15 original + EADL1 + EADEN)
@@ -288,9 +290,11 @@ def plot_iq_distribution(
     attack_name: str,
     save_dir: str,
     n_samples: int = 5,
+    sps: int = 8,
 ) -> None:
     """
     Plot IQ scatter distribution comparing clean and adversarial signals.
+    Shows both raw IQ trajectory (top row) and recovered constellation (bottom row).
 
     Args:
         x_clean: Clean signals [N, 2, T]
@@ -298,6 +302,7 @@ def plot_iq_distribution(
         attack_name: Name of the attack
         save_dir: Directory to save plots
         n_samples: Number of samples to plot
+        sps: Samples per symbol (8 for RML2016.10a)
     """
     os.makedirs(save_dir, exist_ok=True)
 
@@ -307,37 +312,63 @@ def plot_iq_distribution(
 
     # Plot individual samples
     for i in range(n_samples):
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        fig, axes = plt.subplots(2, 3, figsize=(15, 10))
         fig.suptitle(f'{attack_name.upper()} | Sample {i+1}', fontsize=14)
 
         I_clean, Q_clean = x_clean[i, 0, :], x_clean[i, 1, :]
         I_adv, Q_adv = x_adv[i, 0, :], x_adv[i, 1, :]
 
-        # Clean IQ
-        axes[0].scatter(I_clean, Q_clean, s=3, alpha=0.6, c='blue')
-        axes[0].set_title('Clean IQ')
-        axes[0].set_xlabel('I (In-phase)')
-        axes[0].set_ylabel('Q (Quadrature)')
-        axes[0].grid(True, alpha=0.3)
-        axes[0].axis('equal')
+        # Recover constellation points
+        Ic_sym, Qc_sym = recover_constellation(I_clean, Q_clean, sps=sps)
+        Ia_sym, Qa_sym = recover_constellation(I_adv, Q_adv, sps=sps)
 
-        # Adversarial IQ
-        axes[1].scatter(I_adv, Q_adv, s=3, alpha=0.6, c='red')
-        axes[1].set_title('Adversarial IQ')
-        axes[1].set_xlabel('I (In-phase)')
-        axes[1].set_ylabel('Q (Quadrature)')
-        axes[1].grid(True, alpha=0.3)
-        axes[1].axis('equal')
+        # --- Top row: Raw IQ trajectory ---
+        axes[0, 0].scatter(I_clean, Q_clean, s=3, alpha=0.6, c='blue')
+        axes[0, 0].set_title('Clean IQ (raw)')
+        axes[0, 0].set_xlabel('I')
+        axes[0, 0].set_ylabel('Q')
+        axes[0, 0].grid(True, alpha=0.3)
+        axes[0, 0].axis('equal')
 
-        # Overlay
-        axes[2].scatter(I_clean, Q_clean, s=3, alpha=0.5, c='blue', label='Clean')
-        axes[2].scatter(I_adv, Q_adv, s=3, alpha=0.5, c='red', label='Adversarial')
-        axes[2].set_title('Overlay')
-        axes[2].set_xlabel('I (In-phase)')
-        axes[2].set_ylabel('Q (Quadrature)')
-        axes[2].legend(markerscale=3)
-        axes[2].grid(True, alpha=0.3)
-        axes[2].axis('equal')
+        axes[0, 1].scatter(I_adv, Q_adv, s=3, alpha=0.6, c='red')
+        axes[0, 1].set_title('Adversarial IQ (raw)')
+        axes[0, 1].set_xlabel('I')
+        axes[0, 1].set_ylabel('Q')
+        axes[0, 1].grid(True, alpha=0.3)
+        axes[0, 1].axis('equal')
+
+        axes[0, 2].scatter(I_clean, Q_clean, s=3, alpha=0.5, c='blue', label='Clean')
+        axes[0, 2].scatter(I_adv, Q_adv, s=3, alpha=0.5, c='red', label='Adversarial')
+        axes[0, 2].set_title('Overlay (raw)')
+        axes[0, 2].set_xlabel('I')
+        axes[0, 2].set_ylabel('Q')
+        axes[0, 2].legend(markerscale=3)
+        axes[0, 2].grid(True, alpha=0.3)
+        axes[0, 2].axis('equal')
+
+        # --- Bottom row: Recovered constellation ---
+        axes[1, 0].scatter(Ic_sym, Qc_sym, s=15, alpha=0.7, c='blue')
+        axes[1, 0].set_title('Clean Constellation')
+        axes[1, 0].set_xlabel('I')
+        axes[1, 0].set_ylabel('Q')
+        axes[1, 0].grid(True, alpha=0.3)
+        axes[1, 0].axis('equal')
+
+        axes[1, 1].scatter(Ia_sym, Qa_sym, s=15, alpha=0.7, c='red')
+        axes[1, 1].set_title('Adversarial Constellation')
+        axes[1, 1].set_xlabel('I')
+        axes[1, 1].set_ylabel('Q')
+        axes[1, 1].grid(True, alpha=0.3)
+        axes[1, 1].axis('equal')
+
+        axes[1, 2].scatter(Ic_sym, Qc_sym, s=15, alpha=0.5, c='blue', label='Clean')
+        axes[1, 2].scatter(Ia_sym, Qa_sym, s=15, alpha=0.5, c='red', label='Adversarial')
+        axes[1, 2].set_title('Overlay (constellation)')
+        axes[1, 2].set_xlabel('I')
+        axes[1, 2].set_ylabel('Q')
+        axes[1, 2].legend(markerscale=2)
+        axes[1, 2].grid(True, alpha=0.3)
+        axes[1, 2].axis('equal')
 
         plt.tight_layout()
         save_path = os.path.join(save_dir, f'{attack_name}_iq_sample{i+1}.png')
@@ -350,15 +381,18 @@ def plot_iq_distribution_all(
     x_adv: torch.Tensor,
     attack_name: str,
     save_dir: str,
+    sps: int = 8,
 ) -> None:
     """
     Plot aggregated IQ scatter distribution across all samples.
+    Shows both raw IQ (top) and recovered constellation (bottom).
 
     Args:
         x_clean: Clean signals [N, 2, T]
         x_adv: Adversarial signals [N, 2, T]
         attack_name: Name of the attack
         save_dir: Directory to save plots
+        sps: Samples per symbol (8 for RML2016.10a)
     """
     os.makedirs(save_dir, exist_ok=True)
 
@@ -366,50 +400,90 @@ def plot_iq_distribution_all(
     x_adv = x_adv.detach().cpu().numpy()
     N = x_clean.shape[0]
 
-    # Flatten all samples
+    # Flatten all samples (raw)
     I_clean = x_clean[:, 0, :].flatten()
     Q_clean = x_clean[:, 1, :].flatten()
     I_adv = x_adv[:, 0, :].flatten()
     Q_adv = x_adv[:, 1, :].flatten()
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    # Recover constellation per-sample and collect
+    Ic_syms, Qc_syms, Ia_syms, Qa_syms = [], [], [], []
+    for j in range(N):
+        ic, qc = recover_constellation(x_clean[j, 0, :], x_clean[j, 1, :], sps=sps)
+        ia, qa = recover_constellation(x_adv[j, 0, :], x_adv[j, 1, :], sps=sps)
+        Ic_syms.append(ic)
+        Qc_syms.append(qc)
+        Ia_syms.append(ia)
+        Qa_syms.append(qa)
+    Ic_sym = np.concatenate(Ic_syms)
+    Qc_sym = np.concatenate(Qc_syms)
+    Ia_sym = np.concatenate(Ia_syms)
+    Qa_sym = np.concatenate(Qa_syms)
+
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
     fig.suptitle(f'{attack_name.upper()} | All {N} samples', fontsize=14)
 
     # Subsample for plotting if too many points
     max_points = 10000
-    if len(I_clean) > max_points:
-        idx = np.random.choice(len(I_clean), max_points, replace=False)
-        I_clean_plot, Q_clean_plot = I_clean[idx], Q_clean[idx]
-        I_adv_plot, Q_adv_plot = I_adv[idx], Q_adv[idx]
-    else:
-        I_clean_plot, Q_clean_plot = I_clean, Q_clean
-        I_adv_plot, Q_adv_plot = I_adv, Q_adv
 
-    # Clean IQ
-    axes[0].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue')
-    axes[0].set_title('Clean IQ (all samples)')
-    axes[0].set_xlabel('I (In-phase)')
-    axes[0].set_ylabel('Q (Quadrature)')
-    axes[0].grid(True, alpha=0.3)
-    axes[0].axis('equal')
+    def subsample(I, Q, mx=max_points):
+        if len(I) > mx:
+            idx = np.random.choice(len(I), mx, replace=False)
+            return I[idx], Q[idx]
+        return I, Q
 
-    # Adversarial IQ
-    axes[1].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red')
-    axes[1].set_title('Adversarial IQ (all samples)')
-    axes[1].set_xlabel('I (In-phase)')
-    axes[1].set_ylabel('Q (Quadrature)')
-    axes[1].grid(True, alpha=0.3)
-    axes[1].axis('equal')
+    Icp, Qcp = subsample(I_clean, Q_clean)
+    Iap, Qap = subsample(I_adv, Q_adv)
+    Ics, Qcs = subsample(Ic_sym, Qc_sym)
+    Ias, Qas = subsample(Ia_sym, Qa_sym)
 
-    # Overlay
-    axes[2].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue', label='Clean')
-    axes[2].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red', label='Adversarial')
-    axes[2].set_title('Overlay (all samples)')
-    axes[2].set_xlabel('I (In-phase)')
-    axes[2].set_ylabel('Q (Quadrature)')
-    axes[2].legend(markerscale=5)
-    axes[2].grid(True, alpha=0.3)
-    axes[2].axis('equal')
+    # --- Top row: Raw IQ ---
+    axes[0, 0].scatter(Icp, Qcp, s=1, alpha=0.3, c='blue')
+    axes[0, 0].set_title('Clean IQ (raw)')
+    axes[0, 0].set_xlabel('I')
+    axes[0, 0].set_ylabel('Q')
+    axes[0, 0].grid(True, alpha=0.3)
+    axes[0, 0].axis('equal')
+
+    axes[0, 1].scatter(Iap, Qap, s=1, alpha=0.3, c='red')
+    axes[0, 1].set_title('Adversarial IQ (raw)')
+    axes[0, 1].set_xlabel('I')
+    axes[0, 1].set_ylabel('Q')
+    axes[0, 1].grid(True, alpha=0.3)
+    axes[0, 1].axis('equal')
+
+    axes[0, 2].scatter(Icp, Qcp, s=1, alpha=0.3, c='blue', label='Clean')
+    axes[0, 2].scatter(Iap, Qap, s=1, alpha=0.3, c='red', label='Adversarial')
+    axes[0, 2].set_title('Overlay (raw)')
+    axes[0, 2].set_xlabel('I')
+    axes[0, 2].set_ylabel('Q')
+    axes[0, 2].legend(markerscale=5)
+    axes[0, 2].grid(True, alpha=0.3)
+    axes[0, 2].axis('equal')
+
+    # --- Bottom row: Recovered constellation ---
+    axes[1, 0].scatter(Ics, Qcs, s=5, alpha=0.4, c='blue')
+    axes[1, 0].set_title('Clean Constellation')
+    axes[1, 0].set_xlabel('I')
+    axes[1, 0].set_ylabel('Q')
+    axes[1, 0].grid(True, alpha=0.3)
+    axes[1, 0].axis('equal')
+
+    axes[1, 1].scatter(Ias, Qas, s=5, alpha=0.4, c='red')
+    axes[1, 1].set_title('Adversarial Constellation')
+    axes[1, 1].set_xlabel('I')
+    axes[1, 1].set_ylabel('Q')
+    axes[1, 1].grid(True, alpha=0.3)
+    axes[1, 1].axis('equal')
+
+    axes[1, 2].scatter(Ics, Qcs, s=5, alpha=0.3, c='blue', label='Clean')
+    axes[1, 2].scatter(Ias, Qas, s=5, alpha=0.3, c='red', label='Adversarial')
+    axes[1, 2].set_title('Overlay (constellation)')
+    axes[1, 2].set_xlabel('I')
+    axes[1, 2].set_ylabel('Q')
+    axes[1, 2].legend(markerscale=5)
+    axes[1, 2].grid(True, alpha=0.3)
+    axes[1, 2].axis('equal')
 
     plt.tight_layout()
     save_path = os.path.join(save_dir, f'{attack_name}_iq_all.png')
@@ -590,10 +664,7 @@ def run_sigguard_eval(
         clean_accs.append(acc * len(y_batch))
 
         # Clean with defense (enabled = no attack, with defense)
-        x_defended = fft_topk_denoise_normalized(
-            x_batch, topk=topk,
-            norm_offset=0.02, norm_scale=0.04
-        )
+        x_defended = fft_topk_denoise(x_batch, topk=topk)
         acc_def = compute_accuracy(model, x_defended, y_batch)
         clean_defense_accs.append(acc_def * len(y_batch))
 
@@ -655,10 +726,7 @@ def run_sigguard_eval(
                 attack_accs.append(acc * len(y_batch))
 
                 # Defense accuracy (enabled = attack + defense)
-                x_defended = fft_topk_denoise_normalized(
-                    x_adv, topk=topk,
-                    norm_offset=0.02, norm_scale=0.04
-                )
+                x_defended = fft_topk_denoise(x_adv, topk=topk)
                 acc_def = compute_accuracy(model, x_defended, y_batch)
                 defense_accs.append(acc_def * len(y_batch))
 

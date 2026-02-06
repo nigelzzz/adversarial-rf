@@ -28,7 +28,7 @@ import torch
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
-from util.utils import create_AWN_model
+from util.utils import create_AWN_model, recover_constellation
 from util.config import Config
 from util.defense import normalize_iq_data, denormalize_iq_data, fft_topk_denoise
 from util.adv_attack import (
@@ -241,12 +241,37 @@ def main():
             'best_topk': best_k,
         }
 
-    # Build I/Q grid figure
+    # Build I/Q grid figure (raw IQ + recovered constellation)
     os.makedirs("cw_analysis", exist_ok=True)
+
+    # Helper: flatten and subsample raw IQ
+    def _flat(x: np.ndarray, n: int = 12000):
+        I = x[:, 0, :].reshape(-1)
+        Q = x[:, 1, :].reshape(-1)
+        if len(I) > n:
+            sel = np.random.choice(len(I), n, replace=False)
+            return I[sel], Q[sel]
+        return I, Q
+
+    # Helper: recover constellation from all samples and subsample
+    def _flat_constellation(x: np.ndarray, sps: int = 8, n: int = 12000):
+        Is, Qs = [], []
+        for j in range(x.shape[0]):
+            ic, qc = recover_constellation(x[j, 0, :], x[j, 1, :], sps=sps)
+            Is.append(ic)
+            Qs.append(qc)
+        I = np.concatenate(Is)
+        Q = np.concatenate(Qs)
+        if len(I) > n:
+            sel = np.random.choice(len(I), n, replace=False)
+            return I[sel], Q[sel]
+        return I, Q
+
+    # --- Raw IQ grid (4 mods x 3 columns) ---
     fig_iq = plt.figure(figsize=(16, 12))
     gs_iq = GridSpec(4, 3, figure=fig_iq, hspace=0.35, wspace=0.25)
     fig_iq.suptitle(
-        f"I/Q Constellations ({snr_desc}, CW steps={args.cw_steps}, c={args.cw_c}, TopK={args.topk}, box={args.ta_box})",
+        f"I/Q Raw Trajectory ({snr_desc}, CW steps={args.cw_steps}, c={args.cw_c}, TopK={args.topk}, box={args.ta_box})",
         fontsize=14,
         fontweight="bold",
     )
@@ -256,15 +281,6 @@ def main():
         clean = X_dict[m].numpy()
         adv = X_adv[m].numpy()
         rec = X_rec_best[m].numpy()
-
-        # Flatten points and subsample for plotting
-        def _flat(x: np.ndarray, n: int = 12000):
-            I = x[:, 0, :].reshape(-1)
-            Q = x[:, 1, :].reshape(-1)
-            if len(I) > n:
-                sel = np.random.choice(len(I), n, replace=False)
-                return I[sel], Q[sel]
-            return I, Q
 
         I0, Q0 = _flat(clean)
         I1, Q1 = _flat(adv)
@@ -305,7 +321,46 @@ def main():
     fig_iq.savefig(out_iq_png, dpi=200, bbox_inches="tight")
     fig_iq.savefig(out_iq_pdf, bbox_inches="tight")
     plt.close(fig_iq)
-    print(f"Saved I/Q grid: {out_iq_png}")
+    print(f"Saved I/Q raw grid: {out_iq_png}")
+
+    # --- Recovered Constellation grid (4 mods x 3 columns) ---
+    fig_const = plt.figure(figsize=(16, 12))
+    gs_const = GridSpec(4, 3, figure=fig_const, hspace=0.35, wspace=0.25)
+    fig_const.suptitle(
+        f"Recovered Constellation ({snr_desc}, CW steps={args.cw_steps}, c={args.cw_c}, TopK={args.topk}, box={args.ta_box})",
+        fontsize=14,
+        fontweight="bold",
+    )
+
+    for idx, m in enumerate(mods):
+        name = m.decode()
+        clean = X_dict[m].numpy()
+        adv = X_adv[m].numpy()
+        rec = X_rec_best[m].numpy()
+
+        I0, Q0 = _flat_constellation(clean)
+        I1, Q1 = _flat_constellation(adv)
+        I2, Q2 = _flat_constellation(rec)
+
+        for col, (Ip, Qp, color, label) in enumerate([
+            (I0, Q0, "#1f77b4", "Intact"),
+            (I1, Q1, "#d62728", "CW Attack"),
+            (I2, Q2, "#2ca02c", "Top-K FFT Recovered"),
+        ]):
+            ax = fig_const.add_subplot(gs_const[idx, col])
+            ax.scatter(Ip, Qp, s=5, alpha=0.4, c=color, edgecolors="none")
+            ax.set_title(f"{name}\n{label}")
+            ax.set_xlabel("I")
+            ax.set_ylabel("Q")
+            ax.grid(True, alpha=0.2)
+            ax.set_aspect("equal", adjustable="box")
+
+    out_const_png = "cw_analysis/constellation_grid.png"
+    out_const_pdf = "cw_analysis/constellation_grid.pdf"
+    fig_const.savefig(out_const_png, dpi=200, bbox_inches="tight")
+    fig_const.savefig(out_const_pdf, bbox_inches="tight")
+    plt.close(fig_const)
+    print(f"Saved constellation grid: {out_const_png}")
 
     # Build frequency grid figure
     fig_f = plt.figure(figsize=(16, 12))

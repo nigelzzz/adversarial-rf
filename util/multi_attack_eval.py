@@ -21,6 +21,8 @@ import matplotlib
 matplotlib.use('Agg')  # Non-interactive backend for saving plots
 import matplotlib.pyplot as plt
 
+from util.utils import recover_constellation
+
 try:
     import torchattacks
 except ImportError:
@@ -247,9 +249,11 @@ def plot_iq_distribution(
     mod: str,
     save_dir: str,
     n_samples: int = 5,
+    sps: int = 8,
 ) -> None:
     """
     Plot IQ scatter distribution comparing clean and adversarial signals.
+    Shows both raw IQ trajectory (top row) and recovered constellation (bottom row).
 
     Args:
         x_clean: Clean signals [N, 2, T]
@@ -259,6 +263,7 @@ def plot_iq_distribution(
         mod: Modulation type
         save_dir: Directory to save plots
         n_samples: Number of samples to plot individually
+        sps: Samples per symbol (8 for RML2016.10a)
     """
     os.makedirs(save_dir, exist_ok=True)
 
@@ -266,39 +271,63 @@ def plot_iq_distribution(
     x_adv = x_adv.detach().cpu().numpy()
     n_samples = min(n_samples, x_clean.shape[0])
 
-    # Plot individual samples
     for i in range(n_samples):
-        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        fig, axes = plt.subplots(2, 3, figsize=(15, 10))
         fig.suptitle(f'{attack_name.upper()} | {mod} | SNR={snr}dB | Sample {i+1}', fontsize=14)
 
         I_clean, Q_clean = x_clean[i, 0, :], x_clean[i, 1, :]
         I_adv, Q_adv = x_adv[i, 0, :], x_adv[i, 1, :]
 
-        # Clean IQ
-        axes[0].scatter(I_clean, Q_clean, s=3, alpha=0.6, c='blue')
-        axes[0].set_title('Clean IQ')
-        axes[0].set_xlabel('I (In-phase)')
-        axes[0].set_ylabel('Q (Quadrature)')
-        axes[0].grid(True, alpha=0.3)
-        axes[0].axis('equal')
+        Ic_sym, Qc_sym = recover_constellation(I_clean, Q_clean, sps=sps)
+        Ia_sym, Qa_sym = recover_constellation(I_adv, Q_adv, sps=sps)
 
-        # Adversarial IQ
-        axes[1].scatter(I_adv, Q_adv, s=3, alpha=0.6, c='red')
-        axes[1].set_title('Adversarial IQ')
-        axes[1].set_xlabel('I (In-phase)')
-        axes[1].set_ylabel('Q (Quadrature)')
-        axes[1].grid(True, alpha=0.3)
-        axes[1].axis('equal')
+        # Top row: Raw IQ
+        axes[0, 0].scatter(I_clean, Q_clean, s=3, alpha=0.6, c='blue')
+        axes[0, 0].set_title('Clean IQ (raw)')
+        axes[0, 0].set_xlabel('I')
+        axes[0, 0].set_ylabel('Q')
+        axes[0, 0].grid(True, alpha=0.3)
+        axes[0, 0].axis('equal')
 
-        # Overlay
-        axes[2].scatter(I_clean, Q_clean, s=3, alpha=0.5, c='blue', label='Clean')
-        axes[2].scatter(I_adv, Q_adv, s=3, alpha=0.5, c='red', label='Adversarial')
-        axes[2].set_title('Overlay')
-        axes[2].set_xlabel('I (In-phase)')
-        axes[2].set_ylabel('Q (Quadrature)')
-        axes[2].legend(markerscale=3)
-        axes[2].grid(True, alpha=0.3)
-        axes[2].axis('equal')
+        axes[0, 1].scatter(I_adv, Q_adv, s=3, alpha=0.6, c='red')
+        axes[0, 1].set_title('Adversarial IQ (raw)')
+        axes[0, 1].set_xlabel('I')
+        axes[0, 1].set_ylabel('Q')
+        axes[0, 1].grid(True, alpha=0.3)
+        axes[0, 1].axis('equal')
+
+        axes[0, 2].scatter(I_clean, Q_clean, s=3, alpha=0.5, c='blue', label='Clean')
+        axes[0, 2].scatter(I_adv, Q_adv, s=3, alpha=0.5, c='red', label='Adversarial')
+        axes[0, 2].set_title('Overlay (raw)')
+        axes[0, 2].set_xlabel('I')
+        axes[0, 2].set_ylabel('Q')
+        axes[0, 2].legend(markerscale=3)
+        axes[0, 2].grid(True, alpha=0.3)
+        axes[0, 2].axis('equal')
+
+        # Bottom row: Recovered constellation
+        axes[1, 0].scatter(Ic_sym, Qc_sym, s=15, alpha=0.7, c='blue')
+        axes[1, 0].set_title('Clean Constellation')
+        axes[1, 0].set_xlabel('I')
+        axes[1, 0].set_ylabel('Q')
+        axes[1, 0].grid(True, alpha=0.3)
+        axes[1, 0].axis('equal')
+
+        axes[1, 1].scatter(Ia_sym, Qa_sym, s=15, alpha=0.7, c='red')
+        axes[1, 1].set_title('Adversarial Constellation')
+        axes[1, 1].set_xlabel('I')
+        axes[1, 1].set_ylabel('Q')
+        axes[1, 1].grid(True, alpha=0.3)
+        axes[1, 1].axis('equal')
+
+        axes[1, 2].scatter(Ic_sym, Qc_sym, s=15, alpha=0.5, c='blue', label='Clean')
+        axes[1, 2].scatter(Ia_sym, Qa_sym, s=15, alpha=0.5, c='red', label='Adversarial')
+        axes[1, 2].set_title('Overlay (constellation)')
+        axes[1, 2].set_xlabel('I')
+        axes[1, 2].set_ylabel('Q')
+        axes[1, 2].legend(markerscale=2)
+        axes[1, 2].grid(True, alpha=0.3)
+        axes[1, 2].axis('equal')
 
         plt.tight_layout()
         save_path = os.path.join(save_dir, f'{attack_name}_{mod}_snr{snr}_iq_sample{i+1}.png')
@@ -313,9 +342,11 @@ def plot_iq_distribution_all(
     snr: int,
     mod: str,
     save_dir: str,
+    sps: int = 8,
 ) -> None:
     """
     Plot aggregated IQ scatter distribution across all samples.
+    Shows both raw IQ (top) and recovered constellation (bottom).
 
     Args:
         x_clean: Clean signals [N, 2, T]
@@ -324,6 +355,7 @@ def plot_iq_distribution_all(
         snr: SNR value
         mod: Modulation type
         save_dir: Directory to save plots
+        sps: Samples per symbol (8 for RML2016.10a)
     """
     os.makedirs(save_dir, exist_ok=True)
 
@@ -331,50 +363,89 @@ def plot_iq_distribution_all(
     x_adv = x_adv.cpu().numpy()
     N = x_clean.shape[0]
 
-    # Flatten all samples
+    # Flatten raw
     I_clean = x_clean[:, 0, :].flatten()
     Q_clean = x_clean[:, 1, :].flatten()
     I_adv = x_adv[:, 0, :].flatten()
     Q_adv = x_adv[:, 1, :].flatten()
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    # Recover constellation per-sample
+    Ic_syms, Qc_syms, Ia_syms, Qa_syms = [], [], [], []
+    for j in range(N):
+        ic, qc = recover_constellation(x_clean[j, 0, :], x_clean[j, 1, :], sps=sps)
+        ia, qa = recover_constellation(x_adv[j, 0, :], x_adv[j, 1, :], sps=sps)
+        Ic_syms.append(ic)
+        Qc_syms.append(qc)
+        Ia_syms.append(ia)
+        Qa_syms.append(qa)
+    Ic_sym = np.concatenate(Ic_syms)
+    Qc_sym = np.concatenate(Qc_syms)
+    Ia_sym = np.concatenate(Ia_syms)
+    Qa_sym = np.concatenate(Qa_syms)
+
+    fig, axes = plt.subplots(2, 3, figsize=(15, 10))
     fig.suptitle(f'{attack_name.upper()} | {mod} | SNR={snr}dB | All {N} samples', fontsize=14)
 
-    # Subsample for plotting if too many points
     max_points = 10000
-    if len(I_clean) > max_points:
-        idx = np.random.choice(len(I_clean), max_points, replace=False)
-        I_clean_plot, Q_clean_plot = I_clean[idx], Q_clean[idx]
-        I_adv_plot, Q_adv_plot = I_adv[idx], Q_adv[idx]
-    else:
-        I_clean_plot, Q_clean_plot = I_clean, Q_clean
-        I_adv_plot, Q_adv_plot = I_adv, Q_adv
 
-    # Clean IQ
-    axes[0].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue')
-    axes[0].set_title('Clean IQ (all samples)')
-    axes[0].set_xlabel('I (In-phase)')
-    axes[0].set_ylabel('Q (Quadrature)')
-    axes[0].grid(True, alpha=0.3)
-    axes[0].axis('equal')
+    def subsample(I, Q, mx=max_points):
+        if len(I) > mx:
+            idx = np.random.choice(len(I), mx, replace=False)
+            return I[idx], Q[idx]
+        return I, Q
 
-    # Adversarial IQ
-    axes[1].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red')
-    axes[1].set_title('Adversarial IQ (all samples)')
-    axes[1].set_xlabel('I (In-phase)')
-    axes[1].set_ylabel('Q (Quadrature)')
-    axes[1].grid(True, alpha=0.3)
-    axes[1].axis('equal')
+    Icp, Qcp = subsample(I_clean, Q_clean)
+    Iap, Qap = subsample(I_adv, Q_adv)
+    Ics, Qcs = subsample(Ic_sym, Qc_sym)
+    Ias, Qas = subsample(Ia_sym, Qa_sym)
 
-    # Overlay
-    axes[2].scatter(I_clean_plot, Q_clean_plot, s=1, alpha=0.3, c='blue', label='Clean')
-    axes[2].scatter(I_adv_plot, Q_adv_plot, s=1, alpha=0.3, c='red', label='Adversarial')
-    axes[2].set_title('Overlay (all samples)')
-    axes[2].set_xlabel('I (In-phase)')
-    axes[2].set_ylabel('Q (Quadrature)')
-    axes[2].legend(markerscale=5)
-    axes[2].grid(True, alpha=0.3)
-    axes[2].axis('equal')
+    # Top row: Raw IQ
+    axes[0, 0].scatter(Icp, Qcp, s=1, alpha=0.3, c='blue')
+    axes[0, 0].set_title('Clean IQ (raw)')
+    axes[0, 0].set_xlabel('I')
+    axes[0, 0].set_ylabel('Q')
+    axes[0, 0].grid(True, alpha=0.3)
+    axes[0, 0].axis('equal')
+
+    axes[0, 1].scatter(Iap, Qap, s=1, alpha=0.3, c='red')
+    axes[0, 1].set_title('Adversarial IQ (raw)')
+    axes[0, 1].set_xlabel('I')
+    axes[0, 1].set_ylabel('Q')
+    axes[0, 1].grid(True, alpha=0.3)
+    axes[0, 1].axis('equal')
+
+    axes[0, 2].scatter(Icp, Qcp, s=1, alpha=0.3, c='blue', label='Clean')
+    axes[0, 2].scatter(Iap, Qap, s=1, alpha=0.3, c='red', label='Adversarial')
+    axes[0, 2].set_title('Overlay (raw)')
+    axes[0, 2].set_xlabel('I')
+    axes[0, 2].set_ylabel('Q')
+    axes[0, 2].legend(markerscale=5)
+    axes[0, 2].grid(True, alpha=0.3)
+    axes[0, 2].axis('equal')
+
+    # Bottom row: Recovered constellation
+    axes[1, 0].scatter(Ics, Qcs, s=5, alpha=0.4, c='blue')
+    axes[1, 0].set_title('Clean Constellation')
+    axes[1, 0].set_xlabel('I')
+    axes[1, 0].set_ylabel('Q')
+    axes[1, 0].grid(True, alpha=0.3)
+    axes[1, 0].axis('equal')
+
+    axes[1, 1].scatter(Ias, Qas, s=5, alpha=0.4, c='red')
+    axes[1, 1].set_title('Adversarial Constellation')
+    axes[1, 1].set_xlabel('I')
+    axes[1, 1].set_ylabel('Q')
+    axes[1, 1].grid(True, alpha=0.3)
+    axes[1, 1].axis('equal')
+
+    axes[1, 2].scatter(Ics, Qcs, s=5, alpha=0.3, c='blue', label='Clean')
+    axes[1, 2].scatter(Ias, Qas, s=5, alpha=0.3, c='red', label='Adversarial')
+    axes[1, 2].set_title('Overlay (constellation)')
+    axes[1, 2].set_xlabel('I')
+    axes[1, 2].set_ylabel('Q')
+    axes[1, 2].legend(markerscale=5)
+    axes[1, 2].grid(True, alpha=0.3)
+    axes[1, 2].axis('equal')
 
     plt.tight_layout()
     save_path = os.path.join(save_dir, f'{attack_name}_{mod}_snr{snr}_iq_all.png')
@@ -789,6 +860,13 @@ def run_multi_attack_snr_mod_eval(
     if attacks is None:
         attacks = DEFAULT_ATTACKS
 
+    # Check if model has LSTM layers (cuDNN LSTM backward has issues even in training mode)
+    has_lstm = any(isinstance(m, nn.LSTM) for m in model.modules())
+    cudnn_was_enabled = torch.backends.cudnn.enabled
+    if has_lstm:
+        logger.info("Model contains LSTM layers - disabling cuDNN for adversarial generation")
+        torch.backends.cudnn.enabled = False
+
     # Build index mapping
     logger.info("Building (SNR, modulation) index mapping...")
     snr_mod_idx = build_snr_mod_index(SNRs, lab_test, test_idx, cfg)
@@ -803,7 +881,7 @@ def run_multi_attack_snr_mod_eval(
     # Wrap model for torchattacks
     wrapped_model = Model01Wrapper(model)
     wrapped_model.to(device)
-    wrapped_model.eval()
+    # Note: wrapped_model will be set to train mode during attack generation if has_lstm
 
     # Get normalization mode from config
     ta_box = str(getattr(cfg, 'ta_box', 'unit')).lower()
@@ -814,6 +892,38 @@ def run_multi_attack_snr_mod_eval(
         logger.info("unit mode: eps is in [0,1] space (signal uses ~2% of range)")
 
     results = []
+
+    # Pre-compute clean accuracy for each (SNR, mod) cell
+    # This ensures we use the exact same data for clean and attacked evaluation
+    logger.info("\n=== Computing Clean Accuracy ===")
+    clean_acc_cache = {}
+    cell_data_cache = {}  # Cache cell data to ensure same data is used
+
+    for snr in all_snrs:
+        for mod in all_mods:
+            key = (snr, mod)
+            if key not in snr_mod_idx:
+                continue
+
+            indices = snr_mod_idx[key]
+
+            # Apply limit if specified (same limit for clean and attacks)
+            if eval_limit_per_cell is not None and len(indices) > eval_limit_per_cell:
+                indices = indices[:eval_limit_per_cell]
+
+            n_samples = len(indices)
+            if n_samples == 0:
+                continue
+
+            # Get samples for this cell and cache them
+            x_cell = sig_test[indices].to(device)
+            y_cell = lab_test[indices].to(device)
+            cell_data_cache[key] = (x_cell, y_cell, indices)
+
+            # Compute clean accuracy
+            clean_acc = compute_accuracy(model, x_cell, y_cell)
+            clean_acc_cache[key] = clean_acc
+            logger.info(f"  ({snr:3d}, {mod:8s}): clean_acc={clean_acc:.4f}, n={n_samples}")
 
     for attack_name in attacks:
         logger.info(f"\n=== Attack: {attack_name.upper()} ===")
@@ -833,22 +943,13 @@ def run_multi_attack_snr_mod_eval(
         for snr in all_snrs:
             for mod in all_mods:
                 key = (snr, mod)
-                if key not in snr_mod_idx:
+                if key not in cell_data_cache:
                     continue
 
-                indices = snr_mod_idx[key]
-
-                # Apply limit if specified
-                if eval_limit_per_cell is not None and len(indices) > eval_limit_per_cell:
-                    indices = indices[:eval_limit_per_cell]
-
+                # Use cached cell data (same data for all attacks)
+                x_cell, y_cell, indices = cell_data_cache[key]
                 n_samples = len(indices)
-                if n_samples == 0:
-                    continue
-
-                # Get samples for this cell
-                x_cell = sig_test[indices].to(device)
-                y_cell = lab_test[indices].to(device)
+                clean_acc = clean_acc_cache[key]
 
                 # Generate adversarial examples
                 try:
@@ -863,6 +964,7 @@ def run_multi_attack_snr_mod_eval(
                     continue
 
                 # Compute attack accuracy (after attack, before recovery)
+                model.eval()  # Ensure eval mode for inference
                 attack_acc = compute_accuracy(model, x_adv, y_cell)
 
                 # Plot frequency domain comparison if requested
@@ -922,6 +1024,7 @@ def run_multi_attack_snr_mod_eval(
                     'snr': snr,
                     'modulation': mod,
                     'n_samples': n_samples,
+                    'clean_acc': clean_acc,
                     'attack_acc': attack_acc,
                     'top10_acc': top10_acc,
                     'top20_acc': top20_acc,
@@ -930,11 +1033,12 @@ def run_multi_attack_snr_mod_eval(
         # Log summary for this attack
         attack_results = [r for r in results if r['attack'] == attack_name]
         if attack_results:
+            avg_clean = np.mean([r['clean_acc'] for r in attack_results])
             avg_attack = np.mean([r['attack_acc'] for r in attack_results])
             avg_top10 = np.mean([r['top10_acc'] for r in attack_results])
             avg_top20 = np.mean([r['top20_acc'] for r in attack_results])
-            logger.info(f"{attack_name}: avg_attack_acc={avg_attack:.4f}, "
-                       f"avg_top10={avg_top10:.4f}, avg_top20={avg_top20:.4f}")
+            logger.info(f"{attack_name}: clean={avg_clean:.4f}, attack={avg_attack:.4f}, "
+                       f"top10={avg_top10:.4f}, top20={avg_top20:.4f}")
 
     # Create DataFrame
     df = pd.DataFrame(results)
@@ -949,11 +1053,16 @@ def run_multi_attack_snr_mod_eval(
     if len(df) > 0:
         logger.info("\n=== Overall Summary ===")
         summary = df.groupby('attack').agg({
+            'clean_acc': 'mean',
             'attack_acc': 'mean',
             'top10_acc': 'mean',
             'top20_acc': 'mean',
             'n_samples': 'sum'
         }).round(4)
         logger.info(f"\n{summary.to_string()}")
+
+    # Restore cuDNN state if it was modified
+    if has_lstm:
+        torch.backends.cudnn.enabled = cudnn_was_enabled
 
     return df
