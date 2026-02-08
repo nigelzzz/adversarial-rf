@@ -60,7 +60,7 @@ def plot_freq_comparison(
     os.makedirs(save_dir, exist_ok=True)
 
     x_clean = x_clean.cpu().numpy()
-    x_adv = x_adv.cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
     n_samples = min(n_samples, x_clean.shape[0])
 
     T = x_clean.shape[2]
@@ -129,7 +129,7 @@ def plot_avg_freq_comparison(
     os.makedirs(save_dir, exist_ok=True)
 
     x_clean = x_clean.cpu().numpy()
-    x_adv = x_adv.cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
 
     N, C, T = x_clean.shape
     freqs = np.fft.fftfreq(T)[:T // 2]
@@ -205,7 +205,7 @@ def plot_overlay_comparison(
     os.makedirs(save_dir, exist_ok=True)
 
     x_clean = x_clean.cpu().numpy()
-    x_adv = x_adv.cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
 
     N, C, T = x_clean.shape
     freqs = np.fft.fftfreq(T)[:T // 2]
@@ -361,7 +361,7 @@ def plot_iq_distribution_all(
     os.makedirs(save_dir, exist_ok=True)
 
     x_clean = x_clean.cpu().numpy()
-    x_adv = x_adv.cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
     N = x_clean.shape[0]
 
     # Flatten raw
@@ -478,7 +478,7 @@ def plot_iq_density(
     os.makedirs(save_dir, exist_ok=True)
 
     x_clean = x_clean.cpu().numpy()
-    x_adv = x_adv.cpu().numpy()
+    x_adv = x_adv.detach().cpu().numpy()
     N = x_clean.shape[0]
 
     # Flatten all samples
@@ -858,6 +858,7 @@ def run_multi_attack_snr_mod_eval(
     plot_freq: bool = False,
     plot_iq: bool = False,
     plot_n_samples: int = 3,
+    topk_list: Optional[List[int]] = None,
 ) -> pd.DataFrame:
     """
     Run multi-attack evaluation with FFT recovery comparison by modulation and SNR.
@@ -875,10 +876,13 @@ def run_multi_attack_snr_mod_eval(
         plot_freq: If True, save frequency domain comparison plots
         plot_iq: If True, save IQ distribution comparison plots
         plot_n_samples: Number of individual samples to plot (if plot_freq/plot_iq=True)
+        topk_list: List of Top-K values for FFT recovery (default: [10, 20])
 
     Returns:
-        DataFrame with columns: attack, snr, modulation, n_samples, attack_acc, top10_acc, top20_acc
+        DataFrame with columns: attack, snr, modulation, n_samples, attack_acc, topK_acc...
     """
+    if topk_list is None:
+        topk_list = [10, 20]
     model.eval()
     device = cfg.device
 
@@ -1030,40 +1034,38 @@ def run_multi_attack_snr_mod_eval(
                     )
                     logger.info(f"Saved IQ plots to {iq_plot_dir}")
 
-                # Apply Top-10 FFT recovery
-                x_top10 = fft_topk_denoise_normalized(
-                    x_adv, topk=10,
-                    norm_offset=0.02, norm_scale=0.04
-                )
-                top10_acc = compute_accuracy(model, x_top10, y_cell)
+                # Apply FFT Top-K recovery for each K
+                topk_accs = {}
+                for k in topk_list:
+                    x_topk = fft_topk_denoise_normalized(
+                        x_adv, topk=k,
+                        norm_offset=0.02, norm_scale=0.04
+                    )
+                    topk_accs[f'top{k}_acc'] = compute_accuracy(model, x_topk, y_cell)
 
-                # Apply Top-20 FFT recovery
-                x_top20 = fft_topk_denoise_normalized(
-                    x_adv, topk=20,
-                    norm_offset=0.02, norm_scale=0.04
-                )
-                top20_acc = compute_accuracy(model, x_top20, y_cell)
-
-                results.append({
+                row = {
                     'attack': attack_name,
                     'snr': snr,
                     'modulation': mod,
                     'n_samples': n_samples,
                     'clean_acc': clean_acc,
                     'attack_acc': attack_acc,
-                    'top10_acc': top10_acc,
-                    'top20_acc': top20_acc,
-                })
+                }
+                row.update(topk_accs)
+                results.append(row)
 
         # Log summary for this attack
         attack_results = [r for r in results if r['attack'] == attack_name]
         if attack_results:
             avg_clean = np.mean([r['clean_acc'] for r in attack_results])
             avg_attack = np.mean([r['attack_acc'] for r in attack_results])
-            avg_top10 = np.mean([r['top10_acc'] for r in attack_results])
-            avg_top20 = np.mean([r['top20_acc'] for r in attack_results])
+            topk_strs = []
+            for k in topk_list:
+                col = f'top{k}_acc'
+                avg_k = np.mean([r[col] for r in attack_results])
+                topk_strs.append(f"top{k}={avg_k:.4f}")
             logger.info(f"{attack_name}: clean={avg_clean:.4f}, attack={avg_attack:.4f}, "
-                       f"top10={avg_top10:.4f}, top20={avg_top20:.4f}")
+                       f"{', '.join(topk_strs)}")
 
     # Create DataFrame
     df = pd.DataFrame(results)
@@ -1077,13 +1079,16 @@ def run_multi_attack_snr_mod_eval(
     # Log overall summary
     if len(df) > 0:
         logger.info("\n=== Overall Summary ===")
-        summary = df.groupby('attack').agg({
+        agg_dict = {
             'clean_acc': 'mean',
             'attack_acc': 'mean',
-            'top10_acc': 'mean',
-            'top20_acc': 'mean',
-            'n_samples': 'sum'
-        }).round(4)
+        }
+        for k in topk_list:
+            col = f'top{k}_acc'
+            if col in df.columns:
+                agg_dict[col] = 'mean'
+        agg_dict['n_samples'] = 'sum'
+        summary = df.groupby('attack').agg(agg_dict).round(4)
         logger.info(f"\n{summary.to_string()}")
 
     # Restore cuDNN state if it was modified

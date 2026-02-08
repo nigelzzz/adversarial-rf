@@ -101,6 +101,8 @@ if __name__ == "__main__":
                         help='Max samples per (SNR, mod) cell for multi_attack_eval')
     parser.add_argument('--attack_eps', type=float, default=0.03,
                         help='Epsilon for Linf attacks (default: 0.03 for IQ data)')
+    parser.add_argument('--topk_list', type=str, default='10,20',
+                        help='Comma-separated Top-K values for FFT recovery (default: 10,20)')
     parser.add_argument('--plot_freq', action='store_true',
                         help='Plot frequency domain comparison (clean vs adversarial)')
     parser.add_argument('--plot_iq', action='store_true',
@@ -108,7 +110,8 @@ if __name__ == "__main__":
     parser.add_argument('--plot_n_samples', type=int, default=3,
                         help='Number of individual samples to plot for freq/IQ comparison')
     # SigGuard evaluation params
-    parser.add_argument('--sigguard_topk', type=int, default=50, help='Top-K for SigGuard defense')
+    parser.add_argument('--sigguard_topk', type=str, default='50',
+                        help='Comma-separated Top-K values for SigGuard defense (e.g. 10,20,50)')
     parser.add_argument('--no_plot_iq', action='store_true', help='Disable IQ distribution plots in sigguard_eval')
     # EAD attack params (EADL1, EADEN)
     parser.add_argument('--ead_kappa', type=float, default=0, help='EAD confidence/kappa parameter')
@@ -381,6 +384,7 @@ if __name__ == "__main__":
         attack_list = None
         if args.attack_list is not None:
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        topk_list = [int(k) for k in args.topk_list.split(',') if k.strip()]
         run_multi_attack_snr_mod_eval(
             model,
             Signals_test,
@@ -394,6 +398,7 @@ if __name__ == "__main__":
             plot_freq=args.plot_freq,
             plot_iq=args.plot_iq,
             plot_n_samples=args.plot_n_samples,
+            topk_list=topk_list,
         )
 
     elif args.mode == 'sigguard_eval':
@@ -405,6 +410,7 @@ if __name__ == "__main__":
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
         # IQ plots enabled by default for sigguard_eval (use --no_plot_iq to disable)
         should_plot_iq = not getattr(args, 'no_plot_iq', False)
+        sigguard_topk_list = [int(k) for k in args.sigguard_topk.split(',') if k.strip()]
         run_sigguard_eval(
             model,
             Signals_test,
@@ -412,7 +418,7 @@ if __name__ == "__main__":
             cfg,
             logger,
             attacks=attack_list,
-            topk=args.sigguard_topk,
+            topk_list=sigguard_topk_list,
             eval_limit=args.eval_limit,
             plot_iq=should_plot_iq,
             plot_n_samples=args.plot_n_samples,

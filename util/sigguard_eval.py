@@ -39,6 +39,12 @@ from util.adv_attack import (
 from util.defense import fft_topk_denoise
 
 
+# Phase order for M-th power phase de-rotation
+PHASE_ORDER = {
+    'BPSK': 2, 'QPSK': 4, '8PSK': 8, 'QAM16': 4, 'QAM64': 4,
+    'PAM4': 2, 'WBFM': 1, 'AM-DSB': 1, 'AM-SSB': 1, 'CPFSK': 4, 'GFSK': 4,
+}
+
 # All 17 attacks (15 original + EADL1 + EADEN)
 ALL_ATTACKS = [
     'fgsm', 'pgd', 'bim', 'cw', 'deepfool', 'apgd', 'mifgsm',
@@ -584,22 +590,207 @@ def plot_iq_density(
     plt.close()
 
 
-def format_table(results: List[Dict], title: str = "SigGuard Evaluation") -> str:
-    """Format results as a pretty ASCII table similar to the paper."""
+def _phase_align_clean(clean_np, mod_name):
+    """Per-sample M-th power phase de-rotation (no RMS normalization)."""
+    N = clean_np.shape[0]
+    order = PHASE_ORDER.get(mod_name, 4)
+    aligned = np.empty_like(clean_np)
+    phases = []
+    for k in range(N):
+        iq = clean_np[k, 0, :] + 1j * clean_np[k, 1, :]
+        if order > 1:
+            phase_est = np.angle(np.mean(iq ** order)) / order
+        else:
+            phase_est = 0.0
+        iq = iq * np.exp(-1j * phase_est)
+        aligned[k, 0, :] = iq.real
+        aligned[k, 1, :] = iq.imag
+        phases.append(phase_est)
+    return aligned, phases
+
+
+def _apply_clean_phase(adv_np, phases):
+    """Apply CLEAN signal's phase de-rotation to adversarial."""
+    N = adv_np.shape[0]
+    aligned = np.empty_like(adv_np)
+    for k in range(N):
+        iq = adv_np[k, 0, :] + 1j * adv_np[k, 1, :]
+        iq = iq * np.exp(-1j * phases[k])
+        aligned[k, 0, :] = iq.real
+        aligned[k, 1, :] = iq.imag
+    return aligned
+
+
+def plot_iq_constellation_grid(
+    x_clean: torch.Tensor,
+    x_adv: torch.Tensor,
+    labels: torch.Tensor,
+    attack_name: str,
+    save_dir: str,
+    idx_to_mod: Dict[int, str],
+    max_points: int = 15000,
+) -> None:
+    """
+    Plot per-modulation IQ constellation: clean vs adversarial side-by-side.
+
+    Creates a combined grid (N_mods x 2) and individual per-mod plots,
+    using phase de-rotation from clean reference and raw IQ axis [-0.025, 0.025].
+
+    Args:
+        x_clean: Clean signals [N, 2, T]
+        x_adv: Adversarial signals [N, 2, T]
+        labels: Class labels [N]
+        attack_name: Name of the attack
+        save_dir: Directory to save plots
+        idx_to_mod: Mapping from class index to modulation name
+        max_points: Max scatter points per subplot
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    clean_np = x_clean.detach().cpu().numpy()
+    adv_np = x_adv.detach().cpu().numpy()
+    labels_np = labels.detach().cpu().numpy()
+
+    # Find unique modulations present
+    unique_labels = sorted(np.unique(labels_np).astype(int))
+    mod_list = [(idx, idx_to_mod.get(idx, f'cls{idx}')) for idx in unique_labels]
+    n_mods = len(mod_list)
+
+    if n_mods == 0:
+        return
+
+    # Combined grid figure
+    fig, axes = plt.subplots(n_mods, 2, figsize=(7, 3 * n_mods), squeeze=False)
+    fig.suptitle(
+        f'{attack_name.upper()} — Clean vs Adversarial IQ Distribution',
+        fontsize=14, fontweight='bold', y=1.01)
+
+    for row, (cls_idx, mod_name) in enumerate(mod_list):
+        mask = labels_np == cls_idx
+        clean_mod = clean_np[mask]
+        adv_mod = adv_np[mask]
+
+        # Phase-align using clean reference
+        clean_derot, phases = _phase_align_clean(clean_mod, mod_name)
+        adv_derot = _apply_clean_phase(adv_mod, phases)
+
+        cI = clean_derot[:, 0, :].ravel()
+        cQ = clean_derot[:, 1, :].ravel()
+        aI = adv_derot[:, 0, :].ravel()
+        aQ = adv_derot[:, 1, :].ravel()
+
+        if len(cI) > max_points:
+            sel = np.random.choice(len(cI), max_points, replace=False)
+            cI, cQ = cI[sel], cQ[sel]
+        if len(aI) > max_points:
+            sel = np.random.choice(len(aI), max_points, replace=False)
+            aI, aQ = aI[sel], aQ[sel]
+
+        ax_c = axes[row, 0]
+        ax_c.scatter(cI, cQ, s=2, alpha=0.4, c='#1f77b4',
+                     edgecolors='none', rasterized=True)
+        ax_c.set_title(f'{mod_name} — Clean (n={mask.sum()})', fontsize=11)
+        ax_c.set_xlim(-0.025, 0.025)
+        ax_c.set_ylim(-0.025, 0.025)
+        ax_c.set_aspect('equal')
+        ax_c.grid(True, alpha=0.2, linewidth=0.5)
+        ax_c.tick_params(labelsize=8)
+
+        ax_a = axes[row, 1]
+        ax_a.scatter(aI, aQ, s=2, alpha=0.4, c='#d62728',
+                     edgecolors='none', rasterized=True)
+        ax_a.set_title(f'{mod_name} — {attack_name.upper()}', fontsize=11)
+        ax_a.set_xlim(-0.025, 0.025)
+        ax_a.set_ylim(-0.025, 0.025)
+        ax_a.set_aspect('equal')
+        ax_a.grid(True, alpha=0.2, linewidth=0.5)
+        ax_a.tick_params(labelsize=8)
+
+        if row == n_mods - 1:
+            ax_c.set_xlabel('In-phase (I)', fontsize=9)
+            ax_a.set_xlabel('In-phase (I)', fontsize=9)
+        ax_c.set_ylabel('Quadrature (Q)', fontsize=9)
+
+    plt.tight_layout()
+    fig.savefig(os.path.join(save_dir, f'{attack_name}_iq_constellation.png'),
+                dpi=200, bbox_inches='tight')
+    plt.close(fig)
+
+    # Individual per-modulation plots
+    for cls_idx, mod_name in mod_list:
+        mask = labels_np == cls_idx
+        clean_mod = clean_np[mask]
+        adv_mod = adv_np[mask]
+
+        clean_derot, phases = _phase_align_clean(clean_mod, mod_name)
+        adv_derot = _apply_clean_phase(adv_mod, phases)
+
+        cI, cQ = clean_derot[:, 0, :].ravel(), clean_derot[:, 1, :].ravel()
+        aI, aQ = adv_derot[:, 0, :].ravel(), adv_derot[:, 1, :].ravel()
+        if len(cI) > max_points:
+            sel = np.random.choice(len(cI), max_points, replace=False)
+            cI, cQ = cI[sel], cQ[sel]
+        if len(aI) > max_points:
+            sel = np.random.choice(len(aI), max_points, replace=False)
+            aI, aQ = aI[sel], aQ[sel]
+
+        fig2, (ax_c, ax_a) = plt.subplots(1, 2, figsize=(8, 4))
+        fig2.suptitle(f'{mod_name} — {attack_name.upper()}',
+                      fontsize=13, fontweight='bold')
+
+        ax_c.scatter(cI, cQ, s=3, alpha=0.4, c='#1f77b4',
+                     edgecolors='none', rasterized=True)
+        ax_c.set_title('Clean', fontsize=11)
+        ax_c.set_xlim(-0.025, 0.025)
+        ax_c.set_ylim(-0.025, 0.025)
+        ax_c.set_aspect('equal')
+        ax_c.grid(True, alpha=0.2, linewidth=0.5)
+        ax_c.set_xlabel('In-phase (I)')
+        ax_c.set_ylabel('Quadrature (Q)')
+
+        ax_a.scatter(aI, aQ, s=3, alpha=0.4, c='#d62728',
+                     edgecolors='none', rasterized=True)
+        ax_a.set_title(attack_name.upper(), fontsize=11)
+        ax_a.set_xlim(-0.025, 0.025)
+        ax_a.set_ylim(-0.025, 0.025)
+        ax_a.set_aspect('equal')
+        ax_a.grid(True, alpha=0.2, linewidth=0.5)
+        ax_a.set_xlabel('In-phase (I)')
+        ax_a.set_ylabel('Quadrature (Q)')
+
+        plt.tight_layout()
+        fig2.savefig(os.path.join(
+            save_dir, f'{attack_name}_{mod_name}_iq_constellation.png'),
+            dpi=200, bbox_inches='tight')
+        plt.close(fig2)
+
+
+def format_table(results: List[Dict], topk_list: List[int],
+                  title: str = "SigGuard Evaluation") -> str:
+    """Format results as a pretty ASCII table with dynamic Top-K columns."""
+    # Build header columns
+    topk_headers = [f"Top-{k}" for k in topk_list]
+    col_width = 12
+    header_cols = "".join(f"{h:>{col_width}}" for h in topk_headers)
+    sep_width = 20 + col_width * (1 + len(topk_list))
+
     lines = []
     lines.append("")
     lines.append(f"  {title}")
-    lines.append("  " + "=" * 50)
-    lines.append(f"  {'Sample Type':<15} {'Disabled':>12} {'Enabled':>12}")
-    lines.append("  " + "-" * 50)
+    lines.append("  " + "=" * sep_width)
+    lines.append(f"  {'Sample Type':<20}{'Disabled':>{col_width}}{header_cols}")
+    lines.append("  " + "-" * sep_width)
 
     for r in results:
         sample_type = r['sample_type']
         disabled = f"{r['disabled']*100:.2f}%"
-        enabled = f"{r['enabled']*100:.2f}%"
-        lines.append(f"  {sample_type:<15} {disabled:>12} {enabled:>12}")
+        topk_vals = "".join(
+            f"{r.get(f'top{k}_acc', 0.0)*100:.2f}%".rjust(col_width)
+            for k in topk_list
+        )
+        lines.append(f"  {sample_type:<20}{disabled:>{col_width}}{topk_vals}")
 
-    lines.append("  " + "=" * 50)
+    lines.append("  " + "=" * sep_width)
     lines.append("")
 
     return "\n".join(lines)
@@ -612,7 +803,7 @@ def run_sigguard_eval(
     cfg,
     logger,
     attacks: Optional[List[str]] = None,
-    topk: int = 50,
+    topk_list: Optional[List[int]] = None,
     eval_limit: Optional[int] = None,
     batch_size: int = 128,
     plot_iq: bool = True,
@@ -628,15 +819,17 @@ def run_sigguard_eval(
         cfg: Configuration object
         logger: Logger instance
         attacks: List of attack names (default: all 15 attacks)
-        topk: K value for FFT Top-K defense
+        topk_list: List of K values for FFT Top-K defense (default: [50])
         eval_limit: Limit number of test samples
         batch_size: Batch size for evaluation
         plot_iq: Whether to generate IQ distribution plots
         plot_n_samples: Number of individual samples to plot
 
     Returns:
-        DataFrame with columns: sample_type, disabled, enabled
+        DataFrame with columns: sample_type, disabled, top{K}_acc...
     """
+    if topk_list is None:
+        topk_list = [50]
     model.eval()
     device = cfg.device
 
@@ -652,7 +845,7 @@ def run_sigguard_eval(
     n_samples = len(sig_test)
     logger.info(f"Running SigGuard evaluation on {n_samples} samples")
     logger.info(f"Attacks: {attacks}")
-    logger.info(f"FFT Top-K defense with K={topk}")
+    logger.info(f"FFT Top-K defense with K={topk_list}")
 
     # Get normalization mode
     ta_box = str(getattr(cfg, 'ta_box', 'unit')).lower()
@@ -663,6 +856,13 @@ def run_sigguard_eval(
     wrapped_model = Model01Wrapper(model)
     wrapped_model.to(device)
     wrapped_model.eval()
+
+    # Build class index → modulation name mapping
+    idx_to_mod = {}
+    if hasattr(cfg, 'classes'):
+        for mod_bytes, idx in cfg.classes.items():
+            name = mod_bytes.decode() if isinstance(mod_bytes, bytes) else str(mod_bytes)
+            idx_to_mod[idx] = name
 
     # Create plot directory
     if plot_iq:
@@ -675,7 +875,7 @@ def run_sigguard_eval(
     # 1. Evaluate clean accuracy (Intact)
     logger.info("\n=== Intact (Clean) ===")
     clean_accs = []
-    clean_defense_accs = []
+    clean_defense_accs = {k: [] for k in topk_list}
     all_clean_samples = []
 
     for i in range(0, n_samples, batch_size):
@@ -686,24 +886,25 @@ def run_sigguard_eval(
         acc = compute_accuracy(model, x_batch, y_batch)
         clean_accs.append(acc * len(y_batch))
 
-        # Clean with defense (enabled = no attack, with defense)
-        x_defended = fft_topk_denoise(x_batch, topk=topk)
-        acc_def = compute_accuracy(model, x_defended, y_batch)
-        clean_defense_accs.append(acc_def * len(y_batch))
+        # Clean with defense for each Top-K
+        for k in topk_list:
+            x_defended = fft_topk_denoise(x_batch, topk=k)
+            acc_def = compute_accuracy(model, x_defended, y_batch)
+            clean_defense_accs[k].append(acc_def * len(y_batch))
 
         # Store clean samples for plotting
-        if plot_iq and len(all_clean_samples) * batch_size < 500:
+        if plot_iq:
             all_clean_samples.append(x_batch.cpu())
 
     intact_disabled = sum(clean_accs) / n_samples
-    intact_enabled = sum(clean_defense_accs) / n_samples
-    logger.info(f"Intact: Disabled={intact_disabled*100:.2f}%, Enabled={intact_enabled*100:.2f}%")
-
-    results.append({
-        'sample_type': 'Intact',
-        'disabled': intact_disabled,
-        'enabled': intact_enabled,
-    })
+    intact_row = {'sample_type': 'Intact', 'disabled': intact_disabled}
+    topk_strs = []
+    for k in topk_list:
+        acc_k = sum(clean_defense_accs[k]) / n_samples
+        intact_row[f'top{k}_acc'] = acc_k
+        topk_strs.append(f"Top-{k}={acc_k*100:.2f}%")
+    logger.info(f"Intact: Disabled={intact_disabled*100:.2f}%, {', '.join(topk_strs)}")
+    results.append(intact_row)
 
     # Concatenate clean samples for plotting
     if plot_iq and all_clean_samples:
@@ -725,9 +926,10 @@ def run_sigguard_eval(
         needs_padding = attack_name.lower() in FIXED_BATCH_ATTACKS
 
         attack_accs = []
-        defense_accs = []
+        defense_accs = {k: [] for k in topk_list}
         all_adv_samples = []
         all_clean_for_attack = []
+        all_labels_for_attack = []
         n_processed = 0
 
         for i in range(0, n_samples, batch_size):
@@ -748,17 +950,19 @@ def run_sigguard_eval(
                 acc = compute_accuracy(model, x_adv, y_batch)
                 attack_accs.append(acc * len(y_batch))
 
-                # Defense accuracy (enabled = attack + defense)
-                x_defended = fft_topk_denoise(x_adv, topk=topk)
-                acc_def = compute_accuracy(model, x_defended, y_batch)
-                defense_accs.append(acc_def * len(y_batch))
+                # Defense accuracy for each Top-K
+                for k in topk_list:
+                    x_defended = fft_topk_denoise(x_adv, topk=k)
+                    acc_def = compute_accuracy(model, x_defended, y_batch)
+                    defense_accs[k].append(acc_def * len(y_batch))
 
                 n_processed += len(y_batch)
 
-                # Store samples for plotting
-                if plot_iq and len(all_adv_samples) * batch_size < 500:
+                # Store samples for plotting (keep all for per-mod coverage)
+                if plot_iq:
                     all_adv_samples.append(x_adv.cpu())
                     all_clean_for_attack.append(x_batch.cpu())
+                    all_labels_for_attack.append(y_batch.cpu())
 
             except Exception as e:
                 logger.warning(f"Attack failed on batch {i}: {e}")
@@ -766,20 +970,21 @@ def run_sigguard_eval(
 
         if attack_accs and n_processed > 0:
             disabled = sum(attack_accs) / n_processed
-            enabled = sum(defense_accs) / n_processed
 
-            logger.info(f"{attack_name.upper()}: Disabled={disabled*100:.2f}%, Enabled={enabled*100:.2f}%")
-
-            results.append({
-                'sample_type': attack_name.upper(),
-                'disabled': disabled,
-                'enabled': enabled,
-            })
+            row = {'sample_type': attack_name.upper(), 'disabled': disabled}
+            topk_strs = []
+            for k in topk_list:
+                acc_k = sum(defense_accs[k]) / n_processed
+                row[f'top{k}_acc'] = acc_k
+                topk_strs.append(f"Top-{k}={acc_k*100:.2f}%")
+            logger.info(f"{attack_name.upper()}: Disabled={disabled*100:.2f}%, {', '.join(topk_strs)}")
+            results.append(row)
 
             # Generate IQ plots
             if plot_iq and all_adv_samples:
                 adv_for_plot = torch.cat(all_adv_samples, dim=0)
                 clean_plot = torch.cat(all_clean_for_attack, dim=0)
+                labels_for_plot = torch.cat(all_labels_for_attack, dim=0)
 
                 logger.info(f"Generating IQ plots for {attack_name}...")
 
@@ -802,11 +1007,22 @@ def run_sigguard_eval(
                     attack_name, iq_plot_dir
                 )
 
+                # Per-modulation constellation plot
+                if idx_to_mod:
+                    plot_iq_constellation_grid(
+                        clean_plot, adv_for_plot,
+                        labels_for_plot,
+                        attack_name, iq_plot_dir,
+                        idx_to_mod=idx_to_mod,
+                    )
+
     # Create DataFrame
     df = pd.DataFrame(results)
 
     # Print formatted table
-    table_str = format_table(results, title=f"AWN - SigGuard Evaluation (Top-{topk})")
+    topk_label = ",".join(str(k) for k in topk_list)
+    table_str = format_table(results, topk_list=topk_list,
+                             title=f"AWN - SigGuard Evaluation (Top-{topk_label})")
     logger.info(table_str)
     print(table_str)
 
