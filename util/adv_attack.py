@@ -128,6 +128,28 @@ def ta_output_to_iq_minmax(x01_4d: torch.Tensor, a: torch.Tensor, b: torch.Tenso
     return x01 * b + a
 
 
+def iq_to_ta_input_paper(x_iq: torch.Tensor) -> torch.Tensor:
+    """
+    Paper-style normalization: (x + 0.02) / 0.04.
+    Maps typical IQ range [-0.02, 0.02] to [0, 1].
+    Returns 4D tensor [N,2,L,1] for torchattacks.
+    """
+    assert x_iq.dim() == 3 and x_iq.size(1) == 2, "Expected [N,2,L] IQ tensor"
+    x01 = (x_iq + 0.02) / 0.04
+    return x01.unsqueeze(-1)
+
+
+def ta_output_to_iq_paper(x01_4d: torch.Tensor) -> torch.Tensor:
+    """Inverse of iq_to_ta_input_paper: x = x01 * 0.04 - 0.02."""
+    if x01_4d.dim() == 4:
+        x01 = x01_4d.squeeze(-1)
+    elif x01_4d.dim() == 3:
+        x01 = x01_4d
+    else:
+        raise ValueError("Unexpected tensor rank for torchattacks output")
+    return x01 * 0.04 - 0.02
+
+
 def cw_l2_attack(
     model,
     x: torch.Tensor,

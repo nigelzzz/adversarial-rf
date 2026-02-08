@@ -31,6 +31,7 @@ except ImportError:
 from util.adv_attack import (
     Model01Wrapper, iq_to_ta_input, ta_output_to_iq,
     iq_to_ta_input_minmax, ta_output_to_iq_minmax,
+    iq_to_ta_input_paper, ta_output_to_iq_paper,
 )
 from util.defense import fft_topk_denoise_normalized
 
@@ -766,6 +767,20 @@ def generate_adversarial(
                 x_adv_iq = ta_output_to_iq_minmax(x_adv_ta, a, b)
             finally:
                 wrapped_model.clear_minmax()
+        elif box == 'paper':
+            # Paper-style normalization: (x + 0.02) / 0.04
+            # Fixed affine: a=-0.02, b=0.04 so x_iq = x01 * 0.04 - 0.02
+            if wrapped_model is None:
+                raise ValueError("wrapped_model required for ta_box='paper'")
+            a = torch.tensor(-0.02, device=x_iq_padded.device).reshape(1, 1, 1)
+            b = torch.tensor(0.04, device=x_iq_padded.device).reshape(1, 1, 1)
+            wrapped_model.set_minmax(a, b)
+            try:
+                x_ta = iq_to_ta_input_paper(x_iq_padded)
+                x_adv_ta = attack(x_ta, labels_padded)
+                x_adv_iq = ta_output_to_iq_paper(x_adv_ta)
+            finally:
+                wrapped_model.clear_minmax()
         else:
             # Unit normalization - simple [-1,1] -> [0,1] mapping
             x_ta = iq_to_ta_input(x_iq_padded)  # [N, 2, T, 1] in [0, 1]
@@ -794,6 +809,16 @@ def generate_adversarial(
                     try:
                         x_adv_ta_s = attack(x_ta_s, label_single)
                         x_adv_s = ta_output_to_iq_minmax(x_adv_ta_s, a_s, b_s)
+                    finally:
+                        wrapped_model.clear_minmax()
+                elif box == 'paper':
+                    a_p = torch.tensor(-0.02, device=x_single.device).reshape(1, 1, 1)
+                    b_p = torch.tensor(0.04, device=x_single.device).reshape(1, 1, 1)
+                    wrapped_model.set_minmax(a_p, b_p)
+                    try:
+                        x_ta_s = iq_to_ta_input_paper(x_single)
+                        x_adv_ta_s = attack(x_ta_s, label_single)
+                        x_adv_s = ta_output_to_iq_paper(x_adv_ta_s)
                     finally:
                         wrapped_model.clear_minmax()
                 else:
