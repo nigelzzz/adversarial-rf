@@ -1,0 +1,4 @@
+# pack-refs with: peeled fully-peeled sorted 
+f1093eea5a04ba6f7fc5297171ffbae5c9853f93 refs/remotes/origin/master
+08cc460a7d24698965a0fe7c9b07939a40ddcc8e refs/remotes/origin/rml2016.10a
+aaf4ebd34d9348f600a928802208341f5335d074 refs/tags/weights

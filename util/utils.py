@@ -7,9 +7,16 @@ import torch
 
 from models.model import AWN
 from models.vtcnn2 import VTCNN2
-# Add MCLDNN to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'MCLDNN'))
-from mcldnn_pytorch import MCLDNN_PyTorch
+# Lazy import MCLDNN (it's a git submodule that may not be cloned)
+_MCLDNN_PyTorch = None
+
+def _get_mcldnn():
+    global _MCLDNN_PyTorch
+    if _MCLDNN_PyTorch is None:
+        sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'MCLDNN'))
+        from mcldnn_pytorch import MCLDNN_PyTorch
+        _MCLDNN_PyTorch = MCLDNN_PyTorch
+    return _MCLDNN_PyTorch
 
 
 def rrc_filter(beta, sps, num_taps=101):
@@ -125,7 +132,8 @@ def create_MCLDNN_model(cfg):
     """
     build MCLDNN model (PyTorch version)
     """
-    model = MCLDNN_PyTorch(
+    MCLDNNCls = _get_mcldnn()
+    model = MCLDNNCls(
         num_classes=cfg.num_classes,
         dropout_rate=0.5,
     ).to(cfg.device)
