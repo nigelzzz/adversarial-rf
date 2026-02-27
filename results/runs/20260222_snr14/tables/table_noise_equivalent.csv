@@ -1,0 +1,9 @@
+mod,snr,adv_amc_crc,equivalent_snr_drop_db
+BPSK,14,0.29,24
+QPSK,14,0.01,20
+8PSK,14,0.005,15
+QAM16,14,0.02,12
+QAM64,14,0.0,6
+PAM4,14,0.03,20
+CPFSK,14,0.075,15
+GFSK,14,0.005,15

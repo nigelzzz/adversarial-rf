@@ -1,0 +1,7 @@
+Contributions:
+
+1. We formalize the distinction between data-plane and control-plane adversarial attacks on adaptive wireless receivers, introducing a two-track evaluation methodology that independently measures waveform integrity (Oracle demodulation) and AMC-driven link reliability (AMC demodulation) using CRC-verified synthetic bursts.
+
+2. We demonstrate that CW adversarial perturbations cause near-total CRC collapse in the control-plane (Adv+AMC) scenario across 8 digital modulation types, while preserving waveform integrity in the data-plane (Adv+Oracle) scenario, confirming the attack vector is classifier misdirection rather than signal corruption.
+
+3. We quantify the efficiency advantage of adversarial AMC attacks over conventional jamming, showing that the equivalent jamming power required to match the attack's CRC collapse exceeds the adversarial perturbation power by 10-20 dB across modulations and SNR conditions.

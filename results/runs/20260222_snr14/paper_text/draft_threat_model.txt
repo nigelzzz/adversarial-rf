@@ -1,0 +1,10 @@
+Threat Model:
+
+We consider a white-box adversary with knowledge of the receiver's AMC model architecture and weights. The adversary can inject additive perturbations into the over-the-air IQ signal before it reaches the receiver's analog front-end. The perturbation budget is bounded in L2 norm and is small relative to the signal power (typical perturbation-to-signal ratio: -15 to -30 dB).
+
+The attacker's goal is denial of service: cause the receiver to select the wrong demodulator, thereby breaking the data link. This is a control-plane attack — the adversary does not aim to modify the transmitted data, but to disrupt the receiver's ability to correctly interpret it.
+
+Assumptions:
+- The attacker has real-time access to the channel and can synchronize perturbations.
+- The receiver uses a neural-network-based AMC (AWN) without adversarial hardening.
+- The transmitter uses standard modulation formats without spread-spectrum or frequency-hopping countermeasures.

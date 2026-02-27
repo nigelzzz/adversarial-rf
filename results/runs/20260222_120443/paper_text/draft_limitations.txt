@@ -1,0 +1,11 @@
+Limitations:
+
+1. Synthetic TX/RX chain: Our CRC evaluation uses synthetic bursts rather than over-the-air captures. While the TX chain includes RRC pulse shaping, AWGN, and guard symbols to eliminate ISI artifacts, it does not model multipath fading, frequency-selective channels, or hardware impairments beyond CFO.
+
+2. White-box assumption: The attack assumes full knowledge of the AMC model. Transferability to black-box scenarios (different architectures or training data) requires further investigation.
+
+3. Short burst length: Each synthetic burst contains only 16 symbols (14 data + 2 pilot), yielding 8-84 information bits depending on modulation order. Real communication systems use much longer frames with forward error correction.
+
+4. Perturbation transfer: We transfer adversarial perturbations computed on real RML2016.10a signals onto synthetic bursts. This assumes the perturbation structure is independent of the specific signal content, which may not hold for all attack methods.
+
+5. Single classifier: Results are specific to the AWN architecture. Other AMC approaches (e.g., CNN, transformer-based) may exhibit different vulnerability profiles.

@@ -1,0 +1,1218 @@
+[
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.11,
+    "ber": 0.424643,
+    "amc_acc": 0.1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.975,
+    "ber": 0.005,
+    "amc_acc": 0.015
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.02,
+    "ber": 0.466786,
+    "amc_acc": 0.015
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.98,
+    "ber": 0.004643,
+    "amc_acc": -1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.555
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.575,
+    "ber": 0.208929,
+    "amc_acc": 0.555
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.54,
+    "ber": 0.225357,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.54,
+    "ber": 0.227143,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.5
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.52,
+    "ber": 0.237857,
+    "amc_acc": 0.5
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.02
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.025,
+    "ber": 0.470714,
+    "amc_acc": 0.02
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.765,
+    "ber": 0.011071,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "ber": 0.525,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.805,
+    "ber": 0.009464,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.49
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.49,
+    "ber": 0.259821,
+    "amc_acc": 0.49
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.47
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.475,
+    "ber": 0.263214,
+    "amc_acc": 0.47
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.49
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.49,
+    "ber": 0.254286,
+    "amc_acc": 0.49
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.52,
+    "ber": 0.235357,
+    "amc_acc": 0.52
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.96
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.965,
+    "ber": 0.021548,
+    "amc_acc": 0.96
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.01,
+    "ber": 0.50756,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.07,
+    "ber": 0.070238,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "ber": 0.502738,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.1,
+    "ber": 0.068333,
+    "amc_acc": -1
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.22
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.22,
+    "ber": 0.396548,
+    "amc_acc": 0.22
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.2
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.215,
+    "ber": 0.403452,
+    "amc_acc": 0.2
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.22
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.23,
+    "ber": 0.39631,
+    "amc_acc": 0.22
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.205
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.225,
+    "ber": 0.405714,
+    "amc_acc": 0.205
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.775
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.775,
+    "ber": 0.110536,
+    "amc_acc": 0.775
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.005,
+    "ber": 0.475298,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.01,
+    "ber": 0.128304,
+    "amc_acc": 0.07
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "ber": 0.463036,
+    "amc_acc": 0.07
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.015,
+    "ber": 0.129732,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.945,
+    "ber": 0.001964,
+    "amc_acc": 0.29
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.28,
+    "ber": 0.3375,
+    "amc_acc": 0.29
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.955,
+    "ber": 0.001786,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 0.99,
+    "ber": 0.000179,
+    "amc_acc": 0.235
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.23,
+    "ber": 0.364821,
+    "amc_acc": 0.235
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 0.995,
+    "ber": 8.9e-05,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 0.995,
+    "ber": 8.9e-05,
+    "amc_acc": 0.28
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.285,
+    "ber": 0.344643,
+    "amc_acc": 0.28
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.295
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.305,
+    "ber": 0.336964,
+    "amc_acc": 0.295
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.895,
+    "ber": 0.003512,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.825,
+    "ber": 0.040179,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 0.865,
+    "ber": 0.005298,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.015,
+    "ber": 0.481696,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.005,
+    "ber": 0.233452,
+    "amc_acc": 0.95
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "ber": 0.245863,
+    "amc_acc": 0.95
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "ber": 0.230476,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.36,
+    "ber": 0.041369,
+    "amc_acc": 0.895
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.31,
+    "ber": 0.088571,
+    "amc_acc": 0.895
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.415,
+    "ber": 0.037321,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 0.635,
+    "ber": 0.015417,
+    "amc_acc": 0.875
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.555,
+    "ber": 0.074851,
+    "amc_acc": 0.875
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 0.725,
+    "ber": 0.012381,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 0.765,
+    "ber": 0.010179,
+    "amc_acc": 0.84
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.63,
+    "ber": 0.086339,
+    "amc_acc": 0.84
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 0.825,
+    "ber": 0.007798,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.81,
+    "ber": 0.007976,
+    "amc_acc": 0.765
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.615,
+    "ber": 0.119702,
+    "amc_acc": 0.765
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.85,
+    "ber": 0.005893,
+    "amc_acc": -1
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 0.985,
+    "ber": 0.000714,
+    "amc_acc": 0.035
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.04,
+    "ber": 0.481071,
+    "amc_acc": 0.035
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.115,
+    "ber": 0.122321,
+    "amc_acc": 0.88
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.11,
+    "ber": 0.164107,
+    "amc_acc": 0.88
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.125,
+    "ber": 0.121786,
+    "amc_acc": -1
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.985,
+    "ber": 0.000714,
+    "amc_acc": 0.945
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.93,
+    "ber": 0.031071,
+    "amc_acc": 0.945
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 0.985,
+    "ber": 0.000536,
+    "amc_acc": 0.81
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.795,
+    "ber": 0.09875,
+    "amc_acc": 0.81
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 0.99,
+    "ber": 0.000357,
+    "amc_acc": 0.79
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.78,
+    "ber": 0.103929,
+    "amc_acc": 0.79
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.995,
+    "ber": 0.000179,
+    "amc_acc": 0.775
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.77,
+    "ber": 0.114107,
+    "amc_acc": 0.775
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 1.0
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.01,
+    "ber": 0.495,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.03
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.035,
+    "ber": 0.4825,
+    "amc_acc": 0.03
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.255
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.255,
+    "ber": 0.3725,
+    "amc_acc": 0.255
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.325
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.325,
+    "ber": 0.3375,
+    "amc_acc": 0.325
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.36
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.36,
+    "ber": 0.32,
+    "amc_acc": 0.36
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": 0.41
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.41,
+    "ber": 0.295,
+    "amc_acc": 0.41
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "ber": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.945,
+    "ber": 0.026071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.945,
+    "ber": 0.026071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top10",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top10+AMC",
+    "crc_pass_rate": 0.075,
+    "ber": 0.4625,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": -1
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.825,
+    "ber": 0.086071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": -1
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top30",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top30+AMC",
+    "crc_pass_rate": 0.93,
+    "ber": 0.033571,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Top30",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": -1
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top40",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top40+AMC",
+    "crc_pass_rate": 0.93,
+    "ber": 0.033571,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Top40",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": -1
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.935,
+    "ber": 0.031071,
+    "amc_acc": 0.01
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.995,
+    "ber": 0.001071,
+    "amc_acc": -1
+  }
+]

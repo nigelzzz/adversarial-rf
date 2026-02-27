@@ -1,0 +1,706 @@
+[
+  {
+    "mod": "BPSK",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.982,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.982,
+    "crc_pass": 0.97,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.0,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.0,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.986,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.986,
+    "crc_pass": 0.985,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.354,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.354,
+    "crc_pass": 0.39,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.962,
+    "crc_pass": 0.74,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.962,
+    "crc_pass": 0.715,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.0,
+    "crc_pass": 0.755,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.0,
+    "crc_pass": 0.0,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.99,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.99,
+    "crc_pass": 0.99,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "QPSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": 0.015,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.944,
+    "crc_pass": 0.055,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.944,
+    "crc_pass": 0.055,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.0,
+    "crc_pass": 0.055,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.0,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.98,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.98,
+    "crc_pass": 0.99,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.0,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "8PSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.0,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.912,
+    "crc_pass": 0.0,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.912,
+    "crc_pass": 0.0,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.954,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.954,
+    "crc_pass": 0.93,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": 0.995,
+    "n": 200
+  },
+  {
+    "mod": "QAM16",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.934,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.934,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": 0.02,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": 0.0,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.946,
+    "crc_pass": 0.96,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.946,
+    "crc_pass": 0.905,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.004,
+    "crc_pass": 0.76,
+    "n": 200
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.004,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.988,
+    "crc_pass": 0.26,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.988,
+    "crc_pass": 0.25,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.014,
+    "crc_pass": 0.075,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.014,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.992,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.992,
+    "crc_pass": 0.99,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.018,
+    "crc_pass": 0.71,
+    "n": 200
+  },
+  {
+    "mod": "PAM4",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.018,
+    "crc_pass": 0.02,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 1.0,
+    "crc_pass": 0.095,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 1.0,
+    "crc_pass": 0.095,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.01,
+    "crc_pass": 0.095,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.01,
+    "crc_pass": 0.01,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 1.0,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 1.0,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.18,
+    "crc_pass": 1.0,
+    "n": 200
+  },
+  {
+    "mod": "CPFSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.18,
+    "crc_pass": 0.185,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.98,
+    "crc_pass": 0.07,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.98,
+    "crc_pass": 0.065,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.156,
+    "crc_pass": 0.07,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.156,
+    "crc_pass": 0.005,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 1.0,
+    "crc_pass": 0.995,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 1.0,
+    "crc_pass": 0.995,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.0,
+    "crc_pass": 0.995,
+    "n": 200
+  },
+  {
+    "mod": "GFSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.0,
+    "crc_pass": 0.0,
+    "n": 200
+  },
+  {
+    "mod": "WBFM",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.348,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.348,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.12,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.12,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.37,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.37,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.156,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "WBFM",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.156,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.932,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.932,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.116,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.116,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 1.0,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 1.0,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.768,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-DSB",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.768,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 0,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.92,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 0,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.92,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 0,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 0,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.938,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.938,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.002,
+    "crc_pass": null,
+    "n": 0
+  },
+  {
+    "mod": "AM-SSB",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.002,
+    "crc_pass": null,
+    "n": 0
+  }
+]

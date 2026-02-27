@@ -1,0 +1,9 @@
+Results Summary:
+
+Key findings at SNR=18 dB (CW attack):
+
+
+Across all 8 digital modulations at SNR=18:
+  Mean Adv+Oracle CRC: 0.0%
+  Mean Adv+AMC CRC:    0.0%
+  Mean Control-Plane Gap: 0.0 percentage points

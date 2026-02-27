@@ -1,0 +1,17 @@
+Results Summary:
+
+Key findings at SNR=18 dB (CW attack):
+
+  8PSK  : Clean+Oracle=100.0%  Adv+Oracle=100.0%  Adv+AMC=  1.5%  Gap= 98.5pp
+  BPSK  : Clean+Oracle=100.0%  Adv+Oracle=100.0%  Adv+AMC= 28.5%  Gap= 71.5pp
+  CPFSK : Clean+Oracle=100.0%  Adv+Oracle=100.0%  Adv+AMC= 10.5%  Gap= 89.5pp
+  GFSK  : Clean+Oracle= 99.5%  Adv+Oracle= 99.5%  Adv+AMC=  0.0%  Gap= 99.5pp
+  PAM4  : Clean+Oracle=100.0%  Adv+Oracle= 79.5%  Adv+AMC=  1.0%  Gap= 78.5pp
+  QAM16 : Clean+Oracle=100.0%  Adv+Oracle=100.0%  Adv+AMC=  1.0%  Gap= 99.0pp
+  QAM64 : Clean+Oracle= 94.0%  Adv+Oracle= 72.5%  Adv+AMC=  2.5%  Gap= 70.0pp
+  QPSK  : Clean+Oracle=100.0%  Adv+Oracle=100.0%  Adv+AMC=  0.5%  Gap= 99.5pp
+
+Across all 8 digital modulations at SNR=18:
+  Mean Adv+Oracle CRC: 93.9%
+  Mean Adv+AMC CRC:    5.7%
+  Mean Control-Plane Gap: 88.2 percentage points

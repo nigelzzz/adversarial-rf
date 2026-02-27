@@ -1,0 +1,66 @@
+pipeline: rf_security_submission_ready
+version: "1.0"
+timestamp: "2026-02-22T14:15:00"
+git_hash: "6c5e761560be31ef9eca50fef8ee4b1c373cc9d9"
+focus: "SNR=10 dB — mid-range analysis"
+
+inputs:
+  dataset_root: "./data/RML2016.10a_dict.pkl"
+  awn_ckpt: "./checkpoint/2016.10a_AWN.pkl"
+  run_dir: "./results/runs/20260222_snr10"
+
+  snr_list: [10]
+  modulation_list:
+    - BPSK
+    - QPSK
+    - 8PSK
+    - QAM16
+    - QAM64
+    - PAM4
+    - CPFSK
+    - GFSK
+
+  real:
+    n_samples_per_mod_snr: 500
+    seed: 1337
+
+  attacks:
+    - name: CW
+      params:
+        norm: l2
+        steps: 1000
+        lr: 0.01
+        c: 1.0
+        kappa: 0.0
+        abort_early: true
+        clamp: dataset_range
+
+    - name: FGSM
+      params:
+        epsilon_list: [0.0005, 0.001, 0.002, 0.005, 0.01]
+        clamp: dataset_range
+
+  synth:
+    sps: 8
+    n_data_symbols: 14
+    n_pilot_symbols: 2
+    n_total_symbols: 16
+    n_guard_symbols: 16
+    rrc:
+      span_symbols: 16
+      taps: 129
+      rolloff: 0.35
+    n_bursts_per_mod_snr: 200
+    crc_poly: CRC-8
+    normalization: pilot_based
+    phase_correction: pilot_based
+
+  baselines:
+    noise_equivalent: true
+    jamming_equivalent: true
+    jamming_power_sweep_db: [0, 3, 6, 9, 12, 15]
+
+seeds:
+  global: 1337
+  track_a: 1337
+  track_b: 42

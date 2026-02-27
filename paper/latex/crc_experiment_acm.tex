@@ -1,0 +1,47 @@
+\documentclass[sigconf]{acmart}
+
+\setcopyright{none}
+\settopmatter{printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+
+\acmDOI{}
+\acmISBN{}
+\acmConference[Conference'26]{Conference Name}{Month DD--DD, 2026}{City, Country}
+\acmYear{2026}
+\copyrightyear{2026}
+
+\title{Impact of AMC-Oriented CW Adversarial Attacks on CRC Integrity}
+
+\author{Anonymous Author}
+\affiliation{
+  \institution{Affiliation Withheld for Review}
+  \country{N/A}
+}
+\email{anonymous@anonymous.org}
+
+\begin{document}
+
+\begin{abstract}
+This paper studies a practical two-stage receiver pipeline in which automatic modulation
+classification (AMC) controls downstream demodulation and CRC verification. Using the existing
+\texttt{crc\_experiment.py} implementation, we run a two-track evaluation: Track A uses real
+RML2016.10a IQ data to measure AWN behavior under clean and Carlini-Wagner (CW) attack
+conditions; Track B uses synthetic bursts with known payload bits to measure CRC pass rates.
+Perturbations are generated on Track A and transferred to Track B. Across digital modulations,
+average AMC accuracy drops from 97.19\% to 4.65\% under CW. However, CRC under oracle
+demodulation changes only from 63.62\% to 59.59\%. CRC collapse appears when demodulation is
+driven by attacked AMC output: Adv+AMC CRC falls to 4.12\%. At 18 dB, the gap is stronger:
+93.25\% (Adv+Oracle) vs. 7.81\% (Adv+AMC). The results indicate that the dominant failure path
+is AMC misclassification leading to wrong demodulator selection, not only direct waveform
+destruction.
+\end{abstract}
+
+\keywords{adversarial machine learning, modulation classification, RF security, CRC, CW attack}
+
+\maketitle
+
+\input{crc_experiment_content}
+
+\input{crc_experiment_refs}
+
+\end{document}
