@@ -37,8 +37,8 @@ if __name__ == "__main__":
     parser.add_argument('--cw_lr', type=float, default=1e-2)
     parser.add_argument('--cw_targeted', type=bool, default=False)
     parser.add_argument('--cw_scale', type=float, default=None, help='Optional post-scale 0..1 to reduce CW delta magnitude')
-    parser.add_argument('--lowpass', action=argparse.BooleanOptionalAction, default=True,
-                        help='Apply lowpass smoothing to CW perturbation')
+    parser.add_argument('--lowpass', default=True, type=lambda x: str(x).lower() != 'false',
+                        help='Apply lowpass smoothing to CW perturbation (default: True)')
     parser.add_argument('--lowpass_kernel', type=int, default=17)
     # Spectral noise (no optimizer) options
     parser.add_argument('--spec_type', type=str, default='cw_tone', help='spectral profile: cw_tone | psd_band | psd_mask')
@@ -120,6 +120,19 @@ if __name__ == "__main__":
     parser.add_argument('--ead_binary_search_steps', type=int, default=9, help='EAD binary search steps')
     parser.add_argument('--ead_initial_const', type=float, default=0.001, help='EAD initial constant')
     parser.add_argument('--ead_beta', type=float, default=0.001, help='EAD beta (L1/L2 tradeoff)')
+    # Transfer evaluation
+    parser.add_argument('--model_list', type=str, default='awn,vtcnn2,resnet1d,lstm',
+                        help='Comma-separated model names for transfer_eval')
+    # Adversarial training
+    parser.add_argument('--adv_alpha', type=float, default=0.5,
+                        help='Weight for adversarial loss in adv_train (0..1)')
+    parser.add_argument('--adv_train_attack', type=str, default='pgd',
+                        help='Attack for adversarial training')
+    parser.add_argument('--adv_train_eps', type=float, default=0.03,
+                        help='Epsilon for adversarial training attack')
+    # Power budget evaluation
+    parser.add_argument('--power_epsilons', type=str, default='0.005,0.01,0.02,0.03,0.05,0.1,0.2',
+                        help='Comma-separated epsilon values for power budget sweep')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -422,4 +435,73 @@ if __name__ == "__main__":
             eval_limit=args.eval_limit,
             plot_iq=should_plot_iq,
             plot_n_samples=args.plot_n_samples,
+        )
+
+    elif args.mode == 'transfer_eval':
+        from util.transfer_eval import run_transfer_eval
+        model_list = [m.strip() for m in args.model_list.split(',') if m.strip()]
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        run_transfer_eval(
+            cfg,
+            logger,
+            Signals_test,
+            Labels_test,
+            model_names=model_list,
+            ckpt_path=args.ckpt_path,
+            attacks=attack_list,
+            eval_limit=args.eval_limit,
+        )
+
+    elif args.mode == 'adaptive_eval':
+        from util.adaptive_eval import run_adaptive_eval
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        topk_values = [int(k) for k in args.sigguard_topk.split(',') if k.strip()]
+        run_adaptive_eval(
+            model,
+            Signals_test,
+            Labels_test,
+            cfg,
+            logger,
+            topk_values=topk_values,
+            attacks=attack_list,
+            eval_limit=args.eval_limit,
+        )
+
+    elif args.mode == 'adv_train':
+        from util.adv_training import AdversarialTrainer
+        train_loader, val_loader = Create_Data_Loader(train_set, val_set, cfg, logger)
+        trainer = AdversarialTrainer(
+            model, train_loader, val_loader, cfg, logger,
+            adv_alpha=args.adv_alpha,
+            adv_attack=args.adv_train_attack,
+            adv_eps=args.adv_train_eps,
+            model_name=model_name,
+        )
+        trainer.loop()
+        # Evaluate the adversarially trained model
+        save_name = f"{cfg.dataset}_{model_name.upper()}_ADVTRAIN.pkl"
+        model.load_state_dict(torch.load(os.path.join(cfg.model_dir, save_name), map_location=cfg.device))
+        Run_Eval(model, Signals_test, Labels_test, SNRs, test_idx, cfg, logger)
+
+    elif args.mode == 'power_budget_eval':
+        from util.power_budget_eval import run_power_budget_eval
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        power_eps = [float(e) for e in args.power_epsilons.split(',') if e.strip()]
+        run_power_budget_eval(
+            model,
+            Signals_test,
+            Labels_test,
+            cfg,
+            logger,
+            attacks=attack_list,
+            epsilons=power_eps,
+            eval_limit=args.eval_limit,
         )

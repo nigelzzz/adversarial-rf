@@ -17,30 +17,30 @@ class VTCNN2(nn.Module):
     """
     VT-CNN2 model for modulation classification.
 
-    Input: [batch, 2, 128] (I/Q signals)
+    Input: [batch, 2, T] (I/Q signals, T=128 or T=1024)
     Output: (logits [batch, num_classes], regu_list [])
     """
 
-    def __init__(self, num_classes=11, dropout_rate=0.5):
+    def __init__(self, num_classes=11, dropout_rate=0.5, signal_len=128):
         super(VTCNN2, self).__init__()
         self.num_classes = num_classes
 
-        # Conv1: input (1, 2, 128) -> pad to (1, 2, 132) -> Conv2d(256, kernel=(1,3)) -> (256, 2, 130)
+        # Conv1: input (1, 2, T) -> pad to (1, 2, T+4) -> Conv2d(256, kernel=(1,3)) -> (256, 2, T+2)
         self.pad1 = nn.ZeroPad2d((2, 2, 0, 0))  # pad left/right by 2 on width (time) dim
         self.conv1 = nn.Conv2d(1, 256, kernel_size=(1, 3), bias=True)
         self.relu1 = nn.ReLU()
         self.drop1 = nn.Dropout(dropout_rate)
 
-        # Conv2: pad to (256, 2, 134) -> Conv2d(80, kernel=(2,3)) -> (80, 1, 132)
+        # Conv2: pad to (256, 2, T+6) -> Conv2d(80, kernel=(2,3)) -> (80, 1, T+4)
         self.pad2 = nn.ZeroPad2d((2, 2, 0, 0))
         self.conv2 = nn.Conv2d(256, 80, kernel_size=(2, 3), bias=True)
         self.relu2 = nn.ReLU()
         self.drop2 = nn.Dropout(dropout_rate)
 
-        # Compute flattened size: after conv2 output is (80, 1, 132)
-        # pad1: (1,2,128) -> (1,2,132), conv1(1,3) valid on padded -> (256,2,130)
-        # pad2: (256,2,130) -> (256,2,134), conv2(2,3) valid on padded -> (80,1,132)
-        self._flat_size = 80 * 1 * 132
+        # Compute flattened size dynamically based on signal_len
+        # pad1: (1,2,T) -> (1,2,T+4), conv1(1,3) -> (256,2,T+2)
+        # pad2: (256,2,T+2) -> (256,2,T+6), conv2(2,3) -> (80,1,T+4)
+        self._flat_size = 80 * 1 * (signal_len + 4)
 
         self.fc1 = nn.Linear(self._flat_size, 256)
         self.relu3 = nn.ReLU()
@@ -63,12 +63,12 @@ class VTCNN2(nn.Module):
     def forward(self, x):
         """
         Args:
-            x: [batch, 2, 128]
+            x: [batch, 2, T]
         Returns:
             logits: [batch, num_classes]
             regu: [] (empty, for AWN training compatibility)
         """
-        # [batch, 2, 128] -> [batch, 1, 2, 128]
+        # [batch, 2, T] -> [batch, 1, 2, T]
         x = x.unsqueeze(1)
 
         x = self.pad1(x)

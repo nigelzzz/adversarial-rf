@@ -1,0 +1,10 @@
+numpy
+torch
+torchvision
+torchaudio
+torchattacks
+scikit-learn
+matplotlib
+pyyaml
+h5py
+scipy

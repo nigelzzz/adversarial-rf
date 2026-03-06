@@ -1,0 +1,482 @@
+[
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.09,
+    "amc_acc": 0.795
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.085,
+    "amc_acc": 0.795
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW",
+    "crc_pass_rate": 0.075,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.035,
+    "amc_acc": 0.915
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.035,
+    "amc_acc": 0.915
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.045,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.055,
+    "amc_acc": 0.81
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.81
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.075,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.985,
+    "amc_acc": 0.815
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.805,
+    "amc_acc": 0.815
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW",
+    "crc_pass_rate": 0.985,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.925,
+    "amc_acc": 0.95
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.88,
+    "amc_acc": 0.95
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.93,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.975,
+    "amc_acc": 0.76
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.745,
+    "amc_acc": 0.76
+  },
+  {
+    "mod": "QAM64",
+    "snr": 10,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.975,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.505
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.505
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.7
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.7
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.02,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.87,
+    "amc_acc": 0.61
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.535,
+    "amc_acc": 0.61
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW",
+    "crc_pass_rate": 0.87,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.79,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.725,
+    "amc_acc": 0.925
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.79,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.88,
+    "amc_acc": 0.755
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.675,
+    "amc_acc": 0.755
+  },
+  {
+    "mod": "QAM64",
+    "snr": 6,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.875,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.31
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.31
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.005
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.825
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.825
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.465
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.465
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.63,
+    "amc_acc": 0.34
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.19,
+    "amc_acc": 0.34
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW",
+    "crc_pass_rate": 0.635,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW+Top20",
+    "crc_pass_rate": 0.42,
+    "amc_acc": 0.87
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW+Top20+AMC",
+    "crc_pass_rate": 0.365,
+    "amc_acc": 0.87
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.42,
+    "amc_acc": -1
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW+Top50",
+    "crc_pass_rate": 0.555,
+    "amc_acc": 0.535
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "CW+Top50+AMC",
+    "crc_pass_rate": 0.295,
+    "amc_acc": 0.535
+  },
+  {
+    "mod": "QAM64",
+    "snr": 3,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.55,
+    "amc_acc": -1
+  }
+]

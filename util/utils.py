@@ -7,6 +7,8 @@ import torch
 
 from models.model import AWN
 from models.vtcnn2 import VTCNN2
+from models.resnet1d import ResNet1D
+from models.lstm_amc import LSTM_AMC
 # Lazy import MCLDNN (it's a git submodule that may not be cloned)
 _MCLDNN_PyTorch = None
 
@@ -145,9 +147,31 @@ def create_VTCNN2_model(cfg):
     """
     build VTCNN2 model
     """
+    signal_len = getattr(cfg, 'signal_len', 128)
     model = VTCNN2(
         num_classes=cfg.num_classes,
         dropout_rate=0.5,
+        signal_len=signal_len,
+    ).to(cfg.device)
+    return model
+
+
+def create_ResNet1D_model(cfg):
+    """
+    build ResNet1D model
+    """
+    model = ResNet1D(
+        num_classes=cfg.num_classes,
+    ).to(cfg.device)
+    return model
+
+
+def create_LSTM_model(cfg):
+    """
+    build LSTM_AMC model
+    """
+    model = LSTM_AMC(
+        num_classes=cfg.num_classes,
     ).to(cfg.device)
     return model
 
@@ -158,7 +182,7 @@ def create_model(cfg, model_name='awn'):
 
     Args:
         cfg: Config object
-        model_name: 'awn' or 'mcldnn'
+        model_name: 'awn', 'mcldnn', 'vtcnn2', 'resnet1d', or 'lstm'
 
     Returns:
         model: PyTorch model
@@ -170,5 +194,10 @@ def create_model(cfg, model_name='awn'):
         return create_MCLDNN_model(cfg)
     elif model_name == 'vtcnn2':
         return create_VTCNN2_model(cfg)
+    elif model_name == 'resnet1d':
+        return create_ResNet1D_model(cfg)
+    elif model_name == 'lstm':
+        return create_LSTM_model(cfg)
     else:
-        raise ValueError(f"Unknown model: {model_name}. Choose 'awn', 'mcldnn', or 'vtcnn2'.")
+        raise ValueError(f"Unknown model: {model_name}. "
+                         f"Choose 'awn', 'mcldnn', 'vtcnn2', 'resnet1d', or 'lstm'.")

@@ -63,12 +63,267 @@ def crc8(data_bits):
 def crc8_check(frame_bits):
     """Verify CRC on data+crc frame. Returns True if CRC passes."""
     frame_bits = np.asarray(frame_bits, dtype=np.uint8)
-    if len(frame_bits) < 9:
+    if len(frame_bits) < 8:
         return False
     data_bits = frame_bits[:-8]
     expected_crc = frame_bits[-8:]
     computed_crc = crc8(data_bits)
     return np.array_equal(computed_crc, expected_crc)
+
+
+# ---------------------------------------------------------------------------
+# FEC: Rate-1/2 Convolutional Code (K=7) + Block Interleaver
+# ---------------------------------------------------------------------------
+
+CONV_K = 7
+CONV_GEN = [0o171, 0o133]  # generators in octal = [121, 91] decimal
+CONV_N_STATES = 1 << (CONV_K - 1)  # 64 states
+INTERLEAVE_COLS = 14  # spread across ~2x constraint length
+
+_TRELLIS = None
+
+
+def _build_trellis():
+    """Precompute trellis transitions and expected outputs."""
+    global _TRELLIS
+    if _TRELLIS is not None:
+        return _TRELLIS
+
+    n_states = CONV_N_STATES
+    next_state = np.zeros((n_states, 2), dtype=np.int32)
+    exp_output = np.zeros((n_states, 2, 2), dtype=np.uint8)
+
+    for s in range(n_states):
+        for u in range(2):
+            # K-bit register: input bit at MSB, state at lower K-1 bits
+            enc = (u << (CONV_K - 1)) | s
+            # Next state: shift input into MSB of state, drop oldest
+            ns = (u << (CONV_K - 2)) | (s >> 1)
+            next_state[s, u] = ns
+            for j, g in enumerate(CONV_GEN):
+                exp_output[s, u, j] = bin(enc & g).count('1') % 2
+
+    _TRELLIS = (next_state, exp_output)
+    return _TRELLIS
+
+
+def conv_encode(bits):
+    """Rate-1/2 convolutional encode with zero-termination (K-1=6 tail bits).
+
+    Each input bit produces 2 output bits. Appends 6 zero tail bits to
+    flush the encoder back to state 0.
+
+    Args:
+        bits: Input bit array.
+
+    Returns:
+        Coded bit array of length 2 * (len(bits) + 6).
+    """
+    bits = np.asarray(bits, dtype=np.uint8)
+    tail = np.zeros(CONV_K - 1, dtype=np.uint8)
+    input_bits = np.concatenate([bits, tail])
+    n = len(input_bits)
+
+    output = np.zeros(2 * n, dtype=np.uint8)
+    state = 0
+
+    for i in range(n):
+        u = int(input_bits[i])
+        enc = (u << (CONV_K - 1)) | state
+        for j, g in enumerate(CONV_GEN):
+            output[2 * i + j] = bin(enc & g).count('1') % 2
+        state = (u << (CONV_K - 2)) | (state >> 1)
+
+    return output
+
+
+def viterbi_decode(received, soft=False):
+    """Viterbi decode rate-1/2 convolutional code.
+
+    Args:
+        received: If soft=False, hard bits (0/1 array, length 2*N).
+                  If soft=True, LLR values (float array, length 2*N).
+                  LLR convention: positive = more likely bit 0.
+        soft: Whether to use soft-decision decoding.
+
+    Returns:
+        Decoded bits (numpy array), tail bits stripped.
+    """
+    received = np.asarray(received, dtype=float)
+    n_coded = len(received)
+    if n_coded % 2 != 0:
+        raise ValueError("Received length must be even for rate-1/2 code")
+    n_steps = n_coded // 2
+
+    next_state, exp_output = _build_trellis()
+    n_states = CONV_N_STATES
+
+    INF = 1e18
+    path_metric = np.full(n_states, INF)
+    path_metric[0] = 0.0  # start from zero state
+
+    # Traceback arrays
+    tb_state = np.zeros((n_steps, n_states), dtype=np.int32)
+    tb_bit = np.zeros((n_steps, n_states), dtype=np.uint8)
+
+    for t in range(n_steps):
+        r0 = received[2 * t]
+        r1 = received[2 * t + 1]
+
+        new_metric = np.full(n_states, INF)
+
+        for s in range(n_states):
+            if path_metric[s] >= INF:
+                continue
+            for u in range(2):
+                ns = next_state[s, u]
+                e0 = int(exp_output[s, u, 0])
+                e1 = int(exp_output[s, u, 1])
+
+                if soft:
+                    # LLR correlation: positive LLR favors 0, negative favors 1
+                    # Maximize sum(LLR * (1-2*expected)), minimize negative
+                    bm = -(r0 * (1 - 2 * e0) + r1 * (1 - 2 * e1))
+                else:
+                    # Hamming distance
+                    bm = (int(r0) ^ e0) + (int(r1) ^ e1)
+
+                candidate = path_metric[s] + bm
+                if candidate < new_metric[ns]:
+                    new_metric[ns] = candidate
+                    tb_state[t, ns] = s
+                    tb_bit[t, ns] = u
+
+        path_metric = new_metric
+
+    # Traceback from zero state (zero-terminated code)
+    state = 0
+    decoded = np.zeros(n_steps, dtype=np.uint8)
+    for t in range(n_steps - 1, -1, -1):
+        decoded[t] = tb_bit[t, state]
+        state = tb_state[t, state]
+
+    # Strip K-1 tail bits
+    if n_steps > CONV_K - 1:
+        decoded = decoded[:-(CONV_K - 1)]
+
+    return decoded
+
+
+def block_interleave(bits):
+    """Block interleave: write rows, read columns (n_cols=14).
+
+    Pads with zeros if input length is not divisible by n_cols.
+
+    Returns:
+        Interleaved bit/value array.
+    """
+    bits = np.asarray(bits)
+    n = len(bits)
+    n_cols = INTERLEAVE_COLS
+    n_rows = int(np.ceil(n / n_cols))
+    padded = np.zeros(n_rows * n_cols, dtype=bits.dtype)
+    padded[:n] = bits
+    matrix = padded.reshape(n_rows, n_cols)
+    return matrix.T.flatten()
+
+
+def block_deinterleave(data, orig_len):
+    """Block deinterleave: reverse of block_interleave.
+
+    Works for both hard bits (uint8) and soft values (float LLRs).
+
+    Args:
+        data: Interleaved data array.
+        orig_len: Original length before interleaving (to strip padding).
+
+    Returns:
+        Deinterleaved array truncated to orig_len.
+    """
+    data = np.asarray(data)
+    n_cols = INTERLEAVE_COLS
+    n_rows = int(np.ceil(orig_len / n_cols))
+    total = n_rows * n_cols
+    padded = np.zeros(total, dtype=data.dtype)
+    padded[:len(data)] = data[:total]
+    matrix = padded.reshape(n_cols, n_rows).T
+    return matrix.flatten()[:orig_len]
+
+
+def compute_llr(symbols, mod_type, noise_var):
+    """Compute per-bit LLRs using max-log-MAP approximation.
+
+    LLR(bk) = (1/sigma^2) * (min_{s:bk=1} |r-s|^2 - min_{s:bk=0} |r-s|^2)
+
+    Positive LLR = bit more likely 0.
+
+    Args:
+        symbols: Received (equalized) complex symbols.
+        mod_type: Modulation type string.
+        noise_var: Estimated noise variance (per complex dimension).
+
+    Returns:
+        LLR array of length len(symbols) * bps.
+    """
+    constellation = get_constellation(mod_type)
+    bps = get_bits_per_symbol(mod_type)
+    M = len(constellation)
+
+    if noise_var <= 0:
+        noise_var = 1e-10
+
+    # Precompute constellation indices partitioned by each bit value
+    bit_sets = [[[], []] for _ in range(bps)]
+    for idx in range(M):
+        for k in range(bps):
+            bit_val = (idx >> (bps - 1 - k)) & 1
+            bit_sets[k][bit_val].append(idx)
+
+    # Convert to arrays for vectorized distance computation
+    bit_idx_arrays = [[np.array(bit_sets[k][b]) for b in range(2)]
+                      for k in range(bps)]
+
+    symbols = np.asarray(symbols)
+    n_sym = len(symbols)
+    llrs = np.zeros(n_sym * bps)
+
+    for i, r in enumerate(symbols):
+        dists = np.abs(r - constellation) ** 2
+        for k in range(bps):
+            min_d0 = np.min(dists[bit_idx_arrays[k][0]])
+            min_d1 = np.min(dists[bit_idx_arrays[k][1]])
+            llrs[i * bps + k] = (min_d1 - min_d0) / noise_var
+
+    return llrs
+
+
+def estimate_noise_var(rx_pilots, tx_pilots):
+    """Estimate noise variance from pilot symbol residuals.
+
+    sigma^2 = mean(|rx - tx|^2) / 2  (per real/imag dimension).
+
+    Args:
+        rx_pilots: Received pilot symbols (after equalization).
+        tx_pilots: Known transmitted pilot symbols.
+
+    Returns:
+        Estimated noise variance (float). Clipped to minimum 1e-12.
+    """
+    residual = np.asarray(rx_pilots) - np.asarray(tx_pilots)
+    nv = float(np.mean(np.abs(residual) ** 2)) / 2.0
+    return max(nv, 1e-12)
+
+
+def fec_payload_capacity(n_data_symbols, bps):
+    """Compute payload bit capacity when FEC is enabled.
+
+    Returns:
+        (payload_bits, can_fec): payload_bits includes data+CRC.
+        can_fec is False if FEC cannot support at least 8 CRC bits.
+    """
+    coded_capacity = n_data_symbols * bps
+    payload_bits = coded_capacity // 2 - (CONV_K - 1)
+    return payload_bits, (payload_bits >= 8)
 
 
 # ---------------------------------------------------------------------------
@@ -261,7 +516,7 @@ def _normalize_mod(mod_type):
 
 def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
                    snr_db=18.0, target_rms=0.006, cfo_std=0.015,
-                   rng=None, n_guard=16):
+                   rng=None, n_guard=16, fec=False):
     """
     Generate a single burst with known bits, CRC, and pilot symbols/bits.
 
@@ -272,6 +527,9 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
         n_guard: Number of guard symbols on each side (constellation mods).
                  Guard symbols provide filter context so the RX matched
                  filter can operate on the full signal without edge ISI.
+        fec: If True, apply rate-1/2 convolutional coding + block
+             interleaving before modulation. Automatically disabled for
+             modulations with insufficient capacity (BPSK, CPFSK, GFSK).
 
     Returns:
         dict with keys:
@@ -286,6 +544,8 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
             n_pilots: number of pilot symbols/bits
             mod_type: modulation type string
             snr_db: SNR used
+            fec: whether FEC was actually applied
+            fec_coded_len: length of coded bits before interleaving (if fec)
             cfo, phase0: channel impairments
     """
     if rng is None:
@@ -295,11 +555,13 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
 
     if mod in FSK_MODS:
         return _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
-                                   snr_db, target_rms, cfo_std, rng)
+                                   snr_db, target_rms, cfo_std, rng,
+                                   fec=fec)
     elif mod in CONSTELLATION_MODS:
         return _generate_burst_constellation(mod, n_symbols, n_pilots, sps,
                                              beta, snr_db, target_rms,
-                                             cfo_std, rng, n_guard=n_guard)
+                                             cfo_std, rng, n_guard=n_guard,
+                                             fec=fec)
     else:
         raise ValueError(f"Unknown modulation: {mod_type}. "
                          f"Supported: {sorted(ALL_DIGITAL_MODS)}")
@@ -307,7 +569,7 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
 
 def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
                                   snr_db, target_rms, cfo_std, rng,
-                                  n_guard=16):
+                                  n_guard=16, fec=False):
     """Generate burst for constellation-based modulations.
 
     Uses guard symbols before/after the data+pilot region so the TX RRC
@@ -324,18 +586,38 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
     constellation = get_constellation(mod)
     n_data_symbols = n_symbols - n_pilots
 
-    # Generate random data bits, append CRC
-    n_data_bits = n_data_symbols * bps - 8  # Reserve 8 bits for CRC
-    if n_data_bits < 1:
-        raise ValueError(
-            f"Not enough data symbols for CRC. Need at least "
-            f"ceil(9/{bps})+{n_pilots} symbols, got {n_symbols}")
-    data_bits = rng.integers(0, 2, size=n_data_bits).astype(np.uint8)
-    crc_bits = crc8(data_bits)
-    frame_bits = np.concatenate([data_bits, crc_bits])
+    # Check FEC feasibility
+    fec_coded_len = 0
+    if fec:
+        payload_cap, can_fec = fec_payload_capacity(n_data_symbols, bps)
+        if not can_fec:
+            fec = False  # silently disable for 1-bps mods
 
-    # Map frame bits to data symbols
-    data_symbols = bits_to_symbols(frame_bits, mod)
+    if fec:
+        # FEC path: data → CRC → conv_encode → interleave → symbols
+        coded_capacity = n_data_symbols * bps
+        payload_bits = coded_capacity // 2 - (CONV_K - 1)
+        n_data_bits = max(payload_bits - 8, 0)
+        data_bits = rng.integers(0, 2, size=n_data_bits).astype(np.uint8)
+        crc_bits = crc8(data_bits)
+        payload = np.concatenate([data_bits, crc_bits])
+        coded = conv_encode(payload)
+        fec_coded_len = len(coded)
+        interleaved = block_interleave(coded)
+        # Map interleaved coded bits to data symbols
+        data_symbols = bits_to_symbols(interleaved[:coded_capacity], mod)
+        frame_bits = payload  # payload = data + CRC (for BER comparison)
+    else:
+        # Original path: data → CRC → symbols
+        n_data_bits = n_data_symbols * bps - 8  # Reserve 8 bits for CRC
+        if n_data_bits < 1:
+            raise ValueError(
+                f"Not enough data symbols for CRC. Need at least "
+                f"ceil(9/{bps})+{n_pilots} symbols, got {n_symbols}")
+        data_bits = rng.integers(0, 2, size=n_data_bits).astype(np.uint8)
+        crc_bits = crc8(data_bits)
+        frame_bits = np.concatenate([data_bits, crc_bits])
+        data_symbols = bits_to_symbols(frame_bits, mod)
 
     # Generate known pilot symbols
     pilot_indices = rng.integers(0, len(constellation), size=n_pilots)
@@ -424,12 +706,14 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
         'symbols_tx': all_symbols,
         'cfo': cfo,
         'phase0': phase0,
+        'fec': fec,
+        'fec_coded_len': fec_coded_len,
     }
 
 
 def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
                         snr_db, target_rms, cfo_std, rng,
-                        h=0.5, bt=None):
+                        h=0.5, bt=None, fec=False):
     """Generate burst for FSK modulations (CPFSK, GFSK).
 
     CPFSK: rectangular frequency pulse, mod index h=0.5 (MSK)
@@ -525,6 +809,8 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
         'symbols_tx': None,
         'cfo': cfo,
         'phase0': phase0,
+        'fec': False,  # FSK mods never use FEC (1 bps insufficient)
+        'fec_coded_len': 0,
     }
 
 
@@ -534,7 +820,8 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
 
 def demodulate_burst(iq_complex, mod_type, n_pilots, pilot_symbols=None,
                      pilot_bits=None, sps=8, beta=0.35, pilot_positions=None,
-                     iq_full=None, iq_win_start=None, n_guard=None):
+                     iq_full=None, iq_win_start=None, n_guard=None,
+                     fec=False, soft_demod=True, fec_coded_len=None):
     """
     Demodulate a burst. Dispatches to constellation or FSK demodulator.
 
@@ -550,6 +837,9 @@ def demodulate_burst(iq_complex, mod_type, n_pilots, pilot_symbols=None,
         iq_full: Full signal with guard symbols (optional, for better demod)
         iq_win_start: Start index of data window in iq_full
         n_guard: Number of guard symbols
+        fec: If True, apply Viterbi decoding after demodulation.
+        soft_demod: If True and fec=True, use soft LLRs for Viterbi.
+        fec_coded_len: Length of coded bits before interleaving (for deinterleave).
 
     Returns:
         dict: recovered_bits, data_bits, crc_pass, recovered_symbols
@@ -560,12 +850,11 @@ def demodulate_burst(iq_complex, mod_type, n_pilots, pilot_symbols=None,
         return _demodulate_burst_fsk(iq_complex, mod, n_pilots, pilot_bits,
                                      sps, pilot_positions)
     elif mod in CONSTELLATION_MODS:
-        return _demodulate_burst_constellation(iq_complex, mod, n_pilots,
-                                               pilot_symbols, sps, beta,
-                                               pilot_positions,
-                                               iq_full=iq_full,
-                                               iq_win_start=iq_win_start,
-                                               n_guard=n_guard)
+        return _demodulate_burst_constellation(
+            iq_complex, mod, n_pilots, pilot_symbols, sps, beta,
+            pilot_positions, iq_full=iq_full, iq_win_start=iq_win_start,
+            n_guard=n_guard, fec=fec, soft_demod=soft_demod,
+            fec_coded_len=fec_coded_len)
     else:
         raise ValueError(f"Unknown modulation: {mod_type}")
 
@@ -573,13 +862,18 @@ def demodulate_burst(iq_complex, mod_type, n_pilots, pilot_symbols=None,
 def _demodulate_burst_constellation(iq_complex, mod, n_pilots, pilot_symbols,
                                     sps, beta, pilot_positions,
                                     iq_full=None, iq_win_start=None,
-                                    n_guard=None):
+                                    n_guard=None, fec=False, soft_demod=True,
+                                    fec_coded_len=None):
     """Demodulate constellation-based modulations (BPSK..QAM64, PAM4).
 
     If iq_full is provided, applies the RX matched filter to the full
     signal (with guard context) and extracts the data symbols from the
     middle — this eliminates edge ISI that would otherwise corrupt
     high-order modulations like QAM64 on short bursts.
+
+    When fec=True, applies Viterbi decoding after demodulation:
+      - soft_demod=True: compute LLRs → deinterleave → soft Viterbi
+      - soft_demod=False: hard demap → deinterleave → hard Viterbi
     """
     bps = get_bits_per_symbol(mod)
 
@@ -666,6 +960,44 @@ def _demodulate_burst_constellation(iq_complex, mod, n_pilots, pilot_symbols,
         symbols_corrected[i] for i in range(n_sym_total) if i not in pilot_set
     ])
 
+    # --- FEC decoding path ---
+    if fec:
+        n_data_symbols = n_sym_total - n_pilots
+        coded_capacity = n_data_symbols * bps
+        if fec_coded_len is None:
+            fec_coded_len = coded_capacity
+
+        # Estimate noise variance from corrected pilots
+        corrected_pilots = symbols_corrected[pilot_positions]
+        noise_var = estimate_noise_var(corrected_pilots, pilot_symbols)
+
+        if soft_demod:
+            # Soft LLR path
+            llrs = compute_llr(data_symbols, mod, noise_var)
+            deinterleaved = block_deinterleave(llrs, fec_coded_len)
+            decoded_payload = viterbi_decode(deinterleaved, soft=True)
+        else:
+            # Hard decision path
+            hard_bits = symbols_to_bits(data_symbols, mod)
+            deinterleaved = block_deinterleave(hard_bits, fec_coded_len)
+            decoded_payload = viterbi_decode(deinterleaved, soft=False)
+
+        # CRC check on decoded payload
+        crc_pass = crc8_check(decoded_payload)
+        recovered_frame_bits = decoded_payload
+        recovered_data_bits = (
+            recovered_frame_bits[:-8] if len(recovered_frame_bits) > 8
+            else np.array([], dtype=np.uint8)
+        )
+
+        return {
+            'recovered_bits': recovered_frame_bits,
+            'data_bits': recovered_data_bits,
+            'crc_pass': crc_pass,
+            'recovered_symbols': symbols_corrected,
+        }
+
+    # --- Non-FEC path (original) ---
     # 6. Hard decision and demap
     recovered_frame_bits = symbols_to_bits(data_symbols, mod)
 
@@ -760,7 +1092,7 @@ def _demodulate_burst_fsk(iq_complex, mod, n_pilots, pilot_bits,
 
 def generate_burst_batch(mod_type, n_bursts, n_symbols=16, n_pilots=2,
                          sps=8, beta=0.35, snr_db=18.0, target_rms=0.006,
-                         cfo_std=0.015, seed=None):
+                         cfo_std=0.015, seed=None, fec=False):
     """
     Generate a batch of bursts.
 
@@ -774,7 +1106,7 @@ def generate_burst_batch(mod_type, n_bursts, n_symbols=16, n_pilots=2,
         burst = generate_burst(
             mod_type, n_symbols=n_symbols, n_pilots=n_pilots,
             sps=sps, beta=beta, snr_db=snr_db, target_rms=target_rms,
-            cfo_std=cfo_std, rng=rng,
+            cfo_std=cfo_std, rng=rng, fec=fec,
         )
         bursts.append(burst)
 
