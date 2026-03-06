@@ -10,7 +10,10 @@ This experiment adds **Forward Error Correction (FEC)** to the CRC defense pipel
 - **Decoder**: 64-state Viterbi with soft-decision (max-log-MAP LLR) decoding
 - **Interleaver**: 14-column block interleaver (spreads burst errors across ~2x constraint length)
 - **Expected coding gain**: ~5-7 dB
-
+- reference:
+  - MIT convolutional code lecture (https://ocw.mit.edu/courses/6-02-introduction-to-eecs-ii-digital-communication-systems-fall-2012/fea2b27744e25ff21846374a56ceb256_MIT6_02F12_lec06.pdf)
+  - Viterbi decoding tutorial (https://web.mit.edu/6.02/www/f2011/handouts/8.pdf)
+  - Princeton Viterbi algorithm lecture notes (https://www.cs.princeton.edu/courses/archive/spring18/cos463/lectures/L09-viterbi.pdf)
 ### Pipeline
 
 ```
@@ -190,3 +193,4 @@ python3 crc_defense_pipeline_fec.py --device cuda --snr 18,0 --n_bursts 200 \
 python3 crc_defense_pipeline_fec.py --device cuda --snr 10,6,3 --n_bursts 200 \
   --topk 20,50 --mods QAM64 --ckpt /path/to/checkpoint/dir
 ```
+
