@@ -202,6 +202,125 @@ def fft_topk_percent_denoise(x: torch.Tensor, percent: float) -> torch.Tensor:
     return fft_topk_denoise(x, topk)
 
 
+def cumulative_energy_knee(x: torch.Tensor, threshold: float = 0.90) -> torch.Tensor:
+    """
+    Per-sample K where top-K FFT bins capture >= threshold of total energy.
+
+    Computes the full complex FFT, sorts bins by energy descending, and finds
+    the minimum K such that the top-K bins capture at least `threshold` fraction
+    of total spectral energy. Returns the max across I/Q channels.
+
+    Args:
+        x: Tensor of shape [N, 2, T] (I/Q real-valued channels)
+        threshold: Fraction of total energy to capture (default 0.90)
+
+    Returns:
+        knee: Int tensor of shape [N] with per-sample K values
+    """
+    assert x.dim() == 3 and x.size(1) == 2, "Expected input of shape [N, 2, T] (I/Q)."
+    N, C, T = x.shape
+
+    X = torch.fft.fft(x, n=T, dim=2)          # [N, 2, T]
+    energy = X.abs() ** 2                       # [N, 2, T]
+    sorted_e, _ = energy.sort(dim=2, descending=True)
+    cumsum = sorted_e.cumsum(dim=2)             # [N, 2, T]
+    total = energy.sum(dim=2, keepdim=True)     # [N, 2, 1]
+
+    # Find first index where cumsum >= threshold * total, per (N, C)
+    reached = cumsum >= threshold * total       # [N, 2, T] bool
+    # argmax on bool returns first True index; if never reached, returns 0
+    # Add 1 because K=index+1 (we need at least index+1 bins)
+    knee_per_ch = reached.float().argmax(dim=2) + 1  # [N, 2]
+    # Handle edge case: if threshold is never reached (e.g., all zeros), use T
+    never_reached = ~reached.any(dim=2)         # [N, 2]
+    knee_per_ch[never_reached] = T
+    # Take max across I/Q channels
+    knee = knee_per_ch.max(dim=1).values        # [N]
+    return knee.int()
+
+
+def fft_adaptive_topk_denoise(
+    x: torch.Tensor,
+    threshold: float = 0.90,
+    k_candidates: list = None,
+    k_min: int = 10,
+    k_max: int = 50,
+) -> tuple:
+    """
+    Per-sample adaptive Top-K FFT denoising.
+
+    For each sample, computes the spectral energy knee (minimum K where top-K
+    bins capture >= threshold of total energy), maps it to the smallest
+    candidate >= knee, then applies fft_topk_denoise with that K.
+
+    Args:
+        x: Tensor of shape [N, 2, T] (I/Q real-valued channels)
+        threshold: Energy fraction threshold for knee detection (default 0.90)
+        k_candidates: Sorted list of candidate K values (default [10, 15, 20, 30, 50])
+        k_min: Minimum allowed K
+        k_max: Maximum allowed K
+
+    Returns:
+        (x_denoised, selected_k) where selected_k is [N] int tensor of chosen K values
+    """
+    if k_candidates is None:
+        k_candidates = [10, 15, 20, 30, 50]
+    k_cands = sorted(k_candidates)
+
+    knee = cumulative_energy_knee(x, threshold)  # [N]
+
+    # Map knee to smallest candidate >= knee
+    selected_k = torch.full_like(knee, k_cands[-1])
+    for kc in reversed(k_cands):
+        selected_k = torch.where(knee <= kc, kc, selected_k)
+    selected_k = selected_k.clamp(k_min, k_max)
+
+    # Group by K and batch-process for efficiency
+    result = x.clone()
+    for kc in k_cands:
+        mask = (selected_k == kc)
+        if mask.any():
+            result[mask] = fft_topk_denoise(x[mask], topk=kc)
+    return result, selected_k
+
+
+def fft_adaptive_topk_denoise_normalized(
+    x: torch.Tensor,
+    threshold: float = 0.90,
+    k_candidates: list = None,
+    k_min: int = 10,
+    k_max: int = 50,
+    norm_offset: float = 0.02,
+    norm_scale: float = 0.04,
+    apply_in_normalized: bool = True,
+) -> tuple:
+    """
+    Adaptive Top-K FFT denoising with normalization, matching the
+    fft_topk_denoise_normalized pattern from AWN_All.py.
+
+    Args:
+        x: Input tensor [N, 2, T] (I/Q), assumed unnormalized
+        threshold: Energy fraction threshold for knee detection
+        k_candidates: List of candidate K values
+        k_min: Minimum allowed K
+        k_max: Maximum allowed K
+        norm_offset: Normalization offset (default 0.02)
+        norm_scale: Normalization scale (default 0.04)
+        apply_in_normalized: If True, normalize -> denoise -> denormalize
+
+    Returns:
+        (x_denoised, selected_k) where x_denoised is in original scale
+    """
+    if apply_in_normalized:
+        x_norm = normalize_iq_data(x, norm_offset, norm_scale)
+        x_denoised_norm, selected_k = fft_adaptive_topk_denoise(
+            x_norm, threshold, k_candidates, k_min, k_max
+        )
+        return denormalize_iq_data(x_denoised_norm, norm_offset, norm_scale), selected_k
+    else:
+        return fft_adaptive_topk_denoise(x, threshold, k_candidates, k_min, k_max)
+
+
 def highpass_diff(x: torch.Tensor, order: int = 1) -> torch.Tensor:
     """
     Simple time-domain high-pass via finite differences per I/Q channel.

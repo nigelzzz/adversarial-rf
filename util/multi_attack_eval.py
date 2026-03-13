@@ -33,7 +33,12 @@ from util.adv_attack import (
     iq_to_ta_input_minmax, ta_output_to_iq_minmax,
     iq_to_ta_input_paper, ta_output_to_iq_paper,
 )
-from util.defense import fft_topk_denoise_normalized
+from util.defense import fft_topk_denoise_normalized, fft_adaptive_topk_denoise_normalized
+from util.adaptive_defense import (
+    confidence_sweep_topk_denoise_normalized,
+    classify_then_filter_topk_denoise_normalized,
+    spectral_shape_topk_denoise_normalized,
+)
 
 
 def plot_freq_comparison(
@@ -700,6 +705,18 @@ def create_attack(
             beta=beta,
         )
 
+    elif name == 'fab':
+        # FAB (Fast Adaptive Boundary) attack - minimum norm adversarial
+        fab_steps = getattr(cfg, 'fab_steps', 100)
+        fab_n_restarts = getattr(cfg, 'fab_n_restarts', 1)
+        return torchattacks.FAB(
+            wrapped_model,
+            eps=eps,
+            steps=fab_steps,
+            n_restarts=fab_n_restarts,
+            n_classes=getattr(cfg, 'num_classes', 11),
+        )
+
     else:
         raise ValueError(f"Unknown attack: {attack_name}")
 
@@ -859,6 +876,11 @@ def run_multi_attack_snr_mod_eval(
     plot_iq: bool = False,
     plot_n_samples: int = 3,
     topk_list: Optional[List[int]] = None,
+    adaptive_topk: bool = False,
+    adaptive_threshold: float = 0.90,
+    adaptive_k_candidates: Optional[List[int]] = None,
+    confidence_threshold: float = 0.8,
+    spectral_sig_pct: float = 0.10,
 ) -> pd.DataFrame:
     """
     Run multi-attack evaluation with FFT recovery comparison by modulation and SNR.
@@ -1043,6 +1065,61 @@ def run_multi_attack_snr_mod_eval(
                     )
                     topk_accs[f'top{k}_acc'] = compute_accuracy(model, x_topk, y_cell)
 
+                # Apply adaptive Top-K methods if enabled
+                if adaptive_topk:
+                    # 1. Energy knee
+                    x_e, sel_k_e = fft_adaptive_topk_denoise_normalized(
+                        x_adv, threshold=adaptive_threshold,
+                        k_candidates=adaptive_k_candidates,
+                        norm_offset=0.02, norm_scale=0.04,
+                    )
+                    topk_accs['energy_acc'] = compute_accuracy(model, x_e, y_cell)
+                    k_dist = {}
+                    for kc in (adaptive_k_candidates or [10, 15, 20, 30, 50]):
+                        cnt = int((sel_k_e == kc).sum().item())
+                        if cnt > 0:
+                            k_dist[kc] = cnt
+                    topk_accs['energy_k_dist'] = str(k_dist)
+
+                    # 2. Confidence sweep
+                    x_c, sel_k_c = confidence_sweep_topk_denoise_normalized(
+                        x_adv, model,
+                        k_candidates=adaptive_k_candidates,
+                        confidence_threshold=confidence_threshold,
+                    )
+                    topk_accs['confidence_acc'] = compute_accuracy(model, x_c, y_cell)
+                    k_dist_c = {}
+                    for kc in (adaptive_k_candidates or [10, 15, 20, 30, 50]):
+                        cnt = int((sel_k_c == kc).sum().item())
+                        if cnt > 0:
+                            k_dist_c[kc] = cnt
+                    topk_accs['confidence_k_dist'] = str(k_dist_c)
+
+                    # 3. Classify-then-filter
+                    x_cl, sel_k_cl = classify_then_filter_topk_denoise_normalized(
+                        x_adv, model, cfg,
+                    )
+                    topk_accs['classify_acc'] = compute_accuracy(model, x_cl, y_cell)
+                    k_dist_cl = {}
+                    for kc in torch.unique(sel_k_cl).tolist():
+                        cnt = int((sel_k_cl == kc).sum().item())
+                        if cnt > 0:
+                            k_dist_cl[int(kc)] = cnt
+                    topk_accs['classify_k_dist'] = str(k_dist_cl)
+
+                    # 4. Spectral shape
+                    x_s, sel_k_s = spectral_shape_topk_denoise_normalized(
+                        x_adv, sig_pct=spectral_sig_pct,
+                        k_candidates=adaptive_k_candidates,
+                    )
+                    topk_accs['spectral_acc'] = compute_accuracy(model, x_s, y_cell)
+                    k_dist_s = {}
+                    for kc in (adaptive_k_candidates or [10, 15, 20, 30, 50]):
+                        cnt = int((sel_k_s == kc).sum().item())
+                        if cnt > 0:
+                            k_dist_s[kc] = cnt
+                    topk_accs['spectral_k_dist'] = str(k_dist_s)
+
                 row = {
                     'attack': attack_name,
                     'snr': snr,
@@ -1064,6 +1141,11 @@ def run_multi_attack_snr_mod_eval(
                 col = f'top{k}_acc'
                 avg_k = np.mean([r[col] for r in attack_results])
                 topk_strs.append(f"top{k}={avg_k:.4f}")
+            if adaptive_topk:
+                for method in ['energy_acc', 'confidence_acc', 'classify_acc', 'spectral_acc']:
+                    if method in attack_results[0]:
+                        avg_m = np.mean([r[method] for r in attack_results])
+                        topk_strs.append(f"{method.replace('_acc','')}={avg_m:.4f}")
             logger.info(f"{attack_name}: clean={avg_clean:.4f}, attack={avg_attack:.4f}, "
                        f"{', '.join(topk_strs)}")
 
@@ -1087,6 +1169,10 @@ def run_multi_attack_snr_mod_eval(
             col = f'top{k}_acc'
             if col in df.columns:
                 agg_dict[col] = 'mean'
+        if adaptive_topk:
+            for method in ['energy_acc', 'confidence_acc', 'classify_acc', 'spectral_acc']:
+                if method in df.columns:
+                    agg_dict[method] = 'mean'
         agg_dict['n_samples'] = 'sum'
         summary = df.groupby('attack').agg(agg_dict).round(4)
         logger.info(f"\n{summary.to_string()}")

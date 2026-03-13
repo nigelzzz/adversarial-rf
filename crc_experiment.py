@@ -135,11 +135,15 @@ def run_experiment(args):
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
     device = torch.device(device)
 
+    attack_name = getattr(args, 'attack', 'cw').lower()
+
     print(f"Device: {device}")
+    print(f"Attack: {attack_name}")
     print(f"Modulations: {args.mod_types}")
     print(f"SNR list: {args.snr_list}")
     print(f"N bursts (synthetic): {args.n_bursts}")
-    print(f"CW params: c={args.cw_c}, steps={args.cw_steps}")
+    if attack_name == 'cw':
+        print(f"CW params: c={args.cw_c}, steps={args.cw_steps}")
     print()
 
     # Load model
@@ -148,17 +152,18 @@ def run_experiment(args):
     cfg.cw_c = args.cw_c
     cfg.cw_steps = args.cw_steps
     cfg.cw_lr = 0.005
-    cfg.attack_eps = 0.03
+    cfg.attack_eps = getattr(args, 'attack_eps', 0.1)
     cfg.ta_box = args.ta_box
+    cfg.num_classes = 11
 
     # Wrap model for torchattacks
     wrapped_model = Model01Wrapper(model)
     wrapped_model.to(device)
     wrapped_model.eval()
 
-    # Create CW attack
-    print("Creating CW attack...")
-    attack = create_attack('cw', wrapped_model, cfg)
+    # Create attack
+    print(f"Creating {attack_name.upper()} attack...")
+    attack = create_attack(attack_name, wrapped_model, cfg)
 
     all_results = []
 
@@ -182,8 +187,8 @@ def run_experiment(args):
             clean_amc_acc = np.mean(clean_preds == true_label_idx)
             print(f"  Clean AMC accuracy: {100*clean_amc_acc:.1f}%")
 
-            # CW attack on real data
-            print("  Running CW attack on real data...")
+            # Adversarial attack on real data
+            print(f"  Running {attack_name.upper()} attack on real data...")
             real_t = torch.from_numpy(real_data).float().to(device)
             adv_real_list = []
             bs = args.batch_size
@@ -337,7 +342,8 @@ def run_experiment(args):
 
     # Console table
     print(f"\n\n{'='*72}")
-    print(f"  CRC Experiment Results (Track A: RML2016 AMC, Track B: Synthetic CRC)")
+    print(f"  CRC Experiment Results — {attack_name.upper()} Attack")
+    print(f"  (Track A: RML2016 AMC, Track B: Synthetic CRC)")
     print(f"{'='*72}")
     print(f"  {'Mod':<8} {'SNR':>5} {'Scenario':<18} {'AMC Acc':>10} {'CRC Pass':>10} {'N':>6}")
     print(f"  {'-'*62}")
@@ -369,6 +375,10 @@ def main():
     parser = argparse.ArgumentParser(
         description='CRC Experiment: AMC Accuracy vs Data Integrity under CW Attack'
     )
+    parser.add_argument('--attack', type=str, default='cw',
+                        help='Attack type: cw, deepfool, eadl1, eaden, fab, fgsm, pgd')
+    parser.add_argument('--attack_eps', type=float, default=0.1,
+                        help='Epsilon for Linf/boundary attacks (default 0.1)')
     parser.add_argument('--mod_types', type=str,
                         default='BPSK,QPSK,8PSK,QAM16,QAM64,PAM4,CPFSK,GFSK,WBFM,AM-DSB,AM-SSB',
                         help='Comma-separated modulation types')

@@ -133,6 +133,17 @@ if __name__ == "__main__":
     # Power budget evaluation
     parser.add_argument('--power_epsilons', type=str, default='0.005,0.01,0.02,0.03,0.05,0.1,0.2',
                         help='Comma-separated epsilon values for power budget sweep')
+    # Adaptive Top-K selection
+    parser.add_argument('--adaptive_topk', action='store_true',
+                        help='Enable adaptive per-sample K selection based on spectral energy knee')
+    parser.add_argument('--adaptive_threshold', type=float, default=0.90,
+                        help='Energy fraction threshold for adaptive K knee detection (default: 0.90)')
+    parser.add_argument('--adaptive_k_list', type=str, default='10,15,20,30,50',
+                        help='Comma-separated candidate K values for adaptive selection (default: 10,15,20,30,50)')
+    parser.add_argument('--confidence_threshold', type=float, default=0.8,
+                        help='Softmax confidence threshold for confidence sweep defense (default: 0.8)')
+    parser.add_argument('--spectral_sig_pct', type=float, default=0.10,
+                        help='Fraction of peak magnitude for spectral shape method (default: 0.10)')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -398,6 +409,7 @@ if __name__ == "__main__":
         if args.attack_list is not None:
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
         topk_list = [int(k) for k in args.topk_list.split(',') if k.strip()]
+        adaptive_k_list = [int(k) for k in args.adaptive_k_list.split(',') if k.strip()]
         run_multi_attack_snr_mod_eval(
             model,
             Signals_test,
@@ -412,6 +424,11 @@ if __name__ == "__main__":
             plot_iq=args.plot_iq,
             plot_n_samples=args.plot_n_samples,
             topk_list=topk_list,
+            adaptive_topk=args.adaptive_topk,
+            adaptive_threshold=args.adaptive_threshold,
+            adaptive_k_candidates=adaptive_k_list,
+            confidence_threshold=args.confidence_threshold,
+            spectral_sig_pct=args.spectral_sig_pct,
         )
 
     elif args.mode == 'sigguard_eval':
@@ -424,6 +441,7 @@ if __name__ == "__main__":
         # IQ plots enabled by default for sigguard_eval (use --no_plot_iq to disable)
         should_plot_iq = not getattr(args, 'no_plot_iq', False)
         sigguard_topk_list = [int(k) for k in args.sigguard_topk.split(',') if k.strip()]
+        adaptive_k_list = [int(k) for k in args.adaptive_k_list.split(',') if k.strip()]
         run_sigguard_eval(
             model,
             Signals_test,
@@ -435,6 +453,28 @@ if __name__ == "__main__":
             eval_limit=args.eval_limit,
             plot_iq=should_plot_iq,
             plot_n_samples=args.plot_n_samples,
+            adaptive_topk=args.adaptive_topk,
+            adaptive_threshold=args.adaptive_threshold,
+            adaptive_k_candidates=adaptive_k_list,
+            confidence_threshold=args.confidence_threshold,
+            spectral_sig_pct=args.spectral_sig_pct,
+        )
+
+    elif args.mode == 'calibrate_adaptive_k':
+        from util.adaptive_k_calibration import run_adaptive_k_calibration
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        adaptive_k_list = [int(k) for k in args.adaptive_k_list.split(',') if k.strip()]
+        run_adaptive_k_calibration(
+            model,
+            Signals_test,
+            Labels_test,
+            SNRs,
+            test_idx,
+            cfg,
+            logger,
+            thresholds=[0.80, 0.85, 0.90, 0.95],
+            k_candidates=adaptive_k_list,
+            eval_limit=args.eval_limit,
         )
 
     elif args.mode == 'transfer_eval':

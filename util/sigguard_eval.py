@@ -36,7 +36,12 @@ from util.adv_attack import (
     iq_to_ta_input_minmax, ta_output_to_iq_minmax,
     iq_to_ta_input_paper, ta_output_to_iq_paper,
 )
-from util.defense import fft_topk_denoise
+from util.defense import fft_topk_denoise, fft_adaptive_topk_denoise
+from util.adaptive_defense import (
+    confidence_sweep_topk_denoise,
+    classify_then_filter_topk_denoise,
+    spectral_shape_topk_denoise,
+)
 
 
 # Phase order for M-th power phase de-rotation
@@ -159,6 +164,18 @@ def create_attack(
             binary_search_steps=binary_search_steps,
             initial_const=initial_const,
             beta=beta,
+        )
+
+    elif name == 'fab':
+        # FAB (Fast Adaptive Boundary) attack - minimum norm adversarial
+        fab_steps = getattr(cfg, 'fab_steps', 100)
+        fab_n_restarts = getattr(cfg, 'fab_n_restarts', 1)
+        return torchattacks.FAB(
+            wrapped_model,
+            eps=eps,
+            steps=fab_steps,
+            n_restarts=fab_n_restarts,
+            n_classes=getattr(cfg, 'num_classes', 11),
         )
 
     else:
@@ -765,14 +782,26 @@ def plot_iq_constellation_grid(
         plt.close(fig2)
 
 
+ADAPTIVE_METHODS = [
+    ('energy_acc', 'Energy'),
+    ('confidence_acc', 'ConfSweep'),
+    ('classify_acc', 'ClassifyK'),
+    ('spectral_acc', 'SpectShape'),
+]
+
+
 def format_table(results: List[Dict], topk_list: List[int],
-                  title: str = "SigGuard Evaluation") -> str:
+                  title: str = "SigGuard Evaluation",
+                  show_adaptive: bool = False) -> str:
     """Format results as a pretty ASCII table with dynamic Top-K columns."""
     # Build header columns
     topk_headers = [f"Top-{k}" for k in topk_list]
+    if show_adaptive:
+        for _, label in ADAPTIVE_METHODS:
+            topk_headers.append(label)
     col_width = 12
     header_cols = "".join(f"{h:>{col_width}}" for h in topk_headers)
-    sep_width = 20 + col_width * (1 + len(topk_list))
+    sep_width = 20 + col_width * (1 + len(topk_headers))
 
     lines = []
     lines.append("")
@@ -788,6 +817,10 @@ def format_table(results: List[Dict], topk_list: List[int],
             f"{r.get(f'top{k}_acc', 0.0)*100:.2f}%".rjust(col_width)
             for k in topk_list
         )
+        if show_adaptive:
+            for key, _ in ADAPTIVE_METHODS:
+                adapt_val = f"{r.get(key, 0.0)*100:.2f}%".rjust(col_width)
+                topk_vals += adapt_val
         lines.append(f"  {sample_type:<20}{disabled:>{col_width}}{topk_vals}")
 
     lines.append("  " + "=" * sep_width)
@@ -808,6 +841,11 @@ def run_sigguard_eval(
     batch_size: int = 128,
     plot_iq: bool = True,
     plot_n_samples: int = 3,
+    adaptive_topk: bool = False,
+    adaptive_threshold: float = 0.90,
+    adaptive_k_candidates: Optional[List[int]] = None,
+    confidence_threshold: float = 0.8,
+    spectral_sig_pct: float = 0.10,
 ) -> pd.DataFrame:
     """
     Run SigGuard-style evaluation comparing attack accuracy with/without defense.
@@ -874,8 +912,12 @@ def run_sigguard_eval(
 
     # 1. Evaluate clean accuracy (Intact)
     logger.info("\n=== Intact (Clean) ===")
+    if adaptive_topk:
+        logger.info(f"Adaptive Top-K enabled: threshold={adaptive_threshold}, "
+                    f"candidates={adaptive_k_candidates or [10,15,20,30,50]}")
     clean_accs = []
     clean_defense_accs = {k: [] for k in topk_list}
+    clean_adaptive_accs = {m: [] for m in ['energy', 'confidence', 'classify', 'spectral']}
     all_clean_samples = []
 
     for i in range(0, n_samples, batch_size):
@@ -892,6 +934,40 @@ def run_sigguard_eval(
             acc_def = compute_accuracy(model, x_defended, y_batch)
             clean_defense_accs[k].append(acc_def * len(y_batch))
 
+        # Clean with all 4 adaptive methods
+        if adaptive_topk:
+            # 1. Energy knee
+            x_e, _ = fft_adaptive_topk_denoise(
+                x_batch, threshold=adaptive_threshold,
+                k_candidates=adaptive_k_candidates,
+            )
+            clean_adaptive_accs['energy'].append(
+                compute_accuracy(model, x_e, y_batch) * len(y_batch))
+
+            # 2. Confidence sweep
+            x_c, _ = confidence_sweep_topk_denoise(
+                x_batch, model,
+                k_candidates=adaptive_k_candidates,
+                confidence_threshold=confidence_threshold,
+            )
+            clean_adaptive_accs['confidence'].append(
+                compute_accuracy(model, x_c, y_batch) * len(y_batch))
+
+            # 3. Classify-then-filter
+            x_cl, _ = classify_then_filter_topk_denoise(
+                x_batch, model, cfg,
+            )
+            clean_adaptive_accs['classify'].append(
+                compute_accuracy(model, x_cl, y_batch) * len(y_batch))
+
+            # 4. Spectral shape
+            x_s, _ = spectral_shape_topk_denoise(
+                x_batch, sig_pct=spectral_sig_pct,
+                k_candidates=adaptive_k_candidates,
+            )
+            clean_adaptive_accs['spectral'].append(
+                compute_accuracy(model, x_s, y_batch) * len(y_batch))
+
         # Store clean samples for plotting
         if plot_iq:
             all_clean_samples.append(x_batch.cpu())
@@ -903,6 +979,14 @@ def run_sigguard_eval(
         acc_k = sum(clean_defense_accs[k]) / n_samples
         intact_row[f'top{k}_acc'] = acc_k
         topk_strs.append(f"Top-{k}={acc_k*100:.2f}%")
+    if adaptive_topk:
+        method_keys = [('energy', 'energy_acc'), ('confidence', 'confidence_acc'),
+                       ('classify', 'classify_acc'), ('spectral', 'spectral_acc')]
+        for mname, mkey in method_keys:
+            if clean_adaptive_accs[mname]:
+                acc_m = sum(clean_adaptive_accs[mname]) / n_samples
+                intact_row[mkey] = acc_m
+                topk_strs.append(f"{mname}={acc_m*100:.2f}%")
     logger.info(f"Intact: Disabled={intact_disabled*100:.2f}%, {', '.join(topk_strs)}")
     results.append(intact_row)
 
@@ -927,6 +1011,7 @@ def run_sigguard_eval(
 
         attack_accs = []
         defense_accs = {k: [] for k in topk_list}
+        adaptive_defense_accs = {m: [] for m in ['energy', 'confidence', 'classify', 'spectral']}
         all_adv_samples = []
         all_clean_for_attack = []
         all_labels_for_attack = []
@@ -956,6 +1041,40 @@ def run_sigguard_eval(
                     acc_def = compute_accuracy(model, x_defended, y_batch)
                     defense_accs[k].append(acc_def * len(y_batch))
 
+                # All 4 adaptive methods
+                if adaptive_topk:
+                    # 1. Energy knee
+                    x_e, _ = fft_adaptive_topk_denoise(
+                        x_adv, threshold=adaptive_threshold,
+                        k_candidates=adaptive_k_candidates,
+                    )
+                    adaptive_defense_accs['energy'].append(
+                        compute_accuracy(model, x_e, y_batch) * len(y_batch))
+
+                    # 2. Confidence sweep
+                    x_c, _ = confidence_sweep_topk_denoise(
+                        x_adv, model,
+                        k_candidates=adaptive_k_candidates,
+                        confidence_threshold=confidence_threshold,
+                    )
+                    adaptive_defense_accs['confidence'].append(
+                        compute_accuracy(model, x_c, y_batch) * len(y_batch))
+
+                    # 3. Classify-then-filter
+                    x_cl, _ = classify_then_filter_topk_denoise(
+                        x_adv, model, cfg,
+                    )
+                    adaptive_defense_accs['classify'].append(
+                        compute_accuracy(model, x_cl, y_batch) * len(y_batch))
+
+                    # 4. Spectral shape
+                    x_s, _ = spectral_shape_topk_denoise(
+                        x_adv, sig_pct=spectral_sig_pct,
+                        k_candidates=adaptive_k_candidates,
+                    )
+                    adaptive_defense_accs['spectral'].append(
+                        compute_accuracy(model, x_s, y_batch) * len(y_batch))
+
                 n_processed += len(y_batch)
 
                 # Store samples for plotting (keep all for per-mod coverage)
@@ -977,6 +1096,14 @@ def run_sigguard_eval(
                 acc_k = sum(defense_accs[k]) / n_processed
                 row[f'top{k}_acc'] = acc_k
                 topk_strs.append(f"Top-{k}={acc_k*100:.2f}%")
+            if adaptive_topk:
+                method_keys = [('energy', 'energy_acc'), ('confidence', 'confidence_acc'),
+                               ('classify', 'classify_acc'), ('spectral', 'spectral_acc')]
+                for mname, mkey in method_keys:
+                    if adaptive_defense_accs[mname]:
+                        acc_m = sum(adaptive_defense_accs[mname]) / n_processed
+                        row[mkey] = acc_m
+                        topk_strs.append(f"{mname}={acc_m*100:.2f}%")
             logger.info(f"{attack_name.upper()}: Disabled={disabled*100:.2f}%, {', '.join(topk_strs)}")
             results.append(row)
 
@@ -1022,7 +1149,8 @@ def run_sigguard_eval(
     # Print formatted table
     topk_label = ",".join(str(k) for k in topk_list)
     table_str = format_table(results, topk_list=topk_list,
-                             title=f"AWN - SigGuard Evaluation (Top-{topk_label})")
+                             title=f"AWN - SigGuard Evaluation (Top-{topk_label})",
+                             show_adaptive=adaptive_topk)
     logger.info(table_str)
     print(table_str)
 

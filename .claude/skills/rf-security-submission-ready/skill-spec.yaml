@@ -1,0 +1,243 @@
+name: rf_security_submission_ready
+version: 1.0
+description: >
+  Security submission-ready experimental pipeline for control-plane adversarial attacks
+  on adaptive wireless receivers. Produces paper-grade tables/figures and a draft narrative.
+
+# -------------------------
+# INPUTS (edit these)
+# -------------------------
+inputs:
+  # Paths
+  dataset_root: "path/to/RML2016.10a"
+  awn_ckpt: "path/to/awn.ckpt"
+  run_dir: "./results/runs/${timestamp}"
+
+  # Experiment scope
+  snr_list: [18, 12, 6, 0]            # include 18 + lower SNR for robustness
+  modulation_list:
+    - BPSK
+    - QPSK
+    - 8PSK
+    - QAM16
+    - QAM64
+    - PAM4
+    - CPFSK
+    - GFSK
+
+  # Track A: Real-signal AMC eval
+  real:
+    n_samples_per_mod_snr: 500
+    seed: 1337
+
+  # Attacks to evaluate
+  attacks:
+    - name: CW
+      enabled: true
+      params:
+        norm: "l2"
+        steps: 1000
+        lr: 0.01
+        c: 1.0
+        kappa: 0.0
+        abort_early: true
+        clamp: "dataset_range"
+
+    - name: FGSM
+      enabled: true
+      params:
+        epsilon_list: [0.0005, 0.001, 0.002, 0.005, 0.01]   # sweep for curves
+        clamp: "dataset_range"
+
+  # Track B: Synthetic CRC/BER eval
+  synth:
+    enabled: true
+    sps: 8
+    n_data_symbols: 14
+    n_pilot_symbols: 2
+    n_total_symbols: 16
+    n_guard_symbols: 16
+    rrc:
+      span_symbols: 16
+      taps: 129
+      rolloff: 0.35
+    n_bursts_per_mod_snr: 200
+    crc:
+      poly: "CRC-8"
+      init: "standard"
+      xorout: "standard"
+      reflect_in: false
+      reflect_out: false
+    normalization:
+      mode: "pilot_based"   # IMPORTANT for QAM64 stability
+    phase_correction:
+      mode: "pilot_based"
+
+  # Channel / realism knobs (ablations)
+  channel_ablations:
+    enabled: true
+    items:
+      - name: "awgn_only"
+        awgn: true
+        cfo: false
+        multipath: false
+      - name: "awgn_plus_cfo"
+        awgn: true
+        cfo: true
+        cfo_hz_list: [0.0, 50.0, 100.0]     # adjust to your sample rate
+        multipath: false
+      - name: "awgn_plus_multipath"
+        awgn: true
+        cfo: false
+        multipath: true
+        multipath_profiles:
+          - "2tap_mild"
+          - "3tap_stronger"
+
+  # Baselines for security claims
+  baselines:
+    noise_equivalent:
+      enabled: true
+      target_metric: "crc_pass_rate"
+      match_target: "Adv+AMC"   # find AWGN power that matches attack-induced CRC collapse
+    jamming_equivalent:
+      enabled: true
+      jammer_type: "wideband_gaussian"
+      power_sweep_db: [0, 3, 6, 9, 12, 15]  # compare to attack efficiency
+
+# -------------------------
+# OUTPUTS (paper artifacts)
+# -------------------------
+outputs:
+  tables:
+    - "table_crc_4way.csv"            # Clean/Adv × Oracle/AMC
+    - "table_ber_4way.csv"
+    - "table_ser_4way.csv"
+    - "table_attack_success.csv"      # AMC accuracy / ASR
+    - "table_noise_equivalent.csv"    # required SNR drop vs attack
+    - "table_jamming_equivalent.csv"  # required jammer power vs attack
+    - "table_transferability.csv"     # attack transfer across SNR/channel ablations
+
+  figures:
+    - "fig_crc_heatmap_mod_snr.png"
+    - "fig_oracle_vs_amc_gap.png"
+    - "fig_crc_vs_attack_power.png"
+    - "fig_attack_vs_noise_efficiency.png"
+    - "fig_attack_vs_jamming_efficiency.png"
+    - "fig_transferability.png"
+
+  paper_text:
+    - "draft_abstract.txt"
+    - "draft_contributions.txt"
+    - "draft_threat_model.txt"
+    - "draft_results_summary.txt"
+    - "draft_limitations.txt"
+
+  logs:
+    - "run_config.yaml"
+    - "metrics.jsonl"
+    - "debug_samples.jsonl"
+
+# -------------------------
+# STEPS (what Claude must do)
+# -------------------------
+steps:
+
+  - name: "Bootstrap"
+    action: |
+      Create run_dir. Save a fully-resolved run_config.yaml (all defaults expanded).
+      Record git commit hash if available. Set random seeds.
+
+  - name: "Track A — Clean AMC on Real RML2016.10a"
+    action: |
+      For each (snr, modulation):
+        - load real.n_samples_per_mod_snr samples
+        - run AWN inference
+        - compute clean AMC accuracy
+        - store per-class confusion stats
+      Output: table_attack_success.csv (clean section)
+
+  - name: "Track A — Generate Adversarial Samples (CW + FGSM)"
+    action: |
+      For each (snr, modulation):
+        - CW: compute adversarial IQ and delta (per-sample delta and aggregate stats)
+        - FGSM: compute adversarial IQ for epsilon sweep; store delta stats
+      Compute adversarial AMC accuracy and attack success rate (ASR).
+      Save: per-attack delta distribution (L2/Linf mean/median/max), and prediction drift.
+
+  - name: "Track B — Synthetic TX/RX Chain Sanity (Clean+Oracle baseline)"
+    action: |
+      Generate synth.n_bursts_per_mod_snr bursts per (snr, modulation).
+      TX:
+        bits → map → insert pilots → RRC shaping on (guard+data+guard) → AWGN
+      RX:
+        matched filter on full signal → extract middle window → pilot-based normalization/phase correction
+        → hard decision → demap bits → CRC verify
+      Require:
+        - Clean+Oracle CRC pass rate should be near 100% at high SNR (except noted QAM64 thermal limit).
+      If not, diagnose: ISI edges, padding, normalization mismatch, timing offset.
+
+  - name: "Track B — Apply Attacks onto Synthetic Bursts"
+    action: |
+      Apply attack deltas from Track A onto synthetic bursts, preserving guard context:
+        - splice perturbed 128-sample window back into full signal
+        - then run RX matched filter on full signal
+      Evaluate 4 scenarios for each attack:
+        1) Clean + Oracle
+        2) Clean + AMC
+        3) Adv   + Oracle
+        4) Adv   + AMC
+      Metrics:
+        CRC pass rate, BER, SER.
+      Output: table_crc_4way.csv, table_ber_4way.csv, table_ser_4way.csv.
+
+  - name: "Security Core Claim Check"
+    action: |
+      Compute and report:
+        - Waveform integrity: Adv+Oracle vs Clean+Oracle gap (CRC/BER/SER)
+        - Control-plane vulnerability: Adv+AMC collapse vs Adv+Oracle stability
+      Produce fig_oracle_vs_amc_gap.png and a short results paragraph draft.
+
+  - name: "Attack Power Curves"
+    action: |
+      For FGSM epsilon sweep:
+        - plot CRC pass vs epsilon (per modulation & aggregated)
+      For CW:
+        - plot CRC pass vs CW delta L2 magnitude bins (quantile-binned)
+      Output fig_crc_vs_attack_power.png.
+
+  - name: "Noise Equivalent Baseline"
+    action: |
+      For each (snr, modulation):
+        - increase AWGN until CRC pass rate matches Adv+AMC (attack) level
+        - record required SNR drop (dB) for equivalence
+      Output table_noise_equivalent.csv + fig_attack_vs_noise_efficiency.png.
+
+  - name: "Jamming Equivalent Baseline"
+    action: |
+      Add wideband gaussian jammer with power_sweep_db; measure CRC pass.
+      Find jammer power needed to match Adv+AMC CRC collapse.
+      Output table_jamming_equivalent.csv + fig_attack_vs_jamming_efficiency.png.
+
+  - name: "Transferability & Robustness"
+    action: |
+      Evaluate:
+        - Transfer across SNR (train/attack at 18 → test at 12/6/0)
+        - Channel ablations (CFO, multipath) per channel_ablations.items
+      Output table_transferability.csv + fig_transferability.png.
+
+  - name: "Paper Draft Artifacts"
+    action: |
+      Write:
+        - draft_abstract.txt (security framing)
+        - draft_contributions.txt (3 bullets)
+        - draft_threat_model.txt
+        - draft_results_summary.txt (key numbers)
+        - draft_limitations.txt (synthetic chain, OTA limits, assumptions)
+      Style: network security paper tone; emphasize control-plane DoS and efficiency vs jamming.
+
+constraints:
+  - Always keep Oracle branch as waveform integrity reference.
+  - Do not conflate AMC accuracy with link reliability; report both separately.
+  - If synthetic baseline fails, fix chain before claiming attack impact.
+  - For each major claim, include at least one figure and one table backing it.
