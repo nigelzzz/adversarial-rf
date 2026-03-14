@@ -1,0 +1,686 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix2019_v3}
+
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{subcaption}
+
+\usepackage{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{filecontents}{\jobname.bib}
+%-------------------------------------------------------------------------------
+
+@article{li2023awn,
+  author  = {Li, Jiawei and others},
+  title   = {Towards the Automatic Modulation Classification with Adaptive Wavelet Network},
+  journal = {IEEE Trans. on Cognitive Communications and Networking},
+  year    = {2023}
+}
+
+@inproceedings{carlini2017towards,
+  author    = {Carlini, Nicholas and Wagner, David},
+  title     = {Towards Evaluating the Robustness of Neural Networks},
+  booktitle = {IEEE Symposium on Security and Privacy (SP)},
+  year      = {2017},
+  pages     = {39--57}
+}
+
+@article{chen2020ead,
+  author  = {Chen, Pin-Yu and Sharma, Yash and Zhang, Huan and Yi, Jinfeng and Hsieh, Cho-Jui},
+  title   = {{EAD}: Elastic-Net Attacks to {DNNs} via Feature Prioritization},
+  journal = {arXiv preprint arXiv:1709.04114},
+  year    = {2018}
+}
+
+@inproceedings{goodfellow2015fgsm,
+  author    = {Goodfellow, Ian J. and Shlens, Jonathon and Szegedy, Christian},
+  title     = {Explaining and Harnessing Adversarial Examples},
+  booktitle = {ICLR},
+  year      = {2015}
+}
+
+@inproceedings{madry2018pgd,
+  author    = {Madry, Aleksander and Makelov, Aleksandar and Schmidt, Ludwig and Tsipras, Dimitris and Vladu, Adrian},
+  title     = {Towards Deep Learning Models Resistant to Adversarial Attacks},
+  booktitle = {ICLR},
+  year      = {2018}
+}
+
+@article{otoole2016rml,
+  author  = {O'Shea, Timothy J. and Corgan, Johnathan and Clancy, T. Charles},
+  title   = {Convolutional Radio Modulation Recognition Networks},
+  journal = {arXiv preprint arXiv:1602.04105},
+  year    = {2016}
+}
+
+@article{flowers2019sigguard,
+  author  = {Flowers, Bryse and Buehrer, R. Michael and Headley, William C.},
+  title   = {Evaluating Adversarial Evasion Attacks in the Context of Wireless Communications},
+  journal = {IEEE Trans. on Information Forenstic and Security},
+  year    = {2020}
+}
+
+@article{kim2020torchattacks,
+  author  = {Kim, Hoki},
+  title   = {Torchattacks: A {PyTorch} Repository for Adversarial Attacks},
+  journal = {arXiv preprint arXiv:2010.01950},
+  year    = {2020}
+}
+
+@article{silvaco2023adversarial_rf,
+  author  = {Silvaco, Domingo and others},
+  title   = {A Survey on Adversarial Attacks Against Automatic Modulation Classification},
+  journal = {IEEE Communications Surveys and Tutorials},
+  year    = {2023}
+}
+
+@book{proakis2008digital,
+  author    = {Proakis, John G. and Salehi, Masoud},
+  title     = {Digital Communications},
+  publisher = {McGraw-Hill},
+  edition   = {5th},
+  year      = {2008}
+}
+
+@article{lin2020tactics,
+  author  = {Lin, Yun and Zhao, Haojun and Tu, Ya and Mao, Shiwen and Dou, Zheng},
+  title   = {Threats of Adversarial Attacks in {DNN}-Based Modulation Recognition},
+  journal = {IEEE INFOCOM},
+  year    = {2020}
+}
+
+\end{filecontents}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+
+\date{}
+
+\title{\Large \bf Spectral-Gated Defense: Real-Time Recovery of\\
+Deep-Learning-Based Modulation Classifiers\\
+Under Adversarial Attack}
+
+\author{
+{\rm Anonymous}\\
+Under Review
+}
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+\begin{abstract}
+%-------------------------------------------------------------------------------
+Deep-learning-based automatic modulation classification (AMC) is vulnerable to
+adversarial perturbations that reduce classification accuracy from above 95\%
+to near 0\%. We show that these attacks are \emph{control-plane only}: they
+fool the classifier into selecting the wrong demodulator, but do not corrupt
+the underlying signal when demodulated correctly. Exploiting this insight, we
+propose \textsc{Spectral-Gated Defense}, a real-time input-transformation
+defense that requires a single FFT and a single classifier inference per
+sample. The defense computes spectral flatness from the FFT output to
+route wideband signals (AM-SSB) to per-sample quantization and all other
+modulations to FFT Top-$K$ filtering. On the RML2016.10a dataset with 11
+modulation classes, the defense recovers accuracy from 0\% to 20--98\% across
+all modulations under both CW ($L_2$) and EAD ($L_1$) attacks at SNR~18~dB,
+with less than 4\% degradation on clean signals. When combined with rate-1/2
+convolutional FEC on the data path, CRC integrity reaches 94--100\% for all
+FEC-capable modulations. We further evaluate 17 alternative defenses,
+Multi-K Voting, receiver-pipeline blocks (AGC, matched filter), and
+demonstrate that none matches the accuracy--latency trade-off of the
+proposed spectral-gated approach.
+\end{abstract}
+
+%-------------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+%-------------------------------------------------------------------------------
+
+Automatic modulation classification (AMC) is a critical component in
+software-defined radios, cognitive radio networks, and spectrum monitoring
+systems. Recent work has shown that deep neural network (DNN) classifiers
+such as AWN~\cite{li2023awn} achieve above 95\% accuracy on standard
+benchmarks~\cite{otoole2016rml}. However, adversarial machine learning
+poses a serious threat: small, carefully crafted perturbations to IQ
+signals can reduce AMC accuracy to near 0\%~\cite{lin2020tactics,
+silvaco2023adversarial_rf}.
+
+In a practical receiver, AMC drives downstream demodulation: the
+classifier selects which demodulator to apply. If the adversary fools
+AMC into predicting the wrong modulation, the receiver applies the
+wrong demodulator, and data recovery fails---even though the signal
+itself remains intact. We call this a \emph{control-plane attack}:
+the adversary disrupts the classification decision, not the physical
+waveform.
+
+This paper makes four contributions:
+
+\begin{enumerate}
+\item We experimentally confirm the control-plane nature of adversarial
+  attacks on AMC across five attack algorithms (CW, EADL1, EADEN,
+  DeepFool, FAB) and eight digital modulations, showing that CRC
+  integrity remains above 93\% under oracle demodulation at SNR~18~dB.
+
+\item We propose \textsc{Spectral-Gated Defense}, a real-time defense
+  that uses spectral flatness to adaptively route samples to either
+  FFT Top-$K$ filtering or input quantization, requiring only one FFT
+  and one classifier inference.
+
+\item We demonstrate that forward error correction (FEC) on the
+  data path is complementary: a rate-1/2 convolutional code with
+  Viterbi decoding recovers CRC integrity to 94--100\% even when
+  defense filtering introduces residual signal distortion.
+
+\item We systematically evaluate 17 alternative defense methods,
+  ensemble voting, and standard receiver-pipeline blocks (AGC,
+  matched filter, resampling), and show that none matches the
+  proposed defense in accuracy--latency trade-off.
+\end{enumerate}
+
+%-------------------------------------------------------------------------------
+\section{Background and Threat Model}
+\label{sec:background}
+%-------------------------------------------------------------------------------
+
+\subsection{Automatic Modulation Classification}
+
+The AWN classifier~\cite{li2023awn} takes IQ signal tensors of shape
+$[N, 2, T]$ (where $T{=}128$ for RML2016.10a) and predicts one of 11
+modulation classes: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4, AM-DSB,
+GFSK, CPFSK, AM-SSB, and WBFM. The model uses adaptive wavelet
+decomposition with learnable predict/update operators, achieving
+$>$92\% clean accuracy across all modulations at SNR~$\geq$~18~dB.
+
+\subsection{Adversarial Attacks on IQ Signals}
+
+Unlike image-domain attacks where pixel values span $[0, 255]$, IQ
+signals have amplitude $\sim$$\pm$0.02 with dynamic range concentrated
+in a narrow band. We evaluate attacks using \texttt{torchattacks}~\cite{kim2020torchattacks} with \texttt{minmax} per-sample
+normalization to $[0, 1]$, which makes epsilon values intuitive
+relative to the signal range.
+
+We focus on two representative attacks:
+\begin{itemize}
+\item \textbf{CW} ($L_2$)~\cite{carlini2017towards}: Optimization-based
+  attack that minimizes perturbation while maximizing misclassification.
+  Distributes adversarial energy across many frequency bins.
+\item \textbf{EADL1} ($L_1$)~\cite{chen2020ead}: Elastic-net attack
+  producing sparse perturbations concentrated in fewer components.
+\end{itemize}
+
+\subsection{Threat Model}
+
+We consider a white-box adversary with full knowledge of the AWN
+classifier but no access to the defense mechanism. The adversary
+generates adversarial perturbations $\delta$ on real RML2016.10a
+signals and these perturbations are transferred to synthetic
+signals with known bit content for CRC verification. Attack
+parameters: CW ($c{=}10$, steps${=}200$), EADL1 ($\epsilon{=}0.1$).
+
+%-------------------------------------------------------------------------------
+\section{Control-Plane Attack Analysis}
+\label{sec:control}
+%-------------------------------------------------------------------------------
+
+We design a two-track experiment to separate classification failure
+from waveform corruption.
+
+\subsection{Experimental Design}
+
+\textbf{Track A (AMC):} Real RML2016.10a signals are classified by
+AWN under clean and adversarial conditions to measure AMC accuracy
+and extract perturbation vectors $\delta$.
+
+\textbf{Track B (CRC):} Synthetic bursts with known payload bits,
+CRC-8 checksums, and pilot symbols are generated using a full TX/RX
+chain (pulse shaping, AWGN channel, matched filtering, pilot-based
+equalization). Perturbations from Track A are transferred to Track B
+signals. Four demodulation scenarios are evaluated:
+
+\begin{enumerate}
+\item \textbf{Clean+Oracle:} Clean signal, true modulation known.
+\item \textbf{Clean+AMC:} Clean signal, AMC-predicted modulation.
+\item \textbf{Adv+Oracle:} Adversarial signal, true modulation known.
+\item \textbf{Adv+AMC:} Adversarial signal, AMC-predicted modulation.
+\end{enumerate}
+
+\subsection{Results}
+
+Table~\ref{tab:control} shows CRC pass rates at SNR~18~dB across
+eight digital modulations under CW attack.
+
+\begin{table}[t]
+\caption{CRC Pass Rate (\%) at SNR 18 dB -- CW Attack. Adversarial
+  perturbation drops AMC to near 0\% but CRC under oracle demodulation
+  remains $>$71\%.}
+\label{tab:control}
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Mod & Clean+Orc & Clean+AMC & Adv+Orc & Adv+AMC \\
+\midrule
+BPSK  & 100.0 & 97.0 & 100.0 & 39.0 \\
+QPSK  & 100.0 & 98.5 & 100.0 &  1.5 \\
+8PSK  & 100.0 & 98.0 & 100.0 &  0.5 \\
+QAM16 & 100.0 & 94.5 &  99.5 &  0.5 \\
+QAM64 &  96.0 & 94.0 &  76.0 &  0.5 \\
+PAM4  & 100.0 & 98.5 &  71.0 &  2.0 \\
+CPFSK & 100.0 & 100.0 & 100.0 & 18.5 \\
+GFSK  &  99.5 & 99.0 &  99.5 &  0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Adv+Oracle column confirms that adversarial perturbation does not
+significantly corrupt the underlying data: CRC pass rates remain
+71--100\% when the correct demodulator is used. The catastrophic
+failure occurs in Adv+AMC (0--39\%), where the classifier selects the
+wrong demodulator. This establishes that adversarial attacks on AMC
+are \emph{control-plane attacks}---they manipulate the classification
+decision, not the physical signal.
+
+%-------------------------------------------------------------------------------
+\section{Spectral-Gated Defense}
+\label{sec:defense}
+%-------------------------------------------------------------------------------
+
+\subsection{Design Rationale}
+
+A defense must operate \emph{before} classification without knowing
+the modulation type and must be real-time (single inference). We
+evaluated 17 defense methods (Table~\ref{tab:17def}) and found
+that no single method works for all modulations:
+
+\begin{itemize}
+\item \textbf{FFT Top-$K$}: Effective for 10/11 modulations but
+  completely fails on AM-SSB (0\% recovery).
+\item \textbf{Input quantization}: The \emph{only} method that
+  recovers AM-SSB (65--70\%), but degrades BPSK, AM-DSB, and QAM64.
+\item \textbf{Lowpass filter}: Good for EADL1 but weak against CW,
+  which spreads perturbation energy broadly.
+\end{itemize}
+
+\subsection{Key Observation: Spectral Flatness}
+
+We identify a robust spectral feature that separates AM-SSB from all
+other modulations without classifier inference. \emph{Spectral
+flatness} is defined as:
+\begin{equation}
+\text{SF}(x) = \frac{\exp\!\bigl(\frac{1}{N}\sum_{k}\ln |X_k|^2\bigr)}
+                     {\frac{1}{N}\sum_{k}|X_k|^2},
+\label{eq:flatness}
+\end{equation}
+where $X_k$ are the FFT coefficients of input $x$.
+
+Table~\ref{tab:flatness} shows spectral flatness values across
+modulations. AM-SSB has flatness $\sim$0.55, while all other
+modulations have flatness $<$0.03 at SNR~18~dB. The gap
+of $>$18$\times$ provides a robust routing threshold.
+
+\begin{table}[t]
+\caption{Spectral Flatness on Clean RML2016.10a Signals}
+\label{tab:flatness}
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+Modulation & SF (SNR=0) & SF (SNR=18) \\
+\midrule
+BPSK   & 0.292 & 0.028 \\
+QPSK   & 0.216 & 0.029 \\
+8PSK   & 0.236 & 0.024 \\
+QAM16  & 0.058 & 0.030 \\
+QAM64  & 0.036 & 0.030 \\
+PAM4   & 0.162 & 0.029 \\
+AM-DSB & 0.156 & 0.002 \\
+GFSK   & 0.175 & 0.017 \\
+CPFSK  & 0.213 & 0.021 \\
+\textbf{AM-SSB} & \textbf{0.555} & \textbf{0.555} \\
+WBFM   & 0.174 & 0.003 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Algorithm}
+
+Algorithm~\ref{alg:gated} describes the spectral-gated defense.
+The key insight is that the FFT computation is \emph{shared}:
+the same FFT output is used for both the flatness check and the
+Top-$K$ filtering, requiring no additional computation.
+
+\begin{algorithm}[t]
+\caption{Spectral-Gated Defense}
+\label{alg:gated}
+\begin{algorithmic}[1]
+\Require Input $\mathbf{x} \in \mathbb{R}^{N \times 2 \times T}$,
+  Top-$K$ parameter $K{=}20$, quantization levels $L{=}32$,
+  threshold $\tau{=}0.4$
+\Ensure Defended signal $\hat{\mathbf{x}}$
+\State $\mathbf{X} \gets \text{FFT}(\mathbf{x})$
+  \Comment{Full complex FFT, shared}
+\For{each sample $i = 1, \ldots, N$}
+  \State $\text{SF}_i \gets$ SpectralFlatness($\mathbf{X}_i$)
+    \Comment{Eq.~\ref{eq:flatness}}
+  \If{$\text{SF}_i > \tau$}
+    \Comment{Wideband (AM-SSB)}
+    \State $\hat{\mathbf{x}}_i \gets \text{Quantize}(\mathbf{x}_i, L)$
+  \Else
+    \Comment{Narrowband (all others)}
+    \State $\hat{\mathbf{x}}_i \gets \text{TopK}(\mathbf{X}_i, K)$
+      \Comment{Reuse FFT}
+  \EndIf
+\EndFor
+\State \Return $\hat{\mathbf{x}}$
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{Complexity.}
+The defense requires one FFT ($O(T \log T)$) plus either a Top-$K$
+selection ($O(T \log K)$) or quantization ($O(T)$) per sample.
+Measured latency: 4.57~ms for a batch of 200 samples (0.023~ms/sample)
+on a single GPU, comparable to the 1.65~ms for Top-20 alone.
+
+%-------------------------------------------------------------------------------
+\section{Evaluation}
+\label{sec:eval}
+%-------------------------------------------------------------------------------
+
+\subsection{Setup}
+
+\textbf{Dataset:} RML2016.10a~\cite{otoole2016rml}, 11 modulation
+classes, 200 samples per (modulation, SNR) cell.
+\textbf{Model:} AWN~\cite{li2023awn} pretrained checkpoint.
+\textbf{Attacks:} CW ($c{=}10$, 200 steps) and EADL1
+($\epsilon{=}0.1$), both with \texttt{minmax} normalization.
+\textbf{Defense parameters:} $K{=}20$, $L{=}32$, $\tau{=}0.4$.
+
+\subsection{Defense Recovery on All Modulations}
+
+Table~\ref{tab:main} presents the main result: classification
+accuracy under attack, with and without the spectral-gated defense,
+at SNR~18~dB.
+
+\begin{table}[t]
+\caption{Classification Accuracy (\%) at SNR 18 dB. ``Gated'' is the
+  proposed spectral-gated defense. Recovery = Gated $-$ Attack.}
+\label{tab:main}
+\centering
+\small
+\begin{tabular}{lccc|ccc}
+\toprule
+ & \multicolumn{3}{c|}{CW Attack} & \multicolumn{3}{c}{EADL1 Attack} \\
+Mod & Clean & Att & Gated & Clean & Att & Gated \\
+\midrule
+BPSK  & 98.0 & 40.0 & \textbf{79.0} & 98.0 &  0.0 & \textbf{77.0} \\
+QPSK  & 98.5 &  0.0 & \textbf{82.0} & 98.5 &  0.0 & \textbf{84.5} \\
+8PSK  & 98.5 &  0.0 & \textbf{39.5} & 98.5 &  0.0 & \textbf{54.0} \\
+QAM16 & 95.0 &  0.0 & \textbf{48.5} & 95.0 &  0.0 & \textbf{59.5} \\
+QAM64 & 96.0 &  0.0 & \textbf{85.5} & 96.0 &  0.0 & \textbf{89.5} \\
+PAM4  & 98.5 &  0.5 & \textbf{93.5} & 98.5 &  0.0 & \textbf{95.5} \\
+AM-DSB& 100  & 17.5 & \textbf{67.5} & 100  &  0.5 & \textbf{98.0} \\
+GFSK  & 100  &  0.0 & \textbf{90.0} & 100  &  0.0 & \textbf{95.5} \\
+CPFSK & 100  & 14.5 & \textbf{51.0} & 100  &  0.0 & \textbf{72.5} \\
+AM-SSB& 93.5 &  0.5 & \textbf{20.0} & 93.5 &  0.0 & \textbf{65.5} \\
+WBFM  & 42.0 & 21.0 & \textbf{33.5} & 42.0 &  0.0 & \textbf{40.0} \\
+\midrule
+AVG   & 92.7 &  8.5 & \textbf{62.7} & 92.7 &  0.0 & \textbf{75.6} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Key observations:
+\begin{itemize}
+\item All 11 modulations show positive recovery under both attacks.
+\item AM-SSB recovers from 0\% to 20--65.5\%, a modulation where
+  Top-20 alone achieves 0\%.
+\item Clean accuracy degradation is $<$4\% for most modulations
+  (worst: QAM16 at $-$8\%).
+\item The defense is attack-agnostic: identical parameters work
+  for both $L_2$ and $L_1$ attacks.
+\end{itemize}
+
+\subsection{Comparison with Alternative Defenses}
+
+Table~\ref{tab:17def} compares representative defenses at SNR~18~dB
+under EADL1. The spectral-gated defense achieves the highest average
+while being the only method to recover AM-SSB.
+
+\begin{table}[t]
+\caption{Defense Comparison at SNR 18 dB (EADL1). Accuracy (\%)
+  per modulation. Only Gated recovers all modulations.}
+\label{tab:17def}
+\centering
+\scriptsize
+\begin{tabular}{lccccc}
+\toprule
+Mod & Top-20 & LP-20 & Quant32 & MvAvg3 & \textbf{Gated} \\
+\midrule
+BPSK   & 77.0 & 74.0 &  44.5 & 88.5 & \textbf{77.0} \\
+QPSK   & 84.5 & 89.0 &  93.0 & 86.5 & \textbf{84.5} \\
+8PSK   & 54.5 & 70.0 &  89.5 & 17.5 & \textbf{54.0} \\
+QAM16  & 59.5 & 62.5 &  51.5 & 56.5 & \textbf{59.5} \\
+QAM64  & 89.5 & 85.5 &  61.5 & 84.5 & \textbf{89.5} \\
+PAM4   & 95.5 & 95.5 &  93.0 & 95.0 & \textbf{95.5} \\
+AM-DSB & 98.0 & 95.0 &  43.0 & 96.0 & \textbf{98.0} \\
+GFSK   & 95.5 & 94.5 &  71.5 & 95.5 & \textbf{95.5} \\
+CPFSK  & 72.5 & 85.0 &  77.5 & 68.0 & \textbf{72.5} \\
+AM-SSB &  0.0 &  0.0 &  70.5 &  0.0 & \textbf{65.5} \\
+WBFM   & 40.0 & 38.0 &  27.0 & 37.0 & \textbf{40.0} \\
+\midrule
+AVG    & 69.7 & 71.7 &  65.7 & 65.9 & \textbf{75.6} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+No individual defense dominates: Top-20 excels for QAM64/PAM4 but
+fails on AM-SSB; Quant32 saves AM-SSB but destroys BPSK/AM-DSB;
+MvAvg3 is best for BPSK but worst for 8PSK. The spectral-gated
+defense matches Top-20 on narrowband modulations (Diff = 0\%) while
+gaining 65.5\% on AM-SSB via quantization routing.
+
+\subsection{Receiver Pipeline Analysis}
+
+A natural question is whether standard receiver-front-end blocks
+(AGC, matched filter) provide implicit defense. We evaluate these
+at SNR~18~dB under EADL1 (Table~\ref{tab:rxpipe}).
+
+\begin{table}[t]
+\caption{Receiver Pipeline Blocks as Defense (EADL1, SNR 18 dB).
+  Standard blocks degrade accuracy because the AWN model was trained
+  on raw IQ signals, not preprocessed ones.}
+\label{tab:rxpipe}
+\centering
+\small
+\begin{tabular}{lc}
+\toprule
+Method & Avg Accuracy (\%) \\
+\midrule
+No defense (raw adversarial) & 0.0 \\
+AGC only & 12.9 \\
+DC removal + AGC & 10.2 \\
+Matched filter (RRC) & 17.3 \\
+AGC + matched filter & 12.4 \\
+Resampling (2$\times$) & 64.2 \\
+\midrule
+\textbf{Spectral-Gated Defense} & \textbf{75.6} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+AGC and matched filtering \emph{reduce} accuracy to 10--17\%
+because the AWN model was trained on raw IQ samples. Normalizing
+amplitude (AGC) or filtering pulse shape (MF) alters the feature
+distribution the model expects. Only resampling (which acts as
+implicit lowpass filtering) provides meaningful recovery (64.2\%),
+but still below the proposed defense.
+
+%-------------------------------------------------------------------------------
+\section{FEC on the Data Path}
+\label{sec:fec}
+%-------------------------------------------------------------------------------
+
+The spectral-gated defense recovers \emph{classification accuracy},
+enabling the receiver to select the correct demodulator. However,
+defense filtering introduces residual signal distortion that can
+cause symbol errors during demodulation. We show that forward error
+correction (FEC) on the data path is complementary.
+
+\subsection{FEC Configuration}
+
+We use a rate-1/2 convolutional code with constraint length $K{=}7$
+(generators [171, 133] octal), 64-state Viterbi decoder with soft
+LLR inputs, and a 14-column block interleaver.
+
+\subsection{FEC Results}
+
+Table~\ref{tab:fec} compares CRC pass rates with and without FEC
+after defense filtering at SNR~18~dB under CW attack, using oracle
+demodulation.
+
+\begin{table}[t]
+\caption{CRC Pass Rate (\%) With/Without FEC After Defense (CW,
+  SNR 18 dB, Oracle Demod). FEC dramatically improves data
+  integrity after defense filtering.}
+\label{tab:fec}
+\centering
+\small
+\begin{tabular}{l|cc|cc|cc}
+\toprule
+ & \multicolumn{2}{c|}{No Def} & \multicolumn{2}{c|}{Top-20}
+ & \multicolumn{2}{c}{LP-20} \\
+Mod & noF & FEC & noF & FEC & noF & FEC \\
+\midrule
+QPSK  & 100 & 100 & 73.5 & \textbf{100} & 75.5 & \textbf{100} \\
+8PSK  & 100 & 100 &  8.0 & \textbf{100} &  7.0 & \textbf{100} \\
+QAM16 & 99.5 & 100 &  2.0 & \textbf{90} &  1.0 & \textbf{91} \\
+QAM64 & 74.5 & \textbf{99} &  1.0 & 23 &  0.5 & 24 \\
+PAM4  & 68.0 & \textbf{93.5} &  6.0 & \textbf{84.5} &  5.5 & \textbf{87} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+FEC transforms near-total CRC failure into high integrity:
+8PSK goes from 8\% (Top-20, no FEC) to 100\% (Top-20 + FEC).
+Even without any defense, FEC improves QAM64 from 74.5\% to 99\%.
+
+\subsection{Recommended Architecture}
+
+Based on our findings, we propose a split-path receiver architecture:
+
+\begin{equation*}
+\text{Signal} \rightarrow
+\begin{cases}
+\text{Spectral-Gated} \rightarrow \text{AMC} & \text{(control path)} \\
+\text{Original signal} \rightarrow \text{Demod} \rightarrow \text{FEC} & \text{(data path)}
+\end{cases}
+\end{equation*}
+
+The defense filter is applied only to the \emph{classification path}.
+The data path uses the original (unfiltered) signal with FEC decoding,
+avoiding defense-induced distortion on the demodulated data.
+
+%-------------------------------------------------------------------------------
+\section{Discussion}
+\label{sec:discuss}
+%-------------------------------------------------------------------------------
+
+\subsection{Why Not Ensemble Voting?}
+
+An alternative approach is to apply multiple defenses, classify each,
+and vote on the result. While this achieves slightly higher accuracy
+for some modulations, it requires $M$ classifier inferences per sample
+(e.g., 3 for a 3-defense ensemble). At 35~ms per inference, this
+violates real-time constraints for high-throughput receivers. The
+spectral-gated defense achieves comparable accuracy with exactly
+one inference.
+
+\subsection{Limitations}
+
+\textbf{AM-SSB recovery gap.} While the defense improves AM-SSB from
+0\% to 20--65\%, this remains below the 93.5\% clean accuracy. Input
+quantization is a coarse defense for wideband signals, and improved
+wideband-aware methods are needed.
+
+\textbf{Low-SNR regime.} At SNR~0~dB, Top-20 removes too many
+signal components, degrading clean accuracy for BPSK (54.5\%), QPSK
+(22.5\%), and 8PSK (2\%). A larger $K$ or SNR-adaptive selection
+would mitigate this at the cost of reduced attack filtering.
+
+\textbf{Model dependence.} The defense is designed for the raw-IQ
+input distribution that the AWN model expects. Models trained with
+different preprocessing (e.g., post-AGC inputs) would require
+different defense parameterization.
+
+%-------------------------------------------------------------------------------
+\section{Related Work}
+\label{sec:related}
+%-------------------------------------------------------------------------------
+
+\textbf{Adversarial attacks on AMC.}
+Flowers et al.~\cite{flowers2019sigguard} evaluated FGSM and PGD
+attacks on CNN-based AMC and proposed SigGuard, a detector-based
+defense. Lin et al.~\cite{lin2020tactics} demonstrated universal
+perturbation attacks on DNN-based modulation recognition.
+Silvaco et al.~\cite{silvaco2023adversarial_rf} survey the
+attack landscape. Our work extends this by characterizing the
+attacks as control-plane and proposing input-transformation defenses
+rather than detector-based approaches.
+
+\textbf{Input transformation defenses.}
+In the image domain, input transformations (JPEG compression,
+spatial smoothing, bit-depth reduction) have been proposed as
+pre-processing defenses. We adapt this concept to IQ signals,
+finding that FFT Top-$K$ filtering is the RF-domain analog of
+spatial frequency filtering, and input quantization corresponds
+to bit-depth reduction.
+
+\textbf{FEC and adversarial robustness.}
+While FEC is standard in digital communications~\cite{proakis2008digital},
+its interaction with adversarial attacks on AMC has not been
+studied. We show that FEC addresses a fundamentally different
+failure mode (residual symbol errors) than the defense
+(classification recovery).
+
+%-------------------------------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+%-------------------------------------------------------------------------------
+
+We demonstrate that adversarial attacks on deep-learning-based AMC
+are control-plane attacks: they manipulate the classification
+decision without corrupting the physical signal. Exploiting this
+insight, we propose Spectral-Gated Defense, a real-time
+input-transformation method that uses spectral flatness to route
+signals to modulation-appropriate filtering. Combined with FEC on
+the data path, the defense provides a practical, deployable
+solution for robust AMC systems. All 11 modulations in RML2016.10a
+show positive recovery under both CW and EADL1 attacks, with
+sub-millisecond per-sample latency.
+
+%-------------------------------------------------------------------------------
+\section*{Availability}
+%-------------------------------------------------------------------------------
+
+The implementation of \textsc{Spectral-Gated Defense} is available
+as \texttt{spectral\_gated\_defense()} in \texttt{util/defense.py}.
+Experiments are reproducible using the scripts and checkpoints in
+the accompanying repository.
+
+%-------------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{\jobname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

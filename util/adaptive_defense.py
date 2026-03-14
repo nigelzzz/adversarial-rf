@@ -238,6 +238,97 @@ def spectral_shape_topk_denoise(
 
 
 # ---------------------------------------------------------------------------
+# Approach 4: Concentration + Distortion (pure signal-processing)
+# ---------------------------------------------------------------------------
+
+def concentration_distortion_topk_denoise(
+    x: torch.Tensor,
+    k_candidates: list = None,
+    conc_thresholds: list = None,
+    dist_thresholds: list = None,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """
+    Adaptive Top-K using spectral concentration AND reconstruction distortion.
+
+    For each candidate K (smallest first):
+      C_K = sum(top-K energy) / total_energy   (concentration)
+      D_K = ||x - topK(x)||^2 / ||x||^2        (distortion)
+    Accept smallest K where C_K >= conc_threshold AND D_K <= dist_threshold.
+    If no K qualifies → reject → return raw x (no filtering), selected_k = 0.
+
+    Args:
+        x: Tensor [N, 2, T] (I/Q)
+        k_candidates: Sorted K values to try (default [10, 20, 30])
+        conc_thresholds: Min concentration per K (default [0.85, 0.80, 0.75])
+        dist_thresholds: Max distortion per K (default [0.15, 0.20, 0.25])
+
+    Returns:
+        (x_denoised [N,2,T], selected_k [N] int tensor where 0=rejected)
+    """
+    if k_candidates is None:
+        k_candidates = [10, 20, 30]
+    if conc_thresholds is None:
+        conc_thresholds = [0.85, 0.80, 0.75]
+    if dist_thresholds is None:
+        dist_thresholds = [0.15, 0.20, 0.25]
+
+    k_cands = sorted(k_candidates)
+    assert len(conc_thresholds) == len(k_cands)
+    assert len(dist_thresholds) == len(k_cands)
+
+    N, C, T = x.shape
+    device = x.device
+
+    # Step 1: FFT and total energy
+    X = torch.fft.fft(x, n=T, dim=2)
+    energy = X.abs() ** 2  # [N, 2, T]
+    total_energy = energy.sum(dim=2, keepdim=True)  # [N, 2, 1]
+
+    # Sort energy descending per (sample, channel)
+    sorted_energy, _ = energy.sort(dim=2, descending=True)
+
+    # Pre-compute signal power for distortion denominator
+    x_power = (x ** 2).sum(dim=(1, 2))  # [N]
+    x_power = x_power.clamp(min=1e-12)
+
+    result = x.clone()  # default: raw (no filtering)
+    selected_k = torch.zeros(N, dtype=torch.int, device=device)  # 0 = rejected
+    decided = torch.zeros(N, dtype=torch.bool, device=device)
+
+    for i, kc in enumerate(k_cands):
+        undecided = ~decided
+        if not undecided.any():
+            break
+
+        # Step 2: Concentration for this K
+        topk_energy = sorted_energy[undecided, :, :kc].sum(dim=2)  # [M, 2]
+        total_e = total_energy[undecided].squeeze(2)  # [M, 2]
+        concentration = topk_energy / total_e.clamp(min=1e-12)  # [M, 2]
+        # Use max across I/Q channels (if either channel is concentrated, OK)
+        conc_max = concentration.max(dim=1).values  # [M]
+
+        # Step 3: Reconstruct with this K
+        x_topk = fft_topk_denoise(x[undecided], topk=kc)
+
+        # Step 4: Distortion
+        diff = x[undecided] - x_topk
+        dist = (diff ** 2).sum(dim=(1, 2)) / x_power[undecided]  # [M]
+
+        # Step 5: Decision
+        accept = (conc_max >= conc_thresholds[i]) & (dist <= dist_thresholds[i])
+
+        undecided_idx = torch.where(undecided)[0]
+        newly_decided = undecided_idx[accept]
+
+        result[newly_decided] = x_topk[accept]
+        selected_k[newly_decided] = kc
+        decided[newly_decided] = True
+
+    # Step 6: Rejected samples keep raw x (result already = x.clone())
+    return result, selected_k
+
+
+# ---------------------------------------------------------------------------
 # Normalized wrappers (for multi_attack_eval which uses normalized FFT domain)
 # ---------------------------------------------------------------------------
 
@@ -341,5 +432,21 @@ def spectral_shape_topk_denoise_normalized(
     x_norm = normalize_iq_data(x, norm_offset, norm_scale)
     x_denoised_norm, selected_k = spectral_shape_topk_denoise(
         x_norm, sig_pct, k_candidates,
+    )
+    return denormalize_iq_data(x_denoised_norm, norm_offset, norm_scale), selected_k
+
+
+def concentration_distortion_topk_denoise_normalized(
+    x: torch.Tensor,
+    k_candidates: list = None,
+    conc_thresholds: list = None,
+    dist_thresholds: list = None,
+    norm_offset: float = 0.02,
+    norm_scale: float = 0.04,
+) -> Tuple[torch.Tensor, torch.Tensor]:
+    """Normalized wrapper for concentration+distortion."""
+    x_norm = normalize_iq_data(x, norm_offset, norm_scale)
+    x_denoised_norm, selected_k = concentration_distortion_topk_denoise(
+        x_norm, k_candidates, conc_thresholds, dist_thresholds,
     )
     return denormalize_iq_data(x_denoised_norm, norm_offset, norm_scale), selected_k

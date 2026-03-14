@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<office:document-styles  
+xmlns:anim="urn:oasis:names:tc:opendocument:xmlns:animation:1.0" 
+xmlns:chart="urn:oasis:names:tc:opendocument:xmlns:chart:1.0"  
+xmlns:dc="http://purl.org/dc/elements/1.1/"  
+xmlns:dom="http://www.w3.org/2001/xml-events"  
+xmlns:dr3d="urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0"  
+xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0"  
+xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" 
+xmlns:form="urn:oasis:names:tc:opendocument:xmlns:form:1.0"  
+xmlns:math="http://www.w3.org/1998/Math/MathML"  
+xmlns:meta="urn:oasis:names:tc:opendocument:xmlns:meta:1.0"  
+xmlns:number="urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0"  
+xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" 
+xmlns:ooo="http://openoffice.org/2004/office"  
+xmlns:oooc="http://openoffice.org/2004/calc"  
+xmlns:ooow="http://openoffice.org/2004/writer"  
+xmlns:presentation="urn:oasis:names:tc:opendocument:xmlns:presentation:1.0" 
+xmlns:script="urn:oasis:names:tc:opendocument:xmlns:script:1.0"  
+xmlns:smil="urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0" 
+xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"  
+xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" 
+xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"  
+xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" 
+xmlns:xlink="http://www.w3.org/1999/xlink" 
+ 
+office:version="1.0"> 
+<office:font-face-decls> </office:font-face-decls> <office:styles> 
+<style:style style:name="bigskip" style:family="paragraph" style:parent-style-name="Text-body"> <style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.0cm" /> </style:style> <style:style style:name="clearpage" style:family="paragraph" style:parent-style-name="Text-body"> <style:paragraph-properties fo:break-before="page" /> </style:style> <style:style style:name="textsubscript" style:family="text"> 
+<style:text-properties style:text-position="sub"/> 
+</style:style> 
+<style:style style:name="hline-p-hr" style:family="paragraph"> 
+<style:paragraph-properties fo:padding="0.00001cm" fo:margin-top="0.00001cm" fo:margin-bottom="0.00001cm" fo:border-left="none" fo:border-right="none" fo:border-top="none" fo:line-height="0.011cm" fo:border-bottom="0.01cm solid #000000" /> 
+</style:style> <style:style style:name="cline-p-hr" style:family="paragraph"> 
+<style:paragraph-properties fo:padding="0.00001cm" fo:margin-top="0.00001cm" fo:margin-bottom="0.00001cm" fo:border-left="none" fo:border-right="none" fo:border-top="none" fo:line-height="0.01cm" fo:border-bottom="0.01cm solid #000000" /> 
+</style:style> <style:style style:name="cline-p" style:family="paragraph"> 
+<style:paragraph-properties fo:margin="0.00001cm" fo:border="none" fo:line-height="0.001cm" /> 
+</style:style> <style:style style:name="reference-ref" style:family="text"> <style:text-properties style:text-underline-style="solid" style:text-underline-width="thick" style:text-underline-height="0.2em" style:text-underline-color="#0000FF" /> </style:style> <style:style style:name="textsuperscript" style:family="text"> 
+<style:text-properties style:text-position="super 58%"/> 
+</style:style> 
+<style:style style:name="textsubscript" style:family="text"> 
+<style:text-properties style:text-position="sub 58%"/> 
+</style:style> 
+ 
+<style:style style:name="TEX" style:family="text"> <style:text-properties style:text-position="-25 100%"/> </style:style>  
+ 
+<style:style style:name="LATEX" style:family="text"> <style:text-properties style:text-position="15 70%"/> </style:style>  
+<style:style style:name="newpage" style:family="paragraph" > <style:paragraph-properties fo:break-after="page"/> </style:style>  
+<style:style style:name="mml-inline" style:family="graphic" style:parent-style-name="Formula" > 
+<style:graphic-properties style:vertical-pos="middle" style:vertical-rel="text"/> 
+</style:style> 
+ 
+<style:style style:name="mml-display" style:family="graphic" style:parent-style-name="Formula"> <style:graphic-properties style:wrap="none" style:horizontal-pos="center" style:horizontal-rel="paragraph-content" fo:background-color="transparent" style:background-transparency="100%" fo:margin-left="5%" > </style:graphic-properties> </style:style> 
+ 
+<style:style style:name="Formula" style:family="graphic"> <style:graphic-properties text:anchor-type="as-char" svg:y="0in" fo:margin-left="0.1mm" fo:margin-right="0.1mm" style:vertical-pos="middle" style:vertical-rel="text" /> </style:style> 
+<style:style style:name="equ-p" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:text-align="center" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="equ-num-p" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:text-align="end" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="equation" style:family="table"> 
+<style:table-properties style:rel-width="88%" fo:margin-left="1cm" fo:margin-right="0cm" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" table:align="margins"/> 
+</style:style> 
+<style:style style:name="sty-11L" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:padding-left="0.17cm" fo:padding-right="0.17cm" fo:wrap-option="no-wrap" fo:text-align="start" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="sty-11C" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:padding-left="0.17cm" fo:padding-right="0.17cm" fo:wrap-option="no-wrap" fo:text-align="center" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="small-caps" style:family="text"> 
+<style:text-properties fo:font-variant="small-caps" /> 
+</style:style> 
+<style:style style:name="First-line-indent" style:family="paragraph" style:parent-style-name="Text-body" style:class="text"> 
+<style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-indent="0.499cm" style:auto-text-indent="false"/> </style:style> 
+<style:style style:name="First-line-indent-rtl" style:family="paragraph" style:parent-style-name="Text-body" style:class="text"> 
+<style:paragraph-properties fo:margin-left="0cm" fo:margin-right="0cm" fo:text-indent="0.499cm" style:auto-text-indent="false" fo:text-align="end" style:justify-single-word="false" style:writing-mode="rl-tb" /> </style:style> 
+<style:style style:name="Text-body" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="First-line-indent" style:class="text" style:master-page-name=""> 
+<style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:line-height="120%" fo:text-align="justify" style:justify-single-word="false" fo:hyphenate="true" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" fo:hyphenation-ladder-count="no-limit" style:page-number="0"/> </style:style>  
+<style:style style:name="Like-Text-body" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="First-line-indent" style:class="text" style:master-page-name=""> 
+<style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:line-height="120%" fo:text-align="justify" style:justify-single-word="false" fo:hyphenate="true" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" fo:hyphenation-ladder-count="no-limit" style:page-number="0"/> </style:style>  
+<style:style style:name="Text-body-rtl" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="First-line-indent" style:class="text" style:master-page-name=""> 
+<style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:line-height="120%" style:justify-single-word="false" fo:hyphenate="true" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" fo:hyphenation-ladder-count="no-limit" style:page-number="0" fo:text-align="end" style:writing-mode="rl-tb" /> </style:style>  
+<style:style style:name="Like-Text-body-rtl" style:family="paragraph" style:parent-style-name="Standard" style:next-style-name="First-line-indent" style:class="text" style:master-page-name=""> 
+<style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0cm" fo:line-height="120%" style:justify-single-word="false" fo:hyphenate="true" fo:hyphenation-remain-char-count="2" fo:hyphenation-push-char-count="2" fo:hyphenation-ladder-count="no-limit" style:page-number="0" fo:text-align="end" style:writing-mode="rl-tb" /> </style:style>  
+<style:style style:name="p-nopar" style:family="paragraph" style:parent-style-name="Text-body"> 
+<style:paragraph-properties fo:text-align="justify" style:auto-text-indent="false" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="p-nopar-rtl" style:family="paragraph" style:parent-style-name="Text-body"> 
+<style:paragraph-properties style:auto-text-indent="false" fo:margin-top="0.3cm" fo:margin-bottom="0.3cm" style:justify-single-word="false" fo:text-align="end" style:writing-mode="rl-tb" /> 
+</style:style> 
+<style:style style:name="display-math" style:family="paragraph" style:parent-style-name="Text-body"> 
+<style:paragraph-properties fo:text-align="center" style:auto-text-indent="false" style:justify-single-word="false"/> 
+</style:style> 
+<style:style style:name="Inside-itemize" style:family="paragraph" style:parent-style-name="Standard" style:list-style-name="Itemize"> 
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in" fo:margin-top="0in" fo:margin-bottom="0.15in" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <text:list-style style:name="Itemize" > <text:list-level-style-bullet text:level="1" text:style-name="Bullet-Symbols" text:bullet-char="•" > 
+<style:list-level-properties text:space-before="0.15in" text:min-label-width="0.2in" text:min-label-distance="0.05in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="2" text:style-name="Bullet-Symbols" text:bullet-char="-" > 
+<style:list-level-properties text:space-before="0.35in" text:min-label-width="0.2in" text:min-label-distance="0.05in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="3" text:style-name="Bullet-Symbols" text:bullet-char="⁎" > 
+<style:list-level-properties text:space-before="0.55in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="4" text:style-name="Bullet-Symbols" text:bullet-char="·" > 
+<style:list-level-properties text:space-before="0.75in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="Inside-enumerate" style:family="paragraph" style:parent-style-name="Text-body" style:list-style-name="Enumerate"> 
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in" fo:margin-top="0in" fo:margin-bottom="0.15in" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <text:list-style style:name="Enumerate"> 
+<text:list-level-style-number text:level="1" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="." style:num-format="1" > 
+<style:list-level-properties text:min-label-width="0.2in" text:space-before="0.15in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="2" text:style-name="Numbering-Symbols" style:num-prefix="(" style:num-suffix=")" style:num-format="a" > 
+<style:list-level-properties text:min-label-width="0.2in" text:space-before="0.35in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="3" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="." style:num-format="i" > 
+<style:list-level-properties text:min-label-width="0.2in" text:space-before="0.6in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="4" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="." style:num-format="A" > 
+<style:list-level-properties text:min-label-width="0.2in" text:space-before="0.8in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+</text:list-style> 
+<style:style style:name="Inside-enumerate-rtl" style:family="paragraph" style:list-style-name="Enumerate-rtl"> 
+<style:paragraph-properties fo:text-align="end" style:justify-single-word="false" style:writing-mode="rl-tb"/> 
+</style:style> 
+<text:list-style style:name="Enumerate-rtl"> 
+<text:list-level-style-number text:level="1" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="." > 
+<style:list-level-properties text:space-before="0.15in" style:num-format="1" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="2" text:style-name="Numbering-Symbols" style:num-prefix="(" style:num-suffix=")"> 
+<style:list-level-properties text:space-before="0.35in" style:num-format="a" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="3" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="."> 
+<style:list-level-properties text:space-before="0.6in" style:num-format="i" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+<text:list-level-style-number text:level="4" text:style-name="Numbering-Symbols" style:num-prefix="" style:num-suffix="."> 
+<style:list-level-properties text:space-before="0.8in" style:num-format="A" text:min-label-distance="0.05in"/> 
+</text:list-level-style-number> 
+</text:list-style> 
+<text:list-style style:name="description" > <text:list-level-style-bullet text:level="1" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0in" text:min-label-width="0in" text:min-label-distance="0in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="2" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.2in" text:min-label-width="0.2in" text:min-label-distance="0.05in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="3" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.4in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="4" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.6in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="dd" style:family="paragraph" style:parent-style-name="Standard"> <style:paragraph-properties fo:margin-left="0.35in" fo:margin-right="0in" fo:margin-top="0cm" fo:margin-bottom="0.2cm" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <style:style style:name="dt" style:family="paragraph" style:parent-style-name=""> <style:paragraph-properties fo:margin-left="0.1in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/> <style:text-properties fo:font-weight="bold" /> </style:style> <text:list-style style:name="list" > <text:list-level-style-bullet text:level="1" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0in" text:min-label-width="0in" text:min-label-distance="0in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="2" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.2in" text:min-label-width="0.2in" text:min-label-distance="0.05in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="3" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.4in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="4" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.6in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="dd" style:family="paragraph" style:parent-style-name="Standard"> <style:paragraph-properties fo:margin-left="0.35in" fo:margin-right="0in" fo:margin-top="0cm" fo:margin-bottom="0.2cm" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <style:style style:name="dt" style:family="paragraph" style:parent-style-name=""> <style:paragraph-properties fo:margin-left="0.1in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/> <style:text-properties fo:font-weight="bold" /> </style:style> <text:list-style style:name="printshorthands" > <text:list-level-style-bullet text:level="1" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0in" text:min-label-width="0in" text:min-label-distance="0in" /> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="printshorthands-dd" style:family="paragraph" style:parent-style-name="Standard"> <style:paragraph-properties fo:margin-left="0.35in" fo:margin-right="0in" fo:margin-top="0cm" fo:margin-bottom="0.2cm" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <style:style style:name="printshorthands-dt" style:family="paragraph" style:parent-style-name=""> <style:paragraph-properties fo:margin-left="0.1in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/> </style:style> <text:list-style style:name="printthebibliography" > <text:list-level-style-bullet text:level="1" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0in" text:min-label-width="0in" text:min-label-distance="0in" /> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="printthebibliography-dd" style:family="paragraph" style:parent-style-name="Standard"> <style:paragraph-properties fo:margin-left="0.35in" fo:margin-right="0in" fo:margin-top="0cm" fo:margin-bottom="0.2cm" fo:text-indent="-0.35in" style:auto-text-indent="false"/> </style:style> <style:style style:name="printthebibliography-dt" style:family="paragraph" style:parent-style-name=""> <style:paragraph-properties fo:margin-top="0cm" fo:margin-bottom="0cm" style:auto-text-indent="false"/> </style:style>  
+<style:style style:name="quote" style:family="paragraph" style:parent-style-name="Text-body" style:next-style-name="Text-body"> 
+<style:paragraph-properties fo:margin-left="1cm" fo:margin-right="1cm" fo:margin-top="0.199cm" fo:margin-bottom="0.199cm" fo:text-indent="0cm" style:auto-text-indent="false"/> 
+</style:style>  
+<style:style style:name="quote-rtl" style:family="paragraph" style:parent-style-name="Text-body-rtl" style:next-style-name="Text-body-rtl"> 
+<style:paragraph-properties fo:margin-left="1cm" fo:margin-right="1cm" fo:margin-top="0.199cm" fo:margin-bottom="0.199cm" fo:text-indent="0cm" style:auto-text-indent="false" fo:text-align="end" style:writing-mode="rl-tb" /> 
+</style:style>  
+ 
+<style:style style:name="begin-env-p" style:family="paragraph"> 
+<style:paragraph-properties fo:margin-top="2mm" fo:margin-bottom="0mm" fo:line-height="0.1mm" /> 
+</style:style> 
+<style:style style:name="end-env-p" style:family="paragraph"> 
+<style:paragraph-properties fo:margin-bottom="2mm" fo:margin-top="0mm" fo:line-height="0.1mm" /> 
+</style:style> 
+ 
+<style:style style:name="env-frame" style:family="graphic" > 
+<style:graphic-properties style:vertical-pos="top" style:vertical-rel="baseline" style:horizontal-pos="from-left" style:horizontal-rel="paragraph-content" fo:padding="0in" fo:border="none" style:shadow="none" /> 
+</style:style> 
+ 
+<style:style style:name="Sect1" style:family="section"> <style:section-properties > <style:columns fo:column-count="1" fo:column-gap="0cm"> <style:column fo:margin-top="0.5cm" fo:margin-left="0cm" fo:margin-right="0cm" /> </style:columns> </style:section-properties > </style:style>  
+ 
+<style:style style:name="Sect2" style:family="section"> <style:section-properties > <style:columns fo:column-count="0" fo:column-gap="0cm"/> </style:section-properties > </style:style>  
+ 
+<style:style style:name="Contents-Heading" style:family="paragraph" style:parent-style-name="Heading" style:class="index"> <style:paragraph-properties fo:margin-top="0.5cm" fo:margin-bottom="0.2cm" fo:margin-left="0cm" fo:margin-right="0cm" fo:font-size="16pt" fo:font-weight="bold" style:font-size-asian="16pt" style:font-weight-asian="bold" style:font-size-complex="16pt" style:font-weight-complex="bold" fo:text-indent="0cm" style:auto-text-indent="false" text:number-lines="false" text:line-number="0" /> </style:style>  
+ 
+<style:style style:name="Index-Heading" style:family="paragraph" style:parent-style-name="Heading" style:class="index"> 
+<style:paragraph-properties fo:margin-left="0in" fo:margin-right="0in" fo:font-size="16pt" fo:font-weight="bold" style:font-size-asian="16pt" style:font-weight-asian="bold" style:font-size-complex="16pt" style:font-weight-complex="bold" fo:text-indent="0in" style:auto-text-indent="false" text:number-lines="false" text:line-number="0"/> 
+</style:style> 
+ 
+<style:style style:name="verse" style:family="paragraph" style:parent-style-name="Text-body" style:next-style-name="Text-body"> <style:paragraph-properties fo:margin-left="1.499cm" fo:margin-right="1cm" fo:margin-top="0.199cm" fo:margin-bottom="0.199cm" fo:text-indent="-0.499cm" style:auto-text-indent="false"> <style:tab-stops/> </style:paragraph-properties > </style:style>  
+<text:list-style style:name="algorithmic" > <text:list-level-style-bullet text:level="1" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0in" text:min-label-width="0in" text:min-label-distance="0in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="2" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.2in" text:min-label-width="0.2in" text:min-label-distance="0.05in" /> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="3" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.4in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> <text:list-level-style-bullet text:level="4" text:style-name="Source-Text" text:bullet-char=" " > 
+<style:list-level-properties text:space-before="0.6in" text:min-label-width="0.2in" text:min-label-distance="0.05in"/> 
+</text:list-level-style-bullet> </text:list-style> <style:style style:name="algorithmic-dd" style:family="paragraph" style:parent-style-name="Standard"> <style:paragraph-properties fo:margin-left="0.35in" fo:margin-right="0in" fo:margin-top="0cm" fo:margin-bottom="0.2cm" fo:text-indent="0in" style:auto-text-indent="false"/> <style:text-properties fo:wrap-option="no-wrap" /> </style:style> <style:style style:name="algorithmic-dt" style:family="paragraph" style:parent-style-name=""> <style:paragraph-properties fo:margin-left="0.1in" fo:margin-right="0in" fo:text-indent="0in" style:auto-text-indent="false"/> <style:text-properties fo:wrap-option="no-wrap" /> </style:style> <style:style style:name="verb" style:family="text"> 
+<style:text-properties fo:font-family="monospace" /> 
+</style:style> 
+<style:style style:name="obeylines-h" style:family="text"> 
+<style:text-properties fo:wrap-option="no-wrap" /> 
+</style:style> 
+<style:style style:name="obeylines-v" style:family="text"> 
+<style:text-properties fo:wrap-option="no-wrap" /> 
+</style:style> 
+<style:style style:name="Preformatted-Text" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.2cm" fo:text-indent="0cm" /> 
+<style:text-properties fo:font-family="monospace"/> 
+</style:style> 
+<style:style style:name="Preformatted-Text-rtl" style:family="paragraph" style:parent-style-name="Standard"> 
+<style:paragraph-properties fo:margin-top="0.2cm" fo:margin-bottom="0.2cm" fo:text-indent="0cm" fo:text-align="end" style:justify-single-word="false" style:writing-mode="rl-tb" /> 
+<style:text-properties fo:font-family="monospace"/> 
+</style:style> 
+ <style:style style:name="Footnote" style:family="paragraph" style:parent-style-name="Standard" style:class="extra"> 
+<style:paragraph-properties fo:margin-left="0.2in" fo:margin-right="0in" fo:text-indent="-0.2in" style:auto-text-indent="false"/> <style:text-properties fo:font-size="85%" style:font-size-asian="85%" style:font-size-complex="85%" /> </style:style> 
+<text:notes-configuration text:note-class="footnote" text:citation-style-name="Footnote_20_Symbol" text:citation-body-style-name="Footnote_20_anchor" style:num-format="1" text:start-value="0" text:footnotes-position="page" text:start-numbering-at="document" /> 
+<style:style style:name="Footnote_20_Symbol" style:display-name="Footnote Symbol" style:family="text" > 
+<style:text-properties style:text-position="super 70%" /> 
+</style:style> <style:style style:name="Footnote_20_anchor" style:display-name="Footnote anchor" style:family="text"> <style:text-properties style:text-position="super 58%" /> 
+</style:style> 
+<style:style style:name="Emphasis" style:family="text"> 
+<style:text-properties fo:font-style="italic"/> 
+</style:style> 
+<style:style style:name="textit" style:family="text"> 
+<style:text-properties fo:font-style="italic"/> 
+</style:style> 
+<style:style style:name="textbf" style:family="text"> 
+<style:text-properties fo:font-style="normal" fo:font-weight="bold"/> 
+</style:style> 
+<style:style style:name="textsc" style:family="text"> 
+<style:text-properties fo:font-variant="small-caps" fo:font-style="normal" fo:font-weight="normal" style:text-position="0% 100%" /> 
+</style:style> 
+<style:style style:name="texttt" style:family="text"> 
+<style:text-properties fo:font-family="monospace" /> 
+</style:style> 
+<style:style style:name="textrm" style:family="text"> 
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal" style:font-weight-complex="normal"/> 
+</style:style> 
+<style:style style:name="textsf" style:family="text"> 
+<style:text-properties fo:font-style="normal" fo:font-weight="bold" style:font-family-generic="swiss" style:font-pitch="variable" /> 
+</style:style> 
+<style:style style:name="textup" style:family="text"> 
+<style:text-properties fo:font-weight="normal" style:font-weight-asian="normal" style:font-weight-complex="normal"/> 
+</style:style> 
+<style:style style:name="overline" style:family="text"> <style:text-properties style:text-underline="dotted" /> </style:style> <style:style style:name="underline" style:family="text"> <style:text-properties style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color" /> </style:style> </office:styles> 
+<office:automatic-styles> <style:page-layout style:name="Standard-page-layout"> <style:page-layout-properties fo:page-width="614.295pt" fo:page-height="794.96999pt" fo:margin-left="1.0in" fo:margin-right="1.0in" style:print-orientation="portrait" > </style:page-layout-properties> </style:page-layout>  
+</office:automatic-styles> <office:master-styles> 
+<style:master-page style:name="Standard" style:page-layout-name="Standard-page-layout"/> 
+ 
+</office:master-styles> 
+</office:document-styles> 

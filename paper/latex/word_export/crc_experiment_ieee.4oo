@@ -1,0 +1,399 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+ 
+<office:document-content office:version='1.0' xmlns:anim='urn:oasis:names:tc:opendocument:xmlns:animation:1.0' xmlns:chart='urn:oasis:names:tc:opendocument:xmlns:chart:1.0' xmlns:dc='http://purl.org/dc/elements/1.1/' xmlns:dom='http://www.w3.org/2001/xml-events' xmlns:dr3d='urn:oasis:names:tc:opendocument:xmlns:dr3d:1.0' xmlns:draw='urn:oasis:names:tc:opendocument:xmlns:drawing:1.0' xmlns:fo='http://www.w3.org/1999/XSL/Format' xmlns:form='urn:oasis:names:tc:opendocument:xmlns:form:1.0' xmlns:math='http://www.w3.org/1998/Math/MathML' xmlns:meta='urn:oasis:names:tc:opendocument:xmlns:meta:1.0' xmlns:number='urn:oasis:names:tc:opendocument:xmlns:datastyle:1.0' xmlns:office='urn:oasis:names:tc:opendocument:xmlns:office:1.0' xmlns:ooo='http://openoffice.org/2004/office' xmlns:oooc='http://openoffice.org/2004/calc' xmlns:ooow='http://openoffice.org/2004/writer' xmlns:presentation='urn:oasis:names:tc:opendocument:xmlns:presentation:1.0' xmlns:script='urn:oasis:names:tc:opendocument:xmlns:script:1.0' xmlns:smil='urn:oasis:names:tc:opendocument:xmlns:smil-compatible:1.0' xmlns:style='urn:oasis:names:tc:opendocument:xmlns:style:1.0' xmlns:svg='http://www.w3.org/2000/svg' xmlns:table='urn:oasis:names:tc:opendocument:xmlns:table:1.0' xmlns:text='urn:oasis:names:tc:opendocument:xmlns:text:1.0' xmlns:xforms='http://www.w3.org/2002/xforms' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> 
+<office:automatic-styles> <?tex4ht-lg  file='crc_experiment_ieee.lg'?> <style:style style:family='section' style:name='Figure'> 
+<style:section-properties fo:margin-left='0.25in' fo:margin-right='0.25in' style:editable='true'> 
+<style:columns fo:column-count='0' fo:column-gap='0in'></style:columns> </style:section-properties> </style:style> 
+<style:page-layout style:name='Standard-page-layout'> 
+<style:page-layout-properties fo:margin-bottom='0.7874in' fo:margin-left='0.7874in' fo:margin-right='0.7874in' fo:margin-top='0.7874in' fo:page-height='794.96999pt' fo:page-width='614.295pt' style:footnote-max-height='0in' style:num-format='1' style:print-orientation='portrait' style:writing-mode='lr-tb'> 
+<style:footnote-sep style:adjustment='left' style:color='#000000' style:distance-after-sep='0.0398in' style:distance-before-sep='0.0398in' style:rel-width='25%' style:width='0.0071in'></style:footnote-sep> 
+</style:page-layout-properties> 
+<style:header-style></style:header-style> <style:footer-style></style:footer-style> </style:page-layout> 
+ 
+</office:automatic-styles>     <office:body><office:text>
+  <text:p text:style-name='newpage'></text:p>
+<!-- l. 19 --><text:p text:style-name='First-line-indent'>
+</text:p> 
+<!-- l. 19 --><text:p text:style-name='First-line-indent'>  </text:p> 
+<text:p text:style-name='newpage'></text:p>
+<!-- l. 19 --><text:p text:style-name='First-line-indent'>
+</text:p> 
+<!-- l. 19 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmr7t-x-x-240'>Impact of AMC-Oriented CW Adversarial Attacks</text:span>
+<text:span text:style-name='ptmr7t-x-x-240'>on CRC Integrity</text:span>
+</text:p> 
+<!-- l. 19 --><text:p text:style-name='Text-body'>
+</text:p> 
+<!-- l. 19 --><text:p text:style-name='Text-body'>                                                                           <text:span text:style-name='ptmr7t-x-x-110'>Anonymous Authors</text:span>
+                                                                        Affiliation Withheld for Review
+                                                                      Email: anonymous@anonymous.org
+</text:p> 
+<!-- l. 21 --><text:p text:style-name='Text-body'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-x-x-90'>Abstract</text:span></text:span>
+       <text:span text:style-name='ptmr7t-x-x-90'>This  paper  studies  a  practical  two-stage  receiver  pipeline  in  which  automatic  modulation  classification  (AMC)  controls</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>downstream demodulation and CRC verification. Using the existing </text:span><text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-x-x-90'>crc</text:span><text:span text:style-name='pcrr7t-x-x-90'>_experiment.py</text:span></text:span> <text:span text:style-name='ptmr7t-x-x-90'>implementation, we run a two-track</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>evaluation:  Track  A  uses  real  RML2016.10a  IQ  data  to  measure  AWN  behavior  under  clean  and  Carlini-Wagner  (CW)  attack</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>conditions;  Track  B  uses  synthetic  bursts  with  known  payload  bits  to  measure  CRC  pass  rates.  Perturbations  are  generated  on</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>Track A and transferred to Track B. Across digital modulations, average AMC accuracy drops from 97.19% to 4.65% under CW.</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>However,  CRC  under  oracle  demodulation  changes  only  from  63.62%  to  59.59%.  CRC  collapse  appears  when  demodulation  is</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>driven by attacked AMC output: Adv+AMC CRC falls to 4.12%. At 18 dB, the gap is stronger: 93.25% (Adv+Oracle) vs. 7.81%</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>(Adv+AMC). The results indicate that the dominant failure path is AMC misclassification leading to wrong demodulator selection,</text:span>
+    <text:span text:style-name='ptmr7t-x-x-90'>not only direct waveform destruction.</text:span>
+</text:p> 
+<!-- l. 36 --><text:p text:style-name='Text-body'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-x-x-90'>Index  Terms</text:span></text:span>
+       <text:span text:style-name='ptmr7t-x-x-90'>adversarial machine learning, modulation classification, RF security, CRC, CW attack</text:span>
+<text:bookmark text:name='x1-2r1'></text:bookmark>
+</text:p> 
+<!-- l. 1 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>I.  I<text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span></text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 2 --><text:p text:style-name='First-line-indent'>  Practical receivers often use a two-stage pipeline: automatic modulation classification (AMC) followed by modulation-specific
+demodulation and CRC checking. This architecture is effective under noise, but it introduces a strong dependency: if AMC is
+manipulated, the receiver may select the wrong demodulator, and CRC can fail even when the waveform is still demodulatable under
+the correct modulation assumption.
+</text:p> 
+<!-- l. 8 --><text:p text:style-name='First-line-indent'>  This paper analyzes that failure path using the implementation in <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py</text:span></text:span> from the current codebase. We focus on
+three questions:
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Does CW mainly break AMC, waveform demodulability, or both?
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>How large is the gap between oracle demodulation and AMC-driven demodulation under attack?
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Are the conclusions stable across low and high SNR regimes (0 and 18 dB)?</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 16 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-6r2'></text:bookmark>
+</text:p> 
+<!-- l. 16 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>II.  M<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>h</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span></text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 17 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-7r1'></text:bookmark>
+</text:p> 
+<!-- l. 17 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>A.  Two-Track Design</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 18 --><text:p text:style-name='First-line-indent'>  The experiment uses a two-track setup.
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Track  A  (AMC):</text:span></text:span> real <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>RML2016.10a</text:span></text:span> IQ samples are classified by AWN on clean and CW-attacked inputs to obtain
+     AMC accuracy and perturbations.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Track B (CRC):</text:span></text:span> synthetic bursts with known payload bits are generated, demodulated, and validated with CRC pass/fail
+     outcomes.</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 26 --><text:p text:style-name='First-line-indent'>  Code references: <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:73</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:175</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:222</text:span></text:span>.
+</text:p> 
+<!-- l. 29 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-10r2'></text:bookmark>
+</text:p> 
+<!-- l. 29 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>B.  Transfer Perturbation</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 30 --><text:p text:style-name='First-line-indent'>  CW perturbations are generated on Track A and then transferred to Track B: </text:p> 
+<table:table table:style-name='equation'><table:table-column table:style-name='equ-col'></table:table-column> 
+<table:table-column table:style-name='equ-num-col'></table:table-column> 
+<table:table-row><table:table-cell table:style-name='equ-cell'><text:p text:style-name='equ-p'>
+<!-- l. 31 --><draw:frame draw:name='mobj-2' draw:style-name='mml-display' draw:z-index='0' text:anchor-type='paragraph'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m2' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame></text:p></table:table-cell> 
+<table:table-cell table:style-name='equ-num-cell'><text:p text:style-name='equ-num-p'>(1)</text:p></table:table-cell> 
+</table:table-row></table:table>
+<!-- l. 33 --><text:p text:style-name='Like-Text-body'>
+where <!-- l. 34 --><draw:frame draw:name='mobj-3' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m3' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame>.
+</text:p> 
+<!-- l. 36 --><text:p text:style-name='First-line-indent'>  Code references: <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:212</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:238</text:span></text:span>.
+<text:bookmark text:name='x1-12r3'></text:bookmark>
+</text:p> 
+<!-- l. 39 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>C.  Evaluation Scenarios</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 40 --><text:p text:style-name='First-line-indent'>  For each modulation-SNR cell, four scenarios are evaluated:
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Clean+Oracle:</text:span></text:span> clean IQ, true modulation used for demodulation.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Clean+AMC:</text:span></text:span> clean IQ, demodulation chosen from AMC behavior.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Adv+Oracle:</text:span></text:span> adversarial IQ, true modulation used for demodulation.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'><text:span text:style-name='textbf'><text:span text:style-name='ptmb7t-'>Adv+AMC:</text:span></text:span> adversarial IQ, demodulation chosen from attacked AMC output.</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 48 --><text:p text:style-name='First-line-indent'>  The adversarial window is spliced back into full burst context before demodulation to preserve guard-related filtering behavior
+(<text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment.py:93--124</text:span></text:span>).
+</text:p> 
+<!-- l. 51 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-17r3'></text:bookmark>
+</text:p> 
+<!-- l. 51 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>III.  E<text:span text:style-name='small-caps'>x</text:span><text:span text:style-name='small-caps'>p</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>m</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>l</text:span> S<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>p</text:span></text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 52 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-18r1'></text:bookmark>
+</text:p> 
+<!-- l. 52 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>A.  Model and Data</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 54 --><text:p text:style-name='First-line-indent'>
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>AMC model: AWN loaded from <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>2016.10a</text:span><text:span text:style-name='pcrr7t-'>_AWN.pkl</text:span></text:span>.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Real data (Track A): <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>./data/RML2016.10a</text:span><text:span text:style-name='pcrr7t-'>_dict.pkl</text:span></text:span>.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Synthetic data (Track B): generated by <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>util.synth</text:span><text:span text:style-name='pcrr7t-'>_txrx.generate</text:span><text:span text:style-name='pcrr7t-'>_burst</text:span></text:span>.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>CRC-capable digital modulations: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4, CPFSK, GFSK.</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 60 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-23r2'></text:bookmark>
+</text:p> 
+<!-- l. 60 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>B.  Attack and Output Scope</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 62 --><text:p text:style-name='First-line-indent'>
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Attack: CW via <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>create</text:span><text:span text:style-name='pcrr7t-'>_attack(’cw’, ...)</text:span></text:span>.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Track A uses 500 real samples per modulation-SNR cell.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Result file for this paper: <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment</text:span><text:span text:style-name='pcrr7t-'>_results/crc</text:span><text:span text:style-name='pcrr7t-'>_vs</text:span><text:span text:style-name='pcrr7t-'>_amc.csv</text:span></text:span>.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Track B count in this result: <!-- l. 65 --><draw:frame draw:name='mobj-4' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m4' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame>
+     synthetic bursts per digital cell.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>SNR settings in the result file: 0 and 18 dB.</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 69 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-29r4'></text:bookmark>
+</text:p> 
+<!-- l. 69 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>IV.  R<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>s</text:span></text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 70 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-30r1'></text:bookmark>
+</text:p> 
+<!-- l. 70 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>A.  Overall Means on Digital Modulations</text:span>
+<text:bookmark text:name='Q1-1-0'></text:bookmark>
+</text:p> 
+<!-- l. 71 --><text:p text:style-name='First-line-indent'>  Table <text:a xlink:href='#x1-31r1' xlink:type='simple'>I<!-- tex4ht:ref: tab:overall  --></text:a>  reports  means  over  all  digital  cells  (8  modulations  <!-- l. 71 --><draw:frame draw:name='mobj-5' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m5' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame> 2 SNR levels <!-- l. 72 --><draw:frame draw:name='mobj-6' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m6' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame> 4 scenarios).
+</text:p> 
+<!-- l. 74 --><text:p text:style-name='First-line-indent'>  </text:p> 
+<text:section text:name='float'>
+<text:bookmark text:name='x1-31r1'></text:bookmark>
+<text:span text:style-name='ptmr7t-x-x-80'>TABLE</text:span><text:span text:style-name='ptmr7t-x-x-80'> I</text:span><text:line-break></text:line-break>
+<text:span text:style-name='ptmrc7t-x-x-80'>O<text:span text:style-name='small-caps'>v</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>l</text:span> M<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>s</text:span> <text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span> D<text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>g</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>l</text:span> M<text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>s</text:span></text:span>
+ <table:table table:style-name='tabular'><!-- table:table-column-group ???="TBL-1-1g" --><table:table-column table:style-name='TBL-1-1'></table:table-column><table:table-column table:style-name='TBL-1-2'></table:table-column><table:table-column table:style-name='TBL-1-3'></table:table-column><!-- /table:table-column-group --><table:table-row table:style-name='TBL-1-1-'><table:table-cell table:style-name='TBL-1-1-1'><text:p text:style-name='sty-11L'>Scenario       </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-1-2'><text:p text:style-name='sty-11C'>AMC Acc (%)</text:p></table:table-cell><table:table-cell table:style-name='TBL-1-1-3'><text:p text:style-name='sty-11C'>CRC Pass (%)</text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-1-2-'><table:table-cell table:style-name='TBL-1-2-1'><text:p text:style-name='sty-11L'>Clean+Oracle</text:p></table:table-cell><table:table-cell table:style-name='TBL-1-2-2'><text:p text:style-name='sty-11C'>        97.19        </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-2-3'><text:p text:style-name='sty-11C'>       63.62       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-1-3-'><table:table-cell table:style-name='TBL-1-3-1'><text:p text:style-name='sty-11L'>Clean+AMC  </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-3-2'><text:p text:style-name='sty-11C'>        97.19        </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-3-3'><text:p text:style-name='sty-11C'>       62.12       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-1-4-'><table:table-cell table:style-name='TBL-1-4-1'><text:p text:style-name='sty-11L'>Adv+Oracle  </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-4-2'><text:p text:style-name='sty-11C'>         4.65         </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-4-3'><text:p text:style-name='sty-11C'>       59.59       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-1-5-'><table:table-cell table:style-name='TBL-1-5-1'><text:p text:style-name='sty-11L'>Adv+AMC    </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-5-2'><text:p text:style-name='sty-11C'>         4.65         </text:p></table:table-cell><table:table-cell table:style-name='TBL-1-5-3'><text:p text:style-name='sty-11C'>        4.12        </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-1-6-'><table:table-cell table:style-name='TBL-1-6-1'><text:p text:style-name='sty-11L'>                      </text:p></table:table-cell></table:table-row></table:table>
+  </text:section>
+<!-- l. 90 --><text:p text:style-name='First-line-indent'>  CW collapses AMC (97.19% <!-- l. 90 --><draw:frame draw:name='mobj-7' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m7' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame> 4.65%).  However,  with  oracle  demodulation,  CRC  drops  only  moderately  (63.62%  <!-- l. 91 --><draw:frame draw:name='mobj-8' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m8' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame> 59.59%). CRC collapse occurs primarily in Adv+AMC.
+<text:bookmark text:name='x1-32r2'></text:bookmark>
+</text:p> 
+<!-- l. 93 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>B.  SNR-Stratified Means</text:span>
+<text:bookmark text:name='Q1-1-1'></text:bookmark>
+</text:p> 
+<!-- l. 94 --><text:p text:style-name='First-line-indent'>  </text:p> 
+<text:section text:name='float'>
+<text:bookmark text:name='x1-33r2'></text:bookmark>
+<text:span text:style-name='ptmr7t-x-x-80'>TABLE</text:span><text:span text:style-name='ptmr7t-x-x-80'> II</text:span><text:line-break></text:line-break>
+<text:span text:style-name='ptmrc7t-x-x-80'>SNR-S<text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>fi</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>d</text:span> M<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>s</text:span> <text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span> D<text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>g</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>l</text:span> M<text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>s</text:span></text:span>
+ <table:table table:style-name='tabular'><!-- table:table-column-group ???="TBL-2-1g" --><table:table-column table:style-name='TBL-2-1'></table:table-column><table:table-column table:style-name='TBL-2-2'></table:table-column><table:table-column table:style-name='TBL-2-3'></table:table-column><!-- /table:table-column-group --><table:table-row table:style-name='TBL-2-1-'><table:table-cell table:style-name='TBL-2-1-1'><text:p text:style-name='sty-11L'>Scenario (SNR)         </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-1-2'><text:p text:style-name='sty-11C'>AMC Acc (%)</text:p></table:table-cell><table:table-cell table:style-name='TBL-2-1-3'><text:p text:style-name='sty-11C'>CRC Pass (%)</text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-2-'><table:table-cell table:style-name='TBL-2-2-1'><text:p text:style-name='sty-11L'>Clean+Oracle (0 dB)  </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-2-2'><text:p text:style-name='sty-11C'>        96.28        </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-2-3'><text:p text:style-name='sty-11C'>       27.81       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-3-'><table:table-cell table:style-name='TBL-2-3-1'><text:p text:style-name='sty-11L'>Clean+AMC (0 dB)    </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-3-2'><text:p text:style-name='sty-11C'>        96.28        </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-3-3'><text:p text:style-name='sty-11C'>       26.94       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-4-'><table:table-cell table:style-name='TBL-2-4-1'><text:p text:style-name='sty-11L'>Adv+Oracle (0 dB)    </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-4-2'><text:p text:style-name='sty-11C'>         2.30         </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-4-3'><text:p text:style-name='sty-11C'>       25.94       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-5-'><table:table-cell table:style-name='TBL-2-5-1'><text:p text:style-name='sty-11L'>Adv+AMC (0 dB)      </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-5-2'><text:p text:style-name='sty-11C'>         2.30         </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-5-3'><text:p text:style-name='sty-11C'>        0.44        </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-6-'><table:table-cell table:style-name='TBL-2-6-1'><text:p text:style-name='sty-11L'>Clean+Oracle (18 dB)</text:p></table:table-cell><table:table-cell table:style-name='TBL-2-6-2'><text:p text:style-name='sty-11C'>        98.10        </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-6-3'><text:p text:style-name='sty-11C'>       99.44       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-7-'><table:table-cell table:style-name='TBL-2-7-1'><text:p text:style-name='sty-11L'>Clean+AMC (18 dB)  </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-7-2'><text:p text:style-name='sty-11C'>        98.10        </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-7-3'><text:p text:style-name='sty-11C'>       97.31       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-8-'><table:table-cell table:style-name='TBL-2-8-1'><text:p text:style-name='sty-11L'>Adv+Oracle (18 dB)  </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-8-2'><text:p text:style-name='sty-11C'>         7.00         </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-8-3'><text:p text:style-name='sty-11C'>       93.25       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-9-'><table:table-cell table:style-name='TBL-2-9-1'><text:p text:style-name='sty-11L'>Adv+AMC (18 dB)    </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-9-2'><text:p text:style-name='sty-11C'>         7.00         </text:p></table:table-cell><table:table-cell table:style-name='TBL-2-9-3'><text:p text:style-name='sty-11C'>        7.81        </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-2-10-'><table:table-cell table:style-name='TBL-2-10-1'><text:p text:style-name='sty-11L'>                                    </text:p></table:table-cell></table:table-row></table:table>
+  </text:section>
+<!-- l. 115 --><text:p text:style-name='First-line-indent'>  At 18 dB, the gap between Adv+Oracle and Adv+AMC CRC is 85.44 points (93.25% vs. 7.81%), highlighting the AMC-induced
+error path.
+<text:bookmark text:name='x1-34r3'></text:bookmark>
+</text:p> 
+<!-- l. 118 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>C.  Per-Modulation CRC at 18 dB</text:span>
+<text:bookmark text:name='Q1-1-2'></text:bookmark>
+</text:p> 
+<!-- l. 119 --><text:p text:style-name='First-line-indent'>  </text:p> 
+<text:section text:name='float'>
+<text:bookmark text:name='x1-35r3'></text:bookmark>
+<text:span text:style-name='ptmr7t-x-x-80'>TABLE</text:span><text:span text:style-name='ptmr7t-x-x-80'> III</text:span><text:line-break></text:line-break>
+<text:span text:style-name='ptmrc7t-x-x-80'>CRC P<text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>s</text:span> R<text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>e</text:span> <text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span> 18 <text:span text:style-name='small-caps'>d</text:span>B <text:span text:style-name='small-caps'>b</text:span><text:span text:style-name='small-caps'>y</text:span> M<text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span></text:span>
+ <table:table table:style-name='tabular'><!-- table:table-column-group ???="TBL-3-1g" --><table:table-column table:style-name='TBL-3-1'></table:table-column><table:table-column table:style-name='TBL-3-2'></table:table-column><table:table-column table:style-name='TBL-3-3'></table:table-column><table:table-column table:style-name='TBL-3-4'></table:table-column><!-- /table:table-column-group --><table:table-row table:style-name='TBL-3-1-'><table:table-cell table:style-name='TBL-3-1-1'><text:p text:style-name='sty-11L'>Modulation</text:p></table:table-cell><table:table-cell table:style-name='TBL-3-1-2'><text:p text:style-name='sty-11C'>Clean+Oracle</text:p></table:table-cell><table:table-cell table:style-name='TBL-3-1-3'><text:p text:style-name='sty-11C'>Adv+Oracle</text:p></table:table-cell><table:table-cell table:style-name='TBL-3-1-4'><text:p text:style-name='sty-11C'>Adv+AMC</text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-2-'><table:table-cell table:style-name='TBL-3-2-1'><text:p text:style-name='sty-11L'>BPSK          </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-2-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-2-3'><text:p text:style-name='sty-11C'>     100.0     </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-2-4'><text:p text:style-name='sty-11C'>      39.0      </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-3-'><table:table-cell table:style-name='TBL-3-3-1'><text:p text:style-name='sty-11L'>QPSK          </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-3-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-3-3'><text:p text:style-name='sty-11C'>     100.0     </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-3-4'><text:p text:style-name='sty-11C'>       1.5       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-4-'><table:table-cell table:style-name='TBL-3-4-1'><text:p text:style-name='sty-11L'>8PSK           </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-4-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-4-3'><text:p text:style-name='sty-11C'>     100.0     </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-4-4'><text:p text:style-name='sty-11C'>       0.5       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-5-'><table:table-cell table:style-name='TBL-3-5-1'><text:p text:style-name='sty-11L'>QAM16       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-5-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-5-3'><text:p text:style-name='sty-11C'>      99.5      </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-5-4'><text:p text:style-name='sty-11C'>       0.5       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-6-'><table:table-cell table:style-name='TBL-3-6-1'><text:p text:style-name='sty-11L'>QAM64       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-6-2'><text:p text:style-name='sty-11C'>        96.0        </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-6-3'><text:p text:style-name='sty-11C'>      76.0      </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-6-4'><text:p text:style-name='sty-11C'>       0.5       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-7-'><table:table-cell table:style-name='TBL-3-7-1'><text:p text:style-name='sty-11L'>PAM4          </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-7-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-7-3'><text:p text:style-name='sty-11C'>      71.0      </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-7-4'><text:p text:style-name='sty-11C'>       2.0       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-8-'><table:table-cell table:style-name='TBL-3-8-1'><text:p text:style-name='sty-11L'>CPFSK        </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-8-2'><text:p text:style-name='sty-11C'>       100.0       </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-8-3'><text:p text:style-name='sty-11C'>     100.0     </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-8-4'><text:p text:style-name='sty-11C'>      18.5      </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-9-'><table:table-cell table:style-name='TBL-3-9-1'><text:p text:style-name='sty-11L'>GFSK          </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-9-2'><text:p text:style-name='sty-11C'>        99.5        </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-9-3'><text:p text:style-name='sty-11C'>      99.5      </text:p></table:table-cell><table:table-cell table:style-name='TBL-3-9-4'><text:p text:style-name='sty-11C'>       0.0       </text:p></table:table-cell>
+</table:table-row><table:table-row table:style-name='TBL-3-10-'><table:table-cell table:style-name='TBL-3-10-1'><text:p text:style-name='sty-11L'>                    </text:p></table:table-cell></table:table-row></table:table>
+  </text:section>
+<!-- l. 139 --><text:p text:style-name='First-line-indent'>  In 13 out of 16 digital cells, the Clean+Oracle and Adv+Oracle CRC difference is within 2 percentage points. In contrast, 14 out of
+16 cells have Adv+AMC CRC at or below 5%.
+<text:bookmark text:name='x1-36r5'></text:bookmark>
+</text:p> 
+<!-- l. 142 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>V.  D<text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span></text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 143 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-37r1'></text:bookmark>
+</text:p> 
+<!-- l. 143 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>A.  Primary Failure Mechanism</text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 144 --><text:p text:style-name='First-line-indent'>  The dominant path is not always direct waveform destruction. Instead, the main mechanism is: CW causes AMC misclassification,
+then the receiver selects the wrong demodulator, leading to CRC failure.
+</text:p> 
+<!-- l. 148 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-38r2'></text:bookmark>
+</text:p> 
+<!-- l. 148 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>B.  Why 18 dB Is More Diagnostic</text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 149 --><text:p text:style-name='First-line-indent'>  At 0 dB, several modulations already have low clean CRC baselines, which mixes channel-limited errors with attack-induced errors.
+At 18 dB, clean baselines are near saturation, so attack effects are easier to isolate.
+</text:p> 
+<!-- l. 153 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-39r3'></text:bookmark>
+</text:p> 
+<!-- l. 153 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmri7t-'>C.  Modulation-Specific Sensitivity</text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 154 --><text:p text:style-name='First-line-indent'>  QAM64 and PAM4 show notable Adv+Oracle drops (96.0% to 76.0%, and 100.0% to 71.0%, respectively), suggesting direct
+sensitivity beyond classification errors.
+</text:p> 
+<!-- l. 157 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-40r6'></text:bookmark>
+</text:p> 
+<!-- l. 157 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>VI.  T<text:span text:style-name='small-caps'>h</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>s</text:span> <text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>o</text:span> V<text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>y</text:span></text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 159 --><text:p text:style-name='First-line-indent'>
+     </text:p> 
+<text:list text:style-name='Enumerate'> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>The  study  is  transfer-based:  perturbations  are  generated  on  Track  A  real  data  and  applied  to  Track  B  synthetic  bursts.
+     Conclusions are about transferability, not full real link attacks.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Clean+AMC  and  Adv+AMC  in  Track  B  are  distribution-driven  simulations  based  on  Track  A  AMC  behavior,  not
+     per-sample AMC inference on synthetic bursts.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>The CSV artifact does not fully encode all CW hyperparameters used at runtime unless captured in command logs.
+     </text:p> 
+</text:list-item> 
+
+     <text:list-item>
+     <text:p text:style-name='Inside-enumerate'>Analog      modulations      (WBFM,      AM-DSB,      AM-SSB)      are      reported      without      CRC      metrics      (<!-- l. 165 --><draw:frame draw:name='mobj-9' draw:style-name='mml-inline' draw:z-index='0' text:anchor-type='as-char'><draw:object xlink:actuate='onLoad' xlink:href='./crc_experiment_ieee-m9' xlink:show='embed' xlink:type='simple'></draw:object></draw:frame>).</text:p> 
+</text:list-item> 
+</text:list> 
+
+<!-- l. 168 --><text:p text:style-name='First-line-indent'>
+<text:bookmark text:name='x1-45r7'></text:bookmark>
+</text:p> 
+<!-- l. 168 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>VII.  C<text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>s</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>n</text:span></text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 169 --><text:p text:style-name='First-line-indent'>  Under the evaluated setup, CW nearly disables AMC, and CRC collapse is mainly realized through the AMC-dependent
+demodulation path. This identifies a practical system risk: classification robustness is not an isolated objective but a direct reliability
+dependency for link integrity.
+</text:p> 
+<!-- l. 173 --><text:p text:style-name='First-line-indent'>
+</text:p> 
+<!-- l. 173 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>A<text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>f</text:span><text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>t</text:span> <text:span text:style-name='small-caps'>a</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>d</text:span> R<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>p</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>o</text:span><text:span text:style-name='small-caps'>d</text:span><text:span text:style-name='small-caps'>u</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>b</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>l</text:span><text:span text:style-name='small-caps'>i</text:span><text:span text:style-name='small-caps'>t</text:span><text:span text:style-name='small-caps'>y</text:span></text:span>
+</text:p> 
+<!-- l. 174 --><text:p text:style-name='First-line-indent'>  All numeric results in this paper come from <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>crc</text:span><text:span text:style-name='pcrr7t-'>_experiment</text:span><text:span text:style-name='pcrr7t-'>_results/crc</text:span><text:span text:style-name='pcrr7t-'>_vs</text:span><text:span text:style-name='pcrr7t-'>_amc.csv</text:span></text:span>. A baseline reproduction
+command is:
+  </text:p> 
+<!-- l. 176 --><text:p text:style-name='Preformatted-Text'>
+python<text:s></text:s>crc_experiment.py<text:s></text:s>--ckpt_path<text:s></text:s>./checkpoint<text:s></text:s>' 
+<text:line-break></text:line-break><text:s></text:s><text:s></text:s>--output_dir<text:s></text:s>./crc_experiment_results
+</text:p>
+<!-- l. 180 --><text:p text:style-name='First-line-indent'>  For exact reproducibility, explicitly set and record <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>--n</text:span><text:span text:style-name='pcrr7t-'>_bursts</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>--cw</text:span><text:span text:style-name='pcrr7t-'>_c</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>--cw</text:span><text:span text:style-name='pcrr7t-'>_steps</text:span></text:span>, <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>--seed</text:span></text:span>, and <text:span text:style-name='texttt'><text:span text:style-name='pcrr7t-'>--ta</text:span><text:span text:style-name='pcrr7t-'>_box</text:span></text:span>.
+</text:p> 
+<!-- l. 1 --><text:p text:style-name='First-line-indent'>
+</text:p> 
+<!-- l. 1 --><text:p text:style-name='Text-body'><text:span text:style-name='ptmrc7t-'>R<text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>f</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>r</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>n</text:span><text:span text:style-name='small-caps'>c</text:span><text:span text:style-name='small-caps'>e</text:span><text:span text:style-name='small-caps'>s</text:span></text:span>
+<text:bookmark text:name='Q1-1-3'></text:bookmark>
+</text:p> 
+<!-- l. 1 --><text:p text:style-name='First-line-indent'>
+ <text:span text:style-name='ptmr7t-x-x-80'>[1]</text:span> <text:span text:style-name='ptmr7t-x-x-80'>Xcarlini2017N. Carlini and D. Wagner, “Towards Evaluating the Robustness of Neural Networks,” in </text:span><text:span text:style-name='Emphasis'><text:span text:style-name='ptmri7t-x-x-80'>Proc. IEEE Symposium on Security and Privacy</text:span></text:span><text:span text:style-name='ptmr7t-x-x-80'>,</text:span>
+   <text:span text:style-name='ptmr7t-x-x-80'>2017, pp. 39–57.</text:span>
+ <text:span text:style-name='ptmr7t-x-x-80'>[2]</text:span> <text:span text:style-name='ptmr7t-x-x-80'>Xoshea2016T. J. O’Shea, J. Corgan, and T. C. Clancy, “Convolutional Radio Modulation Recognition Networks,” in </text:span><text:span text:style-name='Emphasis'><text:span text:style-name='ptmri7t-x-x-80'>Proc. International Conference on</text:span>
+   <text:span text:style-name='ptmri7t-x-x-80'>Engineering Applications of Neural Networks</text:span></text:span><text:span text:style-name='ptmr7t-x-x-80'>, 2016.</text:span>
+ <text:span text:style-name='ptmr7t-x-x-80'>[3]</text:span> <text:span text:style-name='ptmr7t-x-x-80'>Xdeepsig2016DeepSig, “RadioML 2016.10A Dataset,” 2016. [Online]. Available: </text:span><text:a xlink:href='https://www.deepsig.ai/datasets' xlink:type='simple'><text:span text:style-name='ptmr7t-x-x-80'>https://www.deepsig.ai/datasets</text:span></text:a>
+ <text:span text:style-name='ptmr7t-x-x-80'>[4]</text:span> <text:span text:style-name='ptmr7t-x-x-80'>Xrepoadversarial-rf project, “AWN and adversarial RF experiments,” repository artifact, 2026.</text:span>
+
+  </text:p> 
+</office:text></office:body> 
+</office:document-content>

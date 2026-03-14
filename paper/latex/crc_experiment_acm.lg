@@ -1,0 +1,183 @@
+htfcss:  LinLibertineTI-tlf-t1  font-style: italic; font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineTZ-lf-t1  font-weight: bold; font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-lf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  nxlmia  font-family: 'LibertineMath', serif;
+htfcss:  ntxsy  font-family: 'txsys', serif;
+htfcss:  ntxsy5  font-family: 'txsys', serif;
+htfcss:  nxlmi  font-style: italic; font-family: 'LibertineMath', serif;
+htfcss:  ntxebgmi  font-style: italic; font-family: 'ebg', serif;
+htfcss:  LinLibertineT-tlf-ot1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-lf-ot1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineTB-tlf-t1  font-weight: bold; font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineTB-lf-t1  font-weight: bold; font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinBiolinumTB-tlf-t1  font-weight: bold; font-family: 'Linux Biolinum T', serif;
+htfcss:  LinBiolinumTB-lf-t1  font-weight: bold; font-family: 'Linux Biolinum T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+htfcss:  LinLibertineT-tlf-t1  font-family: 'Linux Libertine T', serif;
+File: crc_experiment_acm.html
+File: crc_experiment_acm.css
+File: crc_experiment_acm.tmp
+Css: p{margin-top:0;margin-bottom:0}
+Css: p.indent{text-indent:0;}
+Css: p + p{margin-top:1em;}
+Css: p + div, p + pre {margin-top:1em;}
+Css: div + p, pre + p {margin-top:1em;}
+Css: a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+Css: @media print {div.crosslinks {visibility:hidden;}}
+Css: table.tabular{border-collapse: collapse; border-spacing: 0;}
+Css: a img { border-top: 0; border-left: 0; border-right: 0; }
+Font_Css("4"): .small-caps{font-variant: small-caps; }
+Font_Css("10"): .htf-cmbx {font-weight: bold; font-style:normal;}
+Font_Css("12"): .htf-calligraphy {font-family:cursive}
+Font_Css("14"): .htf-italic {font-style: italic;}
+Font_Css("16"): .htf-bold {font-weight: bold;}
+Font_Css("12"): .htf-calligraphy-bold {font-family:cursive ; font-weight: bold; }
+Css: center { margin-top:1em; margin-bottom:1em; }
+Css: td center { margin-top:0em; margin-bottom:0em; }
+Css: .Canvas { position:relative; }
+Css: img.math{vertical-align:middle;}
+Css: div.par-math-display, div.math-display{text-align:center;}
+Css: li p.indent { text-indent: 0em }
+Css: li p:first-child{ margin-top:0em; }
+Css: li p:last-child, li div:last-child { margin-bottom:0.5em; }
+Css: li p:first-child{ margin-bottom:0; }
+Css: li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+Css: .enumerate1 {list-style-type:decimal;}
+Css: .enumerate2 {list-style-type:lower-alpha;}
+Css: .enumerate3 {list-style-type:lower-roman;}
+Css: .enumerate4 {list-style-type:upper-alpha;}
+Css: div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+Css: div.newtheorem .head{font-weight: bold;}
+Css: .obeylines-h,.obeylines-v {white-space: nowrap; }
+Css: div.obeylines-v p { margin-top:0; margin-bottom:0; }
+Css: .overline{ text-decoration:overline; }
+Css: .overline img{ border-top: 1px solid black; }
+Css: td.displaylines {text-align:center; white-space:nowrap;}
+Css: .centerline {text-align:center;}
+Css: .rightline {text-align:right;}
+Css: pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+Css: .fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: div.fbox {display:table}
+Css: div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: div.minipage{width:100%;}
+Css: div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+Css: div.center div {text-align: left;}
+Css: div.flushright, div.flushright div.flushright {text-align: right;}
+Css: div.flushright div {text-align: left;}
+Css: div.flushleft {text-align: left;}
+Css: .underline{ text-decoration:underline; }
+Css: .underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+Css: .framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+Css: .framebox-c {text-align:center;}
+Css: .framebox-l {text-align:left;}
+Css: .framebox-r {text-align:right;}
+Css: span.thank-mark{ vertical-align: super }
+Css: span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+Css: div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+Css: table.tabular td p{margin-top:0em;}
+Css: table.tabular {margin-left: auto; margin-right: auto;}
+Css: td p:first-child{ margin-top:0em; }
+Css: td p:last-child{ margin-bottom:0em; }
+Css: div.td00{ margin-left:0pt; margin-right:0pt; }
+Css: div.td01{ margin-left:0pt; margin-right:5pt; }
+Css: div.td10{ margin-left:5pt; margin-right:0pt; }
+Css: div.td11{ margin-left:5pt; margin-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: td.td00{ padding-left:0pt; padding-right:0pt; }
+Css: td.td01{ padding-left:0pt; padding-right:5pt; }
+Css: td.td10{ padding-left:5pt; padding-right:0pt; }
+Css: td.td11{ padding-left:5pt; padding-right:5pt; }
+Css: table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+Css: .hline hr, .cline hr{ height : 0px; margin:0px; }
+Css: .hline td, .cline td{ padding: 0; }
+Css: .hline hr, .cline hr{border:none;border-top:1px solid black;}
+Css: .hline {border-top: 1px solid black;}
+Css: .tabbing-right {text-align:right;}
+Css: div.float, div.figure {margin-left: auto; margin-right: auto;}
+Css: div.float img {text-align:center;}
+Css: div.figure img {text-align:center;}
+Css: .marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+Css: .marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+Css: .reversemarginpar{float:left;}
+Css: table.equation {width:100%;}
+Css: .equation td{text-align:center; }
+Css: td.equation { margin-top:1em; margin-bottom:1em; } 
+Css: td.equation-label { width:5%; text-align:center; }
+Css: td.eqnarray4 { width:5%; white-space: normal; }
+Css: td.eqnarray2 { width:5%; }
+Css: table.eqnarray-star, table.eqnarray {width:100%;}
+Css: div.eqnarray{text-align:center;}
+Css: div.array {text-align:center;}
+Css: div.pmatrix {text-align:center;}
+Css: table.pmatrix {width:100%;}
+Css: span.pmatrix img{vertical-align:middle;}
+Css: div.pmatrix {text-align:center;}
+Css: table.pmatrix {width:100%;}
+Css: span.bar-css {text-decoration:overline;}
+Css: img.cdots{vertical-align:middle;}
+Css: span.footnote-mark{ vertical-align: super; font-size:80%; }
+Css: div.submaketitle{ text-align:left; margin-top:2em; border-top: 1px solid black; border-bottom: 1px solid black; margin-left:5%; margin-right:5%; font-size:85%; line-height: 95%;}
+Css: div.submaketitle div {margin-top:0.5em; margin-bottom:0.5em; }
+Css: div.submaketitle p { margin-top:0em; margin-bottom:0em; }
+Css: div.abstract{ margin-top: 2em; text-align:left; margin-right:15pt; margin-left:15pt; }
+Css: div.addresses p {margin-top:0em; margin-bottom:0em; }
+Css: h2.titleHead{text-align:center;}
+Css: div.maketitle{ margin-bottom: 2em; text-align:center; }
+Css: div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+Css: div.caption span.id{font-weight: bold; white-space: nowrap; }
+Css: p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+Css: p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+Css: .qed {width:2ex; float:right; text-align:right;}
+Css: .partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+Css: div.translators {text-align:right; margin-bottom:0.7em;}
+Css: .sectionHead{text-align:center;}
+Css: figure.float, div.figure {margin-left: auto; margin-right: auto;}
+Css: figure.figure {text-align:center;}
+Css: figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+Css: figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+Css: p + figcaption, img + figcaption{margin-top: 1em;}
+Css: .equation td{text-align:center; }
+Css: .equation-star td{text-align:center; }
+Css: table.equation-star { width:100%; }
+Css: table.equation { width:100%; }
+Css: table.align, table.alignat, table.xalignat, table.xxalignat, table.flalign {width:95%; margin-left:5%; white-space: nowrap;}
+Css: table.align-star, table.alignat-star, table.xalignat-star, table.flalign-star {margin-left:auto; margin-right:auto; white-space: nowrap;}
+Css: td.align-label { width:5%; text-align:center; }
+Css: td.align-odd { text-align:right; padding-right:0.3em;}
+Css: td.align-even { text-align:left; padding-right:0.6em;}
+Css: table.multline, table.multline-star {width:100%;}
+Css: td.gather {text-align:center; }
+Css: table.gather {width:100%;}
+Css: div.gather-star {text-align:center;}
+Css: .rotatebox{display: inline-block;}
+--- needs --- crc_experiment_acm.idv[2] ==> crc_experiment_acm0x.png ---
+Css: tr#TBL-1-1- {border-top:0.10359em solid #000;} 
+Css: tr#TBL-1-1- {border-bottom:0.06474em solid #000}
+Css: tr#TBL-1-5- {border-bottom:0.10359em solid #000}
+Css: tr#TBL-2-1- {border-top:0.10359em solid #000;} 
+Css: tr#TBL-2-1- {border-bottom:0.06474em solid #000}
+Css: tr#TBL-2-5- {border-bottom:0.06474em solid #000}
+Css: tr#TBL-2-9- {border-bottom:0.10359em solid #000}
+Css: tr#TBL-3-1- {border-top:0.10359em solid #000;} 
+Css: tr#TBL-3-1- {border-bottom:0.06474em solid #000}
+Css: tr#TBL-3-9- {border-bottom:0.10359em solid #000}
+tex4ht.c error: 21
+--- characters ---
+Font("LinLibertineT-tlf-t1","","10","90")
+Font("LinLibertineT-tlf-t1","","10","70")
+Font("LinBiolinumTB-tlf-t1","","10","172")
+Font("LinLibertineT-tlf-t1","","10","120")
+Font("LinLibertineT-tlf-t1","","10","100")
+Font("LinLibertineT-tlf-t1","","10","60")
+Font("LinLibertineTB-tlf-t1","","10","90")
+Font("t1-zi4r-4","","10","90")
+Font("LinLibertineT-tlf-ot1","","10","90")
+Font("nxlmi","","10","90")
+Font("ntxsy","","10","90")
+Font("nxlmia","","10","90")
+Font("LinLibertineT-tlf-t1","","10","73")
+Font("LinLibertineTI-tlf-t1","","10","70")

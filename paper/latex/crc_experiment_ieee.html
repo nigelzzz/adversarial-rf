@@ -1,0 +1,262 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title></title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<link href='crc_experiment_ieee.css' rel='stylesheet' type='text/css' /> 
+<meta content='crc_experiment_ieee.tex' name='src' /> 
+</head><body>
+<!-- l. 19 --><p class='noindent'>
+</p><!-- l. 19 --><p class='indent'>
+</p><!-- l. 19 --><p class='noindent'><span class='ptmr7t-x-x-240'>Impact of AMC-Oriented CW Adversarial Attacks
+</span><span class='ptmr7t-x-x-240'>on CRC Integrity</span>
+</p><!-- l. 19 --><p class='noindent'>
+</p><!-- l. 19 --><p class='noindent'>                                                                           <span class='ptmr7t-x-x-110'>Anonymous Authors</span>
+                                                                        Affiliation Withheld for Review
+                                                                      Email: anonymous@anonymous.org
+</p><!-- l. 21 --><p class='noindent'><span class='ptmb7t-x-x-90'>Abstract
+       </span><span class='ptmr7t-x-x-90'>This  paper  studies  a  practical  two-stage  receiver  pipeline  in  which  automatic  modulation  classification  (AMC)  controls
+    </span><span class='ptmr7t-x-x-90'>downstream demodulation and CRC verification. Using the existing </span><span class='pcrr7t-x-x-90'>crc_experiment.py </span><span class='ptmr7t-x-x-90'>implementation, we run a two-track
+    </span><span class='ptmr7t-x-x-90'>evaluation:  Track  A  uses  real  RML2016.10a  IQ  data  to  measure  AWN  behavior  under  clean  and  Carlini-Wagner  (CW)  attack
+    </span><span class='ptmr7t-x-x-90'>conditions;  Track  B  uses  synthetic  bursts  with  known  payload  bits  to  measure  CRC  pass  rates.  Perturbations  are  generated  on
+    </span><span class='ptmr7t-x-x-90'>Track A and transferred to Track B. Across digital modulations, average AMC accuracy drops from 97.19% to 4.65% under CW.
+    </span><span class='ptmr7t-x-x-90'>However,  CRC  under  oracle  demodulation  changes  only  from  63.62%  to  59.59%.  CRC  collapse  appears  when  demodulation  is
+    </span><span class='ptmr7t-x-x-90'>driven by attacked AMC output: Adv+AMC CRC falls to 4.12%. At 18 dB, the gap is stronger: 93.25% (Adv+Oracle) vs. 7.81%
+    </span><span class='ptmr7t-x-x-90'>(Adv+AMC). The results indicate that the dominant failure path is AMC misclassification leading to wrong demodulator selection,
+    </span><span class='ptmr7t-x-x-90'>not only direct waveform destruction.</span>
+</p><!-- l. 36 --><p class='noindent'><span class='ptmb7t-x-x-90'>Index  Terms
+       </span><span class='ptmr7t-x-x-90'>adversarial machine learning, modulation classification, RF security, CRC, CW attack</span>
+<a id='x1-2r1'></a>
+</p><!-- l. 1 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmrc7t-'>I.  I<span class='small-caps'>ntroduction</span></span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 2 --><p class='indent'>  Practical receivers often use a two-stage pipeline: automatic modulation classification (AMC) followed by modulation-specific
+demodulation and CRC checking. This architecture is effective under noise, but it introduces a strong dependency: if AMC is
+manipulated, the receiver may select the wrong demodulator, and CRC can fail even when the waveform is still demodulatable under
+the correct modulation assumption.
+</p><!-- l. 8 --><p class='indent'>  This paper analyzes that failure path using the implementation in <span class='pcrr7t-'>crc_experiment.py </span>from the current codebase. We focus on
+three questions:
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-4x1'>Does CW mainly break AMC, waveform demodulability, or both?
+     </li>
+<li class='enumerate' id='x1-6x2'>How large is the gap between oracle demodulation and AMC-driven demodulation under attack?
+     </li>
+<li class='enumerate' id='x1-8x3'>Are the conclusions stable across low and high SNR regimes (0 and 18 dB)?</li></ol>
+<!-- l. 16 --><p class='indent'>
+<a id='x1-9r2'></a>
+</p><!-- l. 16 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmrc7t-'>II.  M<span class='small-caps'>ethod</span></span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 17 --><p class='indent'>
+<a id='x1-10r1'></a>
+</p><!-- l. 17 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>A.  Two-Track Design</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 18 --><p class='indent'>  The experiment uses a two-track setup.
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-12x1'><span class='ptmb7t-'>Track  A  (AMC): </span>real <span class='pcrr7t-'>RML2016.10a </span>IQ samples are classified by AWN on clean and CW-attacked inputs to obtain
+     AMC accuracy and perturbations.
+     </li>
+<li class='enumerate' id='x1-14x2'><span class='ptmb7t-'>Track B (CRC): </span>synthetic bursts with known payload bits are generated, demodulated, and validated with CRC pass/fail
+     outcomes.</li></ol>
+<!-- l. 26 --><p class='indent'>  Code references: <span class='pcrr7t-'>crc_experiment.py:73</span>, <span class='pcrr7t-'>crc_experiment.py:175</span>, <span class='pcrr7t-'>crc_experiment.py:222</span>.
+</p><!-- l. 29 --><p class='indent'>
+<a id='x1-15r2'></a>
+</p><!-- l. 29 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>B.  Transfer Perturbation</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 30 --><p class='indent'>  CW perturbations are generated on Track A and then transferred to Track B:
+</p>
+  <table class='equation'><tr><td>
+  <div class='math-display'>
+<img alt='xadv,synth = xsynth + δreal,
+' class='math-display' src='crc_experiment_ieee0x.png' /><a id='x1-16r1'></a></div>
+  </td><td class='equation-label'>(1)</td></tr></table>
+<!-- l. 33 --><p class='nopar'>
+where <span class='cmmi-10'>δ</span><sub>real</sub> <span class='cmr-10'>= </span><span class='cmmi-10'>x</span><sub>adv,real</sub> <span class='cmsy-10'>− </span><span class='cmmi-10'>x</span><sub>real</sub>.
+</p><!-- l. 36 --><p class='indent'>  Code references: <span class='pcrr7t-'>crc_experiment.py:212</span>, <span class='pcrr7t-'>crc_experiment.py:238</span>.
+</p><!-- l. 39 --><p class='indent'>
+<a id='x1-17r3'></a>
+</p><!-- l. 39 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>C.  Evaluation Scenarios</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 40 --><p class='indent'>  For each modulation-SNR cell, four scenarios are evaluated:
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-19x1'><span class='ptmb7t-'>Clean+Oracle: </span>clean IQ, true modulation used for demodulation.
+     </li>
+<li class='enumerate' id='x1-21x2'><span class='ptmb7t-'>Clean+AMC: </span>clean IQ, demodulation chosen from AMC behavior.
+     </li>
+<li class='enumerate' id='x1-23x3'><span class='ptmb7t-'>Adv+Oracle: </span>adversarial IQ, true modulation used for demodulation.
+     </li>
+<li class='enumerate' id='x1-25x4'><span class='ptmb7t-'>Adv+AMC: </span>adversarial IQ, demodulation chosen from attacked AMC output.</li></ol>
+<!-- l. 48 --><p class='indent'>  The adversarial window is spliced back into full burst context before demodulation to preserve guard-related filtering behavior
+(<span class='pcrr7t-'>crc_experiment.py:93--124</span>).
+</p><!-- l. 51 --><p class='indent'>
+<a id='x1-26r3'></a>
+</p><!-- l. 51 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmrc7t-'>III.  E<span class='small-caps'>xperimental</span> S<span class='small-caps'>etup</span></span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 52 --><p class='indent'>
+<a id='x1-27r1'></a>
+</p><!-- l. 52 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>A.  Model and Data</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 54 --><p class='indent'>
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-29x1'>AMC model: AWN loaded from <span class='pcrr7t-'>2016.10a_AWN.pkl</span>.
+     </li>
+<li class='enumerate' id='x1-31x2'>Real data (Track A): <span class='pcrr7t-'>./data/RML2016.10a_dict.pkl</span>.
+     </li>
+<li class='enumerate' id='x1-33x3'>Synthetic data (Track B): generated by <span class='pcrr7t-'>util.synth_txrx.generate_burst</span>.
+     </li>
+<li class='enumerate' id='x1-35x4'>CRC-capable digital modulations: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4, CPFSK, GFSK.</li></ol>
+<!-- l. 60 --><p class='indent'>
+<a id='x1-36r2'></a>
+</p><!-- l. 60 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>B.  Attack and Output Scope</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 62 --><p class='indent'>
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-38x1'>Attack: CW via <span class='pcrr7t-'>create_attack(’cw’, ...)</span>.
+     </li>
+<li class='enumerate' id='x1-40x2'>Track A uses 500 real samples per modulation-SNR cell.
+     </li>
+<li class='enumerate' id='x1-42x3'>Result file for this paper: <span class='pcrr7t-'>crc_experiment_results/crc_vs_amc.csv</span>.
+     </li>
+<li class='enumerate' id='x1-44x4'>Track B count in this result: <span class='cmmi-10'>n </span><span class='cmr-10'>= 200 </span>synthetic bursts per digital cell.
+     </li>
+<li class='enumerate' id='x1-46x5'>SNR settings in the result file: 0 and 18 dB.</li></ol>
+<!-- l. 69 --><p class='indent'>
+<a id='x1-47r4'></a>
+</p><!-- l. 69 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmrc7t-'>IV.  R<span class='small-caps'>esults</span></span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 70 --><p class='indent'>
+<a id='x1-48r1'></a>
+</p><!-- l. 70 --><p class='noindent' id='-x-mbox-ivambox-overall-means-on-digital-modulations'><span class='ptmri7t-'>A.  Overall Means on Digital Modulations</span>
+<a id='Q1-1-0'></a>
+</p><!-- l. 71 --><p class='indent'>  Table <a href='#-overall-means-on-digital-modulations'>I<!-- tex4ht:ref: tab:overall  --></a> reports means over all digital cells (8 modulations <span class='cmsy-10'>× </span>2 SNR levels <span class='cmsy-10'>× </span>4 scenarios).
+</p><!-- l. 74 --><p class='indent'>  </p><hr class='float' /><div class='float' id='-overall-means-on-digital-modulations'>
+<a id='x1-49r1'></a>
+<span class='ptmr7t-x-x-80'>TABLE I</span><br />
+<span class='ptmrc7t-x-x-80'>O<span class='small-caps'>verall</span> M<span class='small-caps'>eans </span><span class='small-caps'>on</span> D<span class='small-caps'>igital</span> M<span class='small-caps'>odulations</span></span>
+<div class='tabular'>
+ <table class='tabular' id='TBL-1'><colgroup id='TBL-1-1g'><col id='TBL-1-1' /><col id='TBL-1-2' /><col id='TBL-1-3' /></colgroup><tr id='TBL-1-1-' style='vertical-align:baseline;'><td class='td11' id='TBL-1-1-1' style='white-space:nowrap; text-align:left;'>Scenario       </td><td class='td11' id='TBL-1-1-2' style='white-space:nowrap; text-align:center;'>AMC Acc (%)</td><td class='td11' id='TBL-1-1-3' style='white-space:nowrap; text-align:center;'>CRC Pass (%)</td>
+</tr><tr id='TBL-1-2-' style='vertical-align:baseline;'><td class='td11' id='TBL-1-2-1' style='white-space:nowrap; text-align:left;'>Clean+Oracle</td><td class='td11' id='TBL-1-2-2' style='white-space:nowrap; text-align:center;'>   97.19        </td><td class='td11' id='TBL-1-2-3' style='white-space:nowrap; text-align:center;'>   63.62       </td>
+</tr><tr id='TBL-1-3-' style='vertical-align:baseline;'><td class='td11' id='TBL-1-3-1' style='white-space:nowrap; text-align:left;'>Clean+AMC  </td><td class='td11' id='TBL-1-3-2' style='white-space:nowrap; text-align:center;'>   97.19        </td><td class='td11' id='TBL-1-3-3' style='white-space:nowrap; text-align:center;'>   62.12       </td>
+</tr><tr id='TBL-1-4-' style='vertical-align:baseline;'><td class='td11' id='TBL-1-4-1' style='white-space:nowrap; text-align:left;'>Adv+Oracle  </td><td class='td11' id='TBL-1-4-2' style='white-space:nowrap; text-align:center;'>    4.65         </td><td class='td11' id='TBL-1-4-3' style='white-space:nowrap; text-align:center;'>   59.59       </td>
+</tr><tr id='TBL-1-5-' style='vertical-align:baseline;'><td class='td11' id='TBL-1-5-1' style='white-space:nowrap; text-align:left;'>Adv+AMC    </td><td class='td11' id='TBL-1-5-2' style='white-space:nowrap; text-align:center;'>    4.65         </td><td class='td11' id='TBL-1-5-3' style='white-space:nowrap; text-align:center;'>    4.12        </td>
+</tr></table></div>
+  </div><hr class='endfloat' />
+<!-- l. 90 --><p class='indent'>  CW collapses AMC (97.19% <span class='cmsy-10'>→ </span>4.65%). However, with oracle demodulation, CRC drops only moderately (63.62% <span class='cmsy-10'>→ </span>59.59%).
+CRC collapse occurs primarily in Adv+AMC.
+<a id='x1-50r2'></a>
+</p><!-- l. 93 --><p class='noindent' id='-x-mbox-ivbmbox-snrstratified-means'><span class='ptmri7t-'>B.  SNR-Stratified Means</span>
+<a id='Q1-1-1'></a>
+</p><!-- l. 94 --><p class='indent'>  </p><hr class='float' /><div class='float' id='-snrstratified-means-on-digital-modulations'>
+<a id='x1-51r2'></a>
+<span class='ptmr7t-x-x-80'>TABLE II</span><br />
+<span class='ptmrc7t-x-x-80'>SNR-S<span class='small-caps'>tratified</span> M<span class='small-caps'>eans </span><span class='small-caps'>on</span> D<span class='small-caps'>igital</span> M<span class='small-caps'>odulations</span></span>
+<div class='tabular'>
+ <table class='tabular' id='TBL-2'><colgroup id='TBL-2-1g'><col id='TBL-2-1' /><col id='TBL-2-2' /><col id='TBL-2-3' /></colgroup><tr id='TBL-2-1-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-1-1' style='white-space:nowrap; text-align:left;'>Scenario (SNR)         </td><td class='td11' id='TBL-2-1-2' style='white-space:nowrap; text-align:center;'>AMC Acc (%)</td><td class='td11' id='TBL-2-1-3' style='white-space:nowrap; text-align:center;'>CRC Pass (%)</td>
+</tr><tr id='TBL-2-2-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-2-1' style='white-space:nowrap; text-align:left;'>Clean+Oracle (0 dB)  </td><td class='td11' id='TBL-2-2-2' style='white-space:nowrap; text-align:center;'>   96.28        </td><td class='td11' id='TBL-2-2-3' style='white-space:nowrap; text-align:center;'>   27.81       </td>
+</tr><tr id='TBL-2-3-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-3-1' style='white-space:nowrap; text-align:left;'>Clean+AMC (0 dB)    </td><td class='td11' id='TBL-2-3-2' style='white-space:nowrap; text-align:center;'>   96.28        </td><td class='td11' id='TBL-2-3-3' style='white-space:nowrap; text-align:center;'>   26.94       </td>
+</tr><tr id='TBL-2-4-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-4-1' style='white-space:nowrap; text-align:left;'>Adv+Oracle (0 dB)    </td><td class='td11' id='TBL-2-4-2' style='white-space:nowrap; text-align:center;'>    2.30         </td><td class='td11' id='TBL-2-4-3' style='white-space:nowrap; text-align:center;'>   25.94       </td>
+</tr><tr id='TBL-2-5-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-5-1' style='white-space:nowrap; text-align:left;'>Adv+AMC (0 dB)      </td><td class='td11' id='TBL-2-5-2' style='white-space:nowrap; text-align:center;'>    2.30         </td><td class='td11' id='TBL-2-5-3' style='white-space:nowrap; text-align:center;'>    0.44        </td>
+
+</tr><tr id='TBL-2-6-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-6-1' style='white-space:nowrap; text-align:left;'>Clean+Oracle (18 dB)</td><td class='td11' id='TBL-2-6-2' style='white-space:nowrap; text-align:center;'>   98.10        </td><td class='td11' id='TBL-2-6-3' style='white-space:nowrap; text-align:center;'>   99.44       </td>
+</tr><tr id='TBL-2-7-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-7-1' style='white-space:nowrap; text-align:left;'>Clean+AMC (18 dB)  </td><td class='td11' id='TBL-2-7-2' style='white-space:nowrap; text-align:center;'>   98.10        </td><td class='td11' id='TBL-2-7-3' style='white-space:nowrap; text-align:center;'>   97.31       </td>
+</tr><tr id='TBL-2-8-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-8-1' style='white-space:nowrap; text-align:left;'>Adv+Oracle (18 dB)  </td><td class='td11' id='TBL-2-8-2' style='white-space:nowrap; text-align:center;'>    7.00         </td><td class='td11' id='TBL-2-8-3' style='white-space:nowrap; text-align:center;'>   93.25       </td>
+</tr><tr id='TBL-2-9-' style='vertical-align:baseline;'><td class='td11' id='TBL-2-9-1' style='white-space:nowrap; text-align:left;'>Adv+AMC (18 dB)    </td><td class='td11' id='TBL-2-9-2' style='white-space:nowrap; text-align:center;'>    7.00         </td><td class='td11' id='TBL-2-9-3' style='white-space:nowrap; text-align:center;'>    7.81        </td>
+
+</tr></table></div>
+  </div><hr class='endfloat' />
+<!-- l. 115 --><p class='indent'>  At 18 dB, the gap between Adv+Oracle and Adv+AMC CRC is 85.44 points (93.25% vs. 7.81%), highlighting the AMC-induced
+error path.
+<a id='x1-52r3'></a>
+</p><!-- l. 118 --><p class='noindent' id='-x-mbox-ivcmbox-permodulation-crc-at-db'><span class='ptmri7t-'>C.  Per-Modulation CRC at 18 dB</span>
+<a id='Q1-1-2'></a>
+</p><!-- l. 119 --><p class='indent'>  </p><hr class='float' /><div class='float' id='-crc-pass-rate-at-db-by-modulation'>
+<a id='x1-53r3'></a>
+<span class='ptmr7t-x-x-80'>TABLE III</span><br />
+<span class='ptmrc7t-x-x-80'>CRC P<span class='small-caps'>ass</span> R<span class='small-caps'>ate </span><span class='small-caps'>at</span> 18 <span class='small-caps'>d</span>B <span class='small-caps'>by</span> M<span class='small-caps'>odulation</span></span>
+<div class='tabular'>
+ <table class='tabular' id='TBL-3'><colgroup id='TBL-3-1g'><col id='TBL-3-1' /><col id='TBL-3-2' /><col id='TBL-3-3' /><col id='TBL-3-4' /></colgroup><tr id='TBL-3-1-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-1-1' style='white-space:nowrap; text-align:left;'>Modulation</td><td class='td11' id='TBL-3-1-2' style='white-space:nowrap; text-align:center;'>Clean+Oracle</td><td class='td11' id='TBL-3-1-3' style='white-space:nowrap; text-align:center;'>Adv+Oracle</td><td class='td11' id='TBL-3-1-4' style='white-space:nowrap; text-align:center;'>Adv+AMC</td>
+</tr><tr id='TBL-3-2-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-2-1' style='white-space:nowrap; text-align:left;'>BPSK          </td><td class='td11' id='TBL-3-2-2' style='white-space:nowrap; text-align:center;'>   100.0       </td><td class='td11' id='TBL-3-2-3' style='white-space:nowrap; text-align:center;'>  100.0     </td><td class='td11' id='TBL-3-2-4' style='white-space:nowrap; text-align:center;'>  39.0      </td></tr><tr id='TBL-3-3-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-3-1' style='white-space:nowrap; text-align:left;'>QPSK </td><td class='td11' id='TBL-3-3-2' style='white-space:nowrap; text-align:center;'> 100.0 </td><td class='td11' id='TBL-3-3-3' style='white-space:nowrap; text-align:center;'> 100.0 </td><td class='td11' id='TBL-3-3-4' style='white-space:nowrap; text-align:center;'> 1.5</td>
+</tr><tr id='TBL-3-4-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-4-1' style='white-space:nowrap; text-align:left;'>8PSK           </td><td class='td11' id='TBL-3-4-2' style='white-space:nowrap; text-align:center;'>   100.0       </td><td class='td11' id='TBL-3-4-3' style='white-space:nowrap; text-align:center;'>  100.0     </td><td class='td11' id='TBL-3-4-4' style='white-space:nowrap; text-align:center;'>   0.5       </td></tr><tr id='TBL-3-5-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-5-1' style='white-space:nowrap; text-align:left;'>QAM16 </td><td class='td11' id='TBL-3-5-2' style='white-space:nowrap; text-align:center;'> 100.0 </td><td class='td11' id='TBL-3-5-3' style='white-space:nowrap; text-align:center;'> 99.5 </td><td class='td11' id='TBL-3-5-4' style='white-space:nowrap; text-align:center;'> 0.5</td>
+</tr><tr id='TBL-3-6-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-6-1' style='white-space:nowrap; text-align:left;'>QAM64       </td><td class='td11' id='TBL-3-6-2' style='white-space:nowrap; text-align:center;'>   96.0        </td><td class='td11' id='TBL-3-6-3' style='white-space:nowrap; text-align:center;'>   76.0      </td><td class='td11' id='TBL-3-6-4' style='white-space:nowrap; text-align:center;'>   0.5       </td>
+</tr><tr id='TBL-3-7-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-7-1' style='white-space:nowrap; text-align:left;'>PAM4          </td><td class='td11' id='TBL-3-7-2' style='white-space:nowrap; text-align:center;'>   100.0       </td><td class='td11' id='TBL-3-7-3' style='white-space:nowrap; text-align:center;'>   71.0      </td><td class='td11' id='TBL-3-7-4' style='white-space:nowrap; text-align:center;'>   2.0       </td>
+</tr><tr id='TBL-3-8-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-8-1' style='white-space:nowrap; text-align:left;'>CPFSK        </td><td class='td11' id='TBL-3-8-2' style='white-space:nowrap; text-align:center;'>   100.0       </td><td class='td11' id='TBL-3-8-3' style='white-space:nowrap; text-align:center;'>  100.0     </td><td class='td11' id='TBL-3-8-4' style='white-space:nowrap; text-align:center;'>  18.5      </td>
+</tr><tr id='TBL-3-9-' style='vertical-align:baseline;'><td class='td11' id='TBL-3-9-1' style='white-space:nowrap; text-align:left;'>GFSK          </td><td class='td11' id='TBL-3-9-2' style='white-space:nowrap; text-align:center;'>   99.5        </td><td class='td11' id='TBL-3-9-3' style='white-space:nowrap; text-align:center;'>   99.5      </td><td class='td11' id='TBL-3-9-4' style='white-space:nowrap; text-align:center;'>   0.0       </td>
+</tr></table></div>
+  </div><hr class='endfloat' />
+<!-- l. 139 --><p class='indent'>  In 13 out of 16 digital cells, the Clean+Oracle and Adv+Oracle CRC difference is within 2 percentage points. In contrast, 14 out of
+16 cells have Adv+AMC CRC at or below 5%.
+<a id='x1-54r5'></a>
+</p><!-- l. 142 --><p class='noindent' id='references'><span class='ptmrc7t-'>V.  D<span class='small-caps'>iscussion</span></span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 143 --><p class='indent'>
+<a id='x1-55r1'></a>
+</p><!-- l. 143 --><p class='noindent' id='references'><span class='ptmri7t-'>A.  Primary Failure Mechanism</span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 144 --><p class='indent'>  The dominant path is not always direct waveform destruction. Instead, the main mechanism is: CW causes AMC misclassification,
+then the receiver selects the wrong demodulator, leading to CRC failure.
+</p><!-- l. 148 --><p class='indent'>
+<a id='x1-56r2'></a>
+</p><!-- l. 148 --><p class='noindent' id='references'><span class='ptmri7t-'>B.  Why 18 dB Is More Diagnostic</span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 149 --><p class='indent'>  At 0 dB, several modulations already have low clean CRC baselines, which mixes channel-limited errors with attack-induced errors.
+At 18 dB, clean baselines are near saturation, so attack effects are easier to isolate.
+</p><!-- l. 153 --><p class='indent'>
+<a id='x1-57r3'></a>
+</p><!-- l. 153 --><p class='noindent' id='references'><span class='ptmri7t-'>C.  Modulation-Specific Sensitivity</span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 154 --><p class='indent'>  QAM64 and PAM4 show notable Adv+Oracle drops (96.0% to 76.0%, and 100.0% to 71.0%, respectively), suggesting direct
+sensitivity beyond classification errors.
+</p><!-- l. 157 --><p class='indent'>
+<a id='x1-58r6'></a>
+</p><!-- l. 157 --><p class='noindent' id='references'><span class='ptmrc7t-'>VI.  T<span class='small-caps'>hreats </span><span class='small-caps'>to</span> V<span class='small-caps'>alidity</span></span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 159 --><p class='indent'>
+     </p><ol class='enumerate1'>
+<li class='enumerate' id='x1-60x1'>The  study  is  transfer-based:  perturbations  are  generated  on  Track  A  real  data  and  applied  to  Track  B  synthetic  bursts.
+     Conclusions are about transferability, not full real link attacks.
+     </li>
+<li class='enumerate' id='x1-62x2'>Clean+AMC  and  Adv+AMC  in  Track  B  are  distribution-driven  simulations  based  on  Track  A  AMC  behavior,  not
+     per-sample AMC inference on synthetic bursts.
+     </li>
+<li class='enumerate' id='x1-64x3'>The CSV artifact does not fully encode all CW hyperparameters used at runtime unless captured in command logs.
+     </li>
+<li class='enumerate' id='x1-66x4'>Analog modulations (WBFM, AM-DSB, AM-SSB) are reported without CRC metrics (<span class='cmmi-10'>n </span><span class='cmr-10'>= 0</span>).</li></ol>
+<!-- l. 168 --><p class='indent'>
+<a id='x1-67r7'></a>
+</p><!-- l. 168 --><p class='noindent' id='references'><span class='ptmrc7t-'>VII.  C<span class='small-caps'>onclusion</span></span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 169 --><p class='indent'>  Under the evaluated setup, CW nearly disables AMC, and CRC collapse is mainly realized through the AMC-dependent
+demodulation path. This identifies a practical system risk: classification robustness is not an isolated objective but a direct reliability
+dependency for link integrity.
+</p><!-- l. 173 --><p class='indent'>
+</p><!-- l. 173 --><p class='noindent'><span class='ptmrc7t-'>A<span class='small-caps'>rtifact </span><span class='small-caps'>and</span> R<span class='small-caps'>eproducibility</span></span>
+</p><!-- l. 174 --><p class='indent'>  All numeric results in this paper come from <span class='pcrr7t-'>crc_experiment_results/crc_vs_amc.csv</span>. A baseline reproduction
+command is:
+</p>
+  <pre class='verbatim' id='verbatim-1'>
+python crc_experiment.py --ckpt_path ./checkpoint ' 
+  --output_dir ./crc_experiment_results
+</pre>
+<!-- l. 179 --><p class='nopar'> For exact reproducibility, explicitly set and record <span class='pcrr7t-'>--n_bursts</span>, <span class='pcrr7t-'>--cw_c</span>, <span class='pcrr7t-'>--cw_steps</span>, <span class='pcrr7t-'>--seed</span>, and <span class='pcrr7t-'>--ta_box</span>.
+</p><!-- l. 1 --><p class='indent'>
+</p><!-- l. 1 --><p class='noindent' id='references'><span class='ptmrc7t-'>R<span class='small-caps'>eferences</span></span>
+<a id='Q1-1-3'></a>
+</p><!-- l. 1 --><p class='indent'>
+   </p><div class='thebibliography'>
+   <p class='bibitem'><span class='biblabel'>
+ <span class='ptmr7t-x-x-80'>[1] </span><span class='bibsp'><span class='ptmr7t-x-x-80'>   </span></span></span><a id='Xcarlini2017'></a><span class='ptmr7t-x-x-80'>N. Carlini and D. Wagner, “Towards Evaluating the Robustness of Neural Networks,” in </span><span class='ptmri7t-x-x-80'>Proc. IEEE Symposium on Security and Privacy</span><span class='ptmr7t-x-x-80'>, 2017, pp.
+   </span><span class='ptmr7t-x-x-80'>39–57.</span>
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ <span class='ptmr7t-x-x-80'>[2] </span><span class='bibsp'><span class='ptmr7t-x-x-80'>   </span></span></span><a id='Xoshea2016'></a><span class='ptmr7t-x-x-80'>T. J. O’Shea, J. Corgan, and T. C. Clancy, “Convolutional Radio Modulation Recognition Networks,” in </span><span class='ptmri7t-x-x-80'>Proc. International Conference on Engineering
+   </span><span class='ptmri7t-x-x-80'>Applications of Neural Networks</span><span class='ptmr7t-x-x-80'>, 2016.</span>
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ <span class='ptmr7t-x-x-80'>[3] </span><span class='bibsp'><span class='ptmr7t-x-x-80'>   </span></span></span><a id='Xdeepsig2016'></a><span class='ptmr7t-x-x-80'>DeepSig, “RadioML 2016.10A Dataset,” 2016. [Online]. Available:       </span><a class='url' href='https://www.deepsig.ai/datasets'><span class='ptmr7t-x-x-80'>https://www.deepsig.ai/datasets</span></a>
+   </p>
+   <p class='bibitem'><span class='biblabel'>
+ <span class='ptmr7t-x-x-80'>[4] </span><span class='bibsp'><span class='ptmr7t-x-x-80'>   </span></span></span><a id='Xrepo'></a><span class='ptmr7t-x-x-80'>adversarial-rf project, “AWN and adversarial RF experiments,” repository artifact, 2026.</span>
+</p>
+   </div>
+   
+</body> 
+</html>

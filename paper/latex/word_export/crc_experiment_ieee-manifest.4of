@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<manifest:manifest xmlns:manifest = "urn:oasis:names:tc:opendocument:xmlns:manifest:1.0"> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.text" manifest:full-path="/"/> <manifest:file-entry manifest:media-type="" manifest:full-path="Pictures/"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="styles.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="meta.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="settings.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m2/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m2/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m2/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m3/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m3/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m3/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m4/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m4/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m4/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m5/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m5/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m5/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m6/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m6/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m6/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m7/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m7/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m7/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m8/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m8/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m8/"/> <manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m9/content.xml"/> 
+<manifest:file-entry manifest:media-type="text/xml" manifest:full-path="crc_experiment_ieee-m9/settings.xml"/> 
+<manifest:file-entry manifest:media-type="application/vnd.oasis.opendocument.formula" manifest:full-path="crc_experiment_ieee-m9/"/> </manifest:manifest> 

@@ -1,0 +1,23 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {I}Introduction}}{3}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {II}Method}}{3}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {II-A}\b:mbox }}Two-Track Design}}{4}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {II-B}\b:mbox }}Transfer Perturbation}}{4}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {II-C}\b:mbox }}Evaluation Scenarios}}{4}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {III}Experimental Setup}}{5}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {III-A}\b:mbox }}Model and Data}}{5}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {III-B}\b:mbox }}Attack and Output Scope}}{5}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {IV}Results}}{6}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-0}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {IV-A}\b:mbox }}Overall Means on Digital Modulations}}{6}\relax 
+\doTocEntry\toclot{I}{\csname a:TocLink\endcsname{1}{x1-49r1}{}{\ignorespaces Overall Means on Digital Modulations}}{table}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-1}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {IV-B}\b:mbox }}SNR-Stratified Means}}{9}\relax 
+\doTocEntry\toclot{II}{\csname a:TocLink\endcsname{1}{x1-51r2}{}{\ignorespaces SNR-Stratified Means on Digital Modulations}}{table}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-2}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {IV-C}\b:mbox }}Per-Modulation CRC at 18 dB}}{12}\relax 
+\doTocEntry\toclot{III}{\csname a:TocLink\endcsname{1}{x1-53r3}{}{\ignorespaces CRC Pass Rate at 18 dB by Modulation}}{table}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {V}Discussion}}{15}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {V-A}\b:mbox }}Primary Failure Mechanism}}{15}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {V-B}\b:mbox }}Why 18 dB Is More Diagnostic}}{15}\relax 
+\doTocEntry\tocsubsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {\unhbox \voidb@x \hbox {\a:mbox {V-C}\b:mbox }}Modulation-Specific Sensitivity}}{15}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {VI}Threats to Validity}}{15}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{\numberline {VII}Conclusion}}{16}\relax 
+\doTocEntry\tocsection{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{References}}{17}\relax 

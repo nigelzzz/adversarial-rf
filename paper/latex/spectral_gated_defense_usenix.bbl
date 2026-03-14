@@ -1,0 +1,52 @@
+\begin{thebibliography}{1}
+
+\bibitem{carlini2017towards}
+Nicholas Carlini and David Wagner.
+\newblock Towards evaluating the robustness of neural networks.
+\newblock In {\em IEEE Symposium on Security and Privacy (SP)}, pages 39--57,
+  2017.
+
+\bibitem{chen2020ead}
+Pin-Yu Chen, Yash Sharma, Huan Zhang, Jinfeng Yi, and Cho-Jui Hsieh.
+\newblock {EAD}: Elastic-net attacks to {DNNs} via feature prioritization.
+\newblock {\em arXiv preprint arXiv:1709.04114}, 2018.
+
+\bibitem{flowers2019sigguard}
+Bryse Flowers, R.~Michael Buehrer, and William~C. Headley.
+\newblock Evaluating adversarial evasion attacks in the context of wireless
+  communications.
+\newblock {\em IEEE Trans. on Information Forenstic and Security}, 2020.
+
+\bibitem{kim2020torchattacks}
+Hoki Kim.
+\newblock Torchattacks: A {PyTorch} repository for adversarial attacks.
+\newblock {\em arXiv preprint arXiv:2010.01950}, 2020.
+
+\bibitem{li2023awn}
+Jiawei Li et~al.
+\newblock Towards the automatic modulation classification with adaptive wavelet
+  network.
+\newblock {\em IEEE Trans. on Cognitive Communications and Networking}, 2023.
+
+\bibitem{lin2020tactics}
+Yun Lin, Haojun Zhao, Ya~Tu, Shiwen Mao, and Zheng Dou.
+\newblock Threats of adversarial attacks in {DNN}-based modulation recognition.
+\newblock {\em IEEE INFOCOM}, 2020.
+
+\bibitem{otoole2016rml}
+Timothy~J. O'Shea, Johnathan Corgan, and T.~Charles Clancy.
+\newblock Convolutional radio modulation recognition networks.
+\newblock {\em arXiv preprint arXiv:1602.04105}, 2016.
+
+\bibitem{proakis2008digital}
+John~G. Proakis and Masoud Salehi.
+\newblock {\em Digital Communications}.
+\newblock McGraw-Hill, 5th edition, 2008.
+
+\bibitem{silvaco2023adversarial_rf}
+Domingo Silvaco et~al.
+\newblock A survey on adversarial attacks against automatic modulation
+  classification.
+\newblock {\em IEEE Communications Surveys and Tutorials}, 2023.
+
+\end{thebibliography}

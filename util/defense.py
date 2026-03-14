@@ -481,3 +481,91 @@ def fft_topk_denoise_normalized(
         return denormalize_iq_data(x_denoised_norm, norm_offset, norm_scale)
     else:
         return fft_topk_denoise(x, topk)
+
+
+# ============================================================
+# Unified Real-Time Defense: Spectral-Gated Top-20 / Quant32
+# ============================================================
+
+def _per_sample_quantize(x: torch.Tensor, n_levels: int = 32) -> torch.Tensor:
+    """Per-sample input quantization to n_levels discrete values."""
+    N = x.shape[0]
+    x_flat = x.flatten(1)  # [N, C*T]
+    x_min = x_flat.min(dim=1).values.view(N, 1, 1)
+    x_max = x_flat.max(dim=1).values.view(N, 1, 1)
+    rng = x_max - x_min + 1e-12
+    x_norm = (x - x_min) / rng
+    x_quant = torch.round(x_norm * (n_levels - 1)) / (n_levels - 1)
+    return x_quant * rng + x_min
+
+
+def spectral_gated_defense(
+    x: torch.Tensor,
+    topk: int = 20,
+    quant_levels: int = 32,
+    flatness_threshold: float = 0.4,
+) -> torch.Tensor:
+    """
+    Unified real-time defense for all modulations.
+
+    Cost: ONE FFT (shared for flatness + Top-K) + ONE classifier inference.
+
+    Algorithm:
+      1. Compute full complex FFT of input (shared for both steps)
+      2. Compute spectral flatness per sample from the same FFT
+      3. If flatness > threshold: signal is wideband (AM-SSB type)
+         → apply per-sample quantization (destroys LSB perturbations)
+      4. Else: signal is narrowband (all other modulations)
+         → apply Top-K filtering (removes spread adversarial energy)
+      5. Return defended signal for ONE model inference
+
+    Why this works:
+      - AM-SSB is the only modulation with flat spectrum (flatness ~0.55)
+      - All other modulations have peaky spectra (flatness < 0.03)
+      - The gap between 0.03 and 0.55 is huge → robust threshold
+      - Top-20 handles 10/11 modulations well
+      - Quant32 is the ONLY defense that recovers AM-SSB
+
+    Args:
+        x: Input tensor [N, 2, T] (I/Q signal)
+        topk: Number of FFT bins to keep for narrowband signals (default: 20)
+        quant_levels: Quantization levels for wideband signals (default: 32)
+        flatness_threshold: Spectral flatness threshold (default: 0.4)
+
+    Returns:
+        Defended tensor [N, 2, T], ready for classifier inference.
+    """
+    N, C, T = x.shape
+
+    # Step 1: Full complex FFT (same as fft_topk_denoise)
+    X = torch.fft.fft(x, n=T, dim=2)  # [N, 2, T]
+    power = X.abs() ** 2 + 1e-20
+
+    # Step 2: Spectral flatness per sample
+    log_power = torch.log(power)
+    geo_mean = torch.exp(log_power.mean(dim=2))   # [N, C]
+    arith_mean = power.mean(dim=2)                 # [N, C]
+    flatness = (geo_mean / (arith_mean + 1e-12)).mean(dim=1)  # [N]
+
+    # Step 3: Route samples
+    is_wideband = flatness > flatness_threshold
+    is_narrowband = ~is_wideband
+
+    result = x.clone()
+
+    # Step 4a: Wideband → per-sample quantization
+    if is_wideband.any():
+        result[is_wideband] = _per_sample_quantize(
+            x[is_wideband], n_levels=quant_levels)
+
+    # Step 4b: Narrowband → Top-K via full FFT (matches fft_topk_denoise)
+    if is_narrowband.any():
+        X_n = X[is_narrowband]
+        mags = X_n.abs()
+        _, idx = mags.topk(k=min(topk, T), dim=2)
+        mask = torch.zeros_like(mags, dtype=torch.bool)
+        mask.scatter_(2, idx, True)
+        X_filt = X_n * mask.to(X_n.dtype)
+        result[is_narrowband] = torch.fft.ifft(X_filt, n=T, dim=2).real
+
+    return result

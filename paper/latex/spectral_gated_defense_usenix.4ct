@@ -1,0 +1,37 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi 
+\doTocEntry\tocsection{1}{\csname a:TocLink\endcsname{1}{x1-10001}{QQ2-1-1}{Introduction}}{2}\relax 
+\doTocEntry\tocsection{2}{\csname a:TocLink\endcsname{1}{x1-20002}{QQ2-1-2}{Background and Threat Model}}{3}\relax 
+\doTocEntry\tocsubsection{2.1}{\csname a:TocLink\endcsname{1}{x1-30002.1}{QQ2-1-3}{Automatic Modulation Classification}}{3}\relax 
+\doTocEntry\tocsubsection{2.2}{\csname a:TocLink\endcsname{1}{x1-40002.2}{QQ2-1-4}{Adversarial Attacks on IQ Signals}}{3}\relax 
+\doTocEntry\tocsubsection{2.3}{\csname a:TocLink\endcsname{1}{x1-50002.3}{QQ2-1-5}{Threat Model}}{3}\relax 
+\doTocEntry\tocsection{3}{\csname a:TocLink\endcsname{1}{x1-60003}{QQ2-1-6}{Control-Plane Attack Analysis}}{3}\relax 
+\doTocEntry\tocsubsection{3.1}{\csname a:TocLink\endcsname{1}{x1-70003.1}{QQ2-1-7}{Experimental Design}}{3}\relax 
+\doTocEntry\tocsubsection{3.2}{\csname a:TocLink\endcsname{1}{x1-80003.2}{QQ2-1-8}{Results}}{4}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-8002}{}{\numberline {1}{\ignorespaces CRC Pass Rate (\%) at SNR 18 dB -- CW Attack. Adversarial perturbation drops AMC to near 0\% but CRC under oracle demodulation remains $>$71\%.\relax }}}{6}\relax 
+\doTocEntry\tocsection{4}{\csname a:TocLink\endcsname{1}{x1-90004}{QQ2-1-10}{Spectral-Gated Defense}}{7}\relax 
+\doTocEntry\tocsubsection{4.1}{\csname a:TocLink\endcsname{1}{x1-100004.1}{QQ2-1-11}{Design Rationale}}{7}\relax 
+\doTocEntry\tocsubsection{4.2}{\csname a:TocLink\endcsname{1}{x1-110004.2}{QQ2-1-12}{Key Observation: Spectral Flatness}}{7}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-11003}{}{\numberline {2}{\ignorespaces Spectral Flatness on Clean RML2016.10a Signals\relax }}}{9}\relax 
+\doTocEntry\tocsubsection{4.3}{\csname a:TocLink\endcsname{1}{x1-120004.3}{QQ2-1-14}{Algorithm}}{10}\relax 
+\doTocEntry\tocloa{}{\csname a:TocLink\endcsname{1}{x1-12002}{}{\numberline {1}{\ignorespaces Spectral-Gated Defense\relax }}}{12}\relax 
+\doTocEntry\tocsection{5}{\csname a:TocLink\endcsname{1}{x1-130005}{QQ2-1-16}{Evaluation}}{13}\relax 
+\doTocEntry\tocsubsection{5.1}{\csname a:TocLink\endcsname{1}{x1-140005.1}{QQ2-1-17}{Setup}}{13}\relax 
+\doTocEntry\tocsubsection{5.2}{\csname a:TocLink\endcsname{1}{x1-150005.2}{QQ2-1-18}{Defense Recovery on All Modulations}}{13}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-15002}{}{\numberline {3}{\ignorespaces Classification Accuracy (\%) at SNR 18 dB. ``Gated'' is the proposed spectral-gated defense. Recovery = Gated $-$ Attack.\relax }}}{15}\relax 
+\doTocEntry\tocsubsection{5.3}{\csname a:TocLink\endcsname{1}{x1-160005.3}{QQ2-1-20}{Comparison with Alternative Defenses}}{16}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-16002}{}{\numberline {4}{\ignorespaces Defense Comparison at SNR 18 dB (EADL1). Accuracy (\%) per modulation. Only Gated recovers all modulations.\relax }}}{18}\relax 
+\doTocEntry\tocsubsection{5.4}{\csname a:TocLink\endcsname{1}{x1-170005.4}{QQ2-1-22}{Receiver Pipeline Analysis}}{19}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-17002}{}{\numberline {5}{\ignorespaces Receiver Pipeline Blocks as Defense (EADL1, SNR 18 dB). Standard blocks degrade accuracy because the AWN model was trained on raw IQ signals, not preprocessed ones.\relax }}}{21}\relax 
+\doTocEntry\tocsection{6}{\csname a:TocLink\endcsname{1}{x1-180006}{QQ2-1-24}{FEC on the Data Path}}{22}\relax 
+\doTocEntry\tocsubsection{6.1}{\csname a:TocLink\endcsname{1}{x1-190006.1}{QQ2-1-25}{FEC Configuration}}{22}\relax 
+\doTocEntry\tocsubsection{6.2}{\csname a:TocLink\endcsname{1}{x1-200006.2}{QQ2-1-26}{FEC Results}}{22}\relax 
+\doTocEntry\toclot{}{\csname a:TocLink\endcsname{1}{x1-20002}{}{\numberline {6}{\ignorespaces CRC Pass Rate (\%) With/Without FEC After Defense (CW, SNR 18 dB, Oracle Demod). FEC dramatically improves data integrity after defense filtering.\relax }}}{24}\relax 
+\doTocEntry\tocsubsection{6.3}{\csname a:TocLink\endcsname{1}{x1-210006.3}{QQ2-1-28}{Recommended Architecture}}{25}\relax 
+\doTocEntry\tocsection{7}{\csname a:TocLink\endcsname{1}{x1-220007}{QQ2-1-29}{Discussion}}{25}\relax 
+\doTocEntry\tocsubsection{7.1}{\csname a:TocLink\endcsname{1}{x1-230007.1}{QQ2-1-30}{Why Not Ensemble Voting?}}{25}\relax 
+\doTocEntry\tocsubsection{7.2}{\csname a:TocLink\endcsname{1}{x1-240007.2}{QQ2-1-31}{Limitations}}{25}\relax 
+\doTocEntry\tocsection{8}{\csname a:TocLink\endcsname{1}{x1-250008}{QQ2-1-32}{Related Work}}{25}\relax 
+\doTocEntry\tocsection{9}{\csname a:TocLink\endcsname{1}{x1-260009}{QQ2-1-33}{Conclusion}}{25}\relax 
+\doTocEntry\toclikesection{}{\csname a:TocLink\endcsname{1}{x1-270009}{QQ2-1-34}{Availability}}{26}\relax 
+\doTocEntry\toclikesection{}{\csname a:TocLink\endcsname{1}{x1-280009}{QQ2-1-35}{References}}{26}\relax 
+\par 
