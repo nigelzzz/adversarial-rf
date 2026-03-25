@@ -514,9 +514,60 @@ def _normalize_mod(mod_type):
     return mod_type.upper() if isinstance(mod_type, str) else mod_type.decode().upper()
 
 
+def apply_multipath(signal, taps):
+    """Apply multipath channel: convolve with tap weights, keep same length."""
+    taps = np.asarray(taps, dtype=complex)
+    out = np.convolve(signal, taps, mode='full')[:len(signal)]
+    return out
+
+
+def apply_sro(signal, sro_ppm):
+    """Apply sample rate offset via linear interpolation.
+
+    Resamples signal at rate (1 + sro_ppm * 1e-6), simulating TX/RX
+    clock mismatch. Returns array of same length as input.
+    """
+    if abs(sro_ppm) < 1e-6:
+        return signal
+    n = len(signal)
+    rate = 1.0 + sro_ppm * 1e-6
+    # New sample positions in the original signal's time base
+    t_new = np.arange(n) * rate
+    t_old = np.arange(n, dtype=float)
+    # Linear interpolation (clip to valid range)
+    t_new = np.clip(t_new, 0, n - 1)
+    real_interp = np.interp(t_new, t_old, signal.real)
+    imag_interp = np.interp(t_new, t_old, signal.imag)
+    return real_interp + 1j * imag_interp
+
+
+def random_multipath_taps(rng, n_taps=3, max_delay_spread=0.5):
+    """Generate random Rayleigh fading multipath taps.
+
+    Args:
+        rng: numpy random generator
+        n_taps: number of channel taps (including LOS)
+        max_delay_spread: exponential decay factor for tap power
+
+    Returns:
+        Complex tap array normalized so total power = 1.
+    """
+    # Exponential power delay profile
+    delays = np.arange(n_taps)
+    powers = np.exp(-delays / max(max_delay_spread, 0.1))
+    # Rayleigh fading per tap
+    h = np.sqrt(powers / 2) * (
+        rng.standard_normal(n_taps) + 1j * rng.standard_normal(n_taps)
+    )
+    # Normalize total power to 1
+    h = h / np.sqrt(np.sum(np.abs(h) ** 2))
+    return h
+
+
 def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
                    snr_db=18.0, target_rms=0.006, cfo_std=0.015,
-                   rng=None, n_guard=16, fec=False):
+                   rng=None, n_guard=16, fec=False,
+                   multipath_taps=None, sro_ppm=0.0):
     """
     Generate a single burst with known bits, CRC, and pilot symbols/bits.
 
@@ -530,6 +581,11 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
         fec: If True, apply rate-1/2 convolutional coding + block
              interleaving before modulation. Automatically disabled for
              modulations with insufficient capacity (BPSK, CPFSK, GFSK).
+        multipath_taps: Optional list/array of complex channel taps for
+                        multipath fading. If None, no multipath applied.
+                        E.g. [1.0, 0.3*exp(j*0.5)] for 2-tap channel.
+        sro_ppm: Sample rate offset in PPM. Resamples the signal by
+                 (1 + sro_ppm*1e-6) to simulate clock mismatch.
 
     Returns:
         dict with keys:
@@ -556,12 +612,16 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
     if mod in FSK_MODS:
         return _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
                                    snr_db, target_rms, cfo_std, rng,
-                                   fec=fec)
+                                   fec=fec,
+                                   multipath_taps=multipath_taps,
+                                   sro_ppm=sro_ppm)
     elif mod in CONSTELLATION_MODS:
         return _generate_burst_constellation(mod, n_symbols, n_pilots, sps,
                                              beta, snr_db, target_rms,
                                              cfo_std, rng, n_guard=n_guard,
-                                             fec=fec)
+                                             fec=fec,
+                                             multipath_taps=multipath_taps,
+                                             sro_ppm=sro_ppm)
     else:
         raise ValueError(f"Unknown modulation: {mod_type}. "
                          f"Supported: {sorted(ALL_DIGITAL_MODS)}")
@@ -569,7 +629,8 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
 
 def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
                                   snr_db, target_rms, cfo_std, rng,
-                                  n_guard=16, fec=False):
+                                  n_guard=16, fec=False,
+                                  multipath_taps=None, sro_ppm=0.0):
     """Generate burst for constellation-based modulations.
 
     Uses guard symbols before/after the data+pilot region so the TX RRC
@@ -654,6 +715,14 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
     h = rrc_filter(beta, sps, num_taps=num_taps)
     shaped_full = np.convolve(upsampled, h, mode='same')
 
+    # Apply multipath fading (before scaling, so tap power is meaningful)
+    if multipath_taps is not None:
+        shaped_full = apply_multipath(shaped_full, multipath_taps)
+
+    # Apply sample rate offset (before scaling)
+    if abs(sro_ppm) > 1e-6:
+        shaped_full = apply_sro(shaped_full, sro_ppm)
+
     # Scale the FULL signal to target RMS
     n_samples = n_symbols * sps
     win_start = n_guard * sps
@@ -680,6 +749,28 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
         + 1j * rng.standard_normal(n_full_samples)
     )
     noisy_full = shaped_full + noise
+
+    # Rescale total (signal+noise) with per-burst RMS diversity.
+    # RML2016 has inter-burst RMS variation (CV ~6-9% for QAM, ~0% for FSK)
+    # from fading. Use log-normal jitter to match this.
+    _RMS_CV = {  # coefficient of variation from RML2016 SNR=18
+        'BPSK': 0.09, 'QPSK': 0.08, '8PSK': 0.07,
+        'QAM16': 0.06, 'QAM64': 0.06, 'PAM4': 0.07,
+    }
+    cv = _RMS_CV.get(mod, 0.05)
+    # Log-normal: mean=target_rms, std=cv*target_rms
+    if cv > 0:
+        burst_rms_target = target_rms * np.exp(
+            cv * rng.standard_normal() - 0.5 * cv ** 2)
+        burst_rms_target = np.clip(burst_rms_target,
+                                   target_rms * 0.7, target_rms * 2.5)
+    else:
+        burst_rms_target = target_rms
+
+    noisy_window_pre = noisy_full[win_start:win_start + n_samples]
+    total_rms = np.sqrt(np.mean(np.abs(noisy_window_pre) ** 2))
+    if total_rms > 0:
+        noisy_full = noisy_full * (burst_rms_target / total_rms)
 
     # Extract the middle 128-sample window (for AWN classifier / iq_tensor)
     noisy_window = noisy_full[win_start:win_start + n_samples]
@@ -713,7 +804,8 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
 
 def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
                         snr_db, target_rms, cfo_std, rng,
-                        h=0.5, bt=None, fec=False):
+                        h=0.5, bt=None, fec=False,
+                        multipath_taps=None, sro_ppm=0.0):
     """Generate burst for FSK modulations (CPFSK, GFSK).
 
     CPFSK: rectangular frequency pulse, mod index h=0.5 (MSK)
@@ -768,6 +860,14 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
     # Generate constant-envelope signal
     signal = np.exp(1j * phi)
 
+    # Apply multipath fading
+    if multipath_taps is not None:
+        signal = apply_multipath(signal, multipath_taps)
+
+    # Apply sample rate offset
+    if abs(sro_ppm) > 1e-6:
+        signal = apply_sro(signal, sro_ppm)
+
     # Scale to target RMS (with small random variation)
     current_rms = np.sqrt(np.mean(np.abs(signal) ** 2))
     rms_scale = target_rms * (1.0 + 0.05 * rng.standard_normal())
@@ -789,6 +889,17 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
         rng.standard_normal(n_samples) + 1j * rng.standard_normal(n_samples)
     )
     noisy = signal + noise
+
+    # Rescale total (signal+noise) with per-burst RMS diversity.
+    # FSK mods have near-zero inter-burst variance in RML2016.
+    _FSK_CV = {'CPFSK': 0.003, 'GFSK': 0.001}
+    cv = _FSK_CV.get(mod, 0.003)
+    burst_rms_target = target_rms * np.exp(
+        cv * rng.standard_normal() - 0.5 * cv ** 2)
+
+    total_rms = np.sqrt(np.mean(np.abs(noisy) ** 2))
+    if total_rms > 0:
+        noisy = noisy * (burst_rms_target / total_rms)
 
     # Build IQ tensor [1, 2, T]
     iq_tensor = np.zeros((1, 2, n_samples), dtype=np.float32)
