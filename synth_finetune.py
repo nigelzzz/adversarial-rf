@@ -1,25 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Synthetic Dataset Generator + AWN Finetuning.
 
-Generates synthetic IQ data using the same TX/RX chain as the CRC experiment,
-with channel impairments (multipath fading, SRO) to match RML2016.10a
-characteristics. Then finetunes AWN on mixed real+synthetic data.
+Generates synthetic IQ data via make_rml_like_burst() with configurable channel
+presets, then finetunes the pretrained AWN model.  Analog mods (WBFM, AM-DSB,
+AM-SSB) are taken from real RML2016 data since our TX chain cannot synthesise them.
 
-Steps:
-  1. Generate synthetic [N, 2, 128] IQ data for all digital mods × SNRs
-  2. (Optional) Save as pickle for reuse
-  3. Finetune AWN on mixed RML2016 + synthetic data
-  4. Evaluate on both real and synthetic test sets
+Curriculum mode (--curriculum) trains in three progressive stages:
+  stage 1 - phase_gain   (phase + gain jitter only)
+  stage 2 - phase_gain_cfo (adds CFO)
+  stage 3 - full          (adds multipath)
 
 Usage:
     # Generate dataset only
     python synth_finetune.py --mode gen --n_per_cell 1000
 
-    # Generate + finetune
-    python synth_finetune.py --mode finetune --n_per_cell 1000 --ft_epochs 20
+    # Single-stage finetune (full preset)
+    python synth_finetune.py --mode finetune --n_per_cell 2000 --ft_epochs 50
 
-    # Evaluate finetuned model
+    # Curriculum finetune (recommended)
+    python synth_finetune.py --mode finetune --n_per_cell 2000 --curriculum
+
+    # Evaluate a checkpoint
     python synth_finetune.py --mode eval --ckpt_path ./checkpoint/2016.10a_AWN_ft.pkl
 """
 
@@ -35,7 +38,7 @@ import torch.utils.data as Data
 from tqdm import tqdm
 
 from util.synth_txrx import (
-    generate_burst, random_multipath_taps,
+    make_rml_like_burst, PRESETS as CHAN_PRESETS,
     CONSTELLATION_MODS, FSK_MODS,
 )
 from util.utils import create_model, fix_seed
@@ -45,6 +48,9 @@ from data_loader.data_loader import Load_Dataset, Dataset_Split, Create_Data_Loa
 
 # Digital mods that our synth chain supports (8 of 11)
 SYNTH_MODS = sorted(CONSTELLATION_MODS | FSK_MODS)
+
+# Analog mods only available from real RML2016 data
+ANALOG_MODS = ['WBFM', 'AM-DSB', 'AM-SSB']
 
 # AWN class index -> mod name (must match data_loader.py)
 IDX_TO_MOD = {
@@ -56,75 +62,25 @@ MOD_TO_IDX = {v: k for k, v in IDX_TO_MOD.items()}
 # RML2016.10a SNR range
 RML_SNRS = list(range(-20, 20, 2))  # -20 to 18 dB, step 2
 
-
-def compute_psd_templates(rml_path='./data/RML2016.10a_dict.pkl'):
-    """Compute per-modulation average PSD from RML2016 (SNR>=10 for clean shape)."""
-    with open(rml_path, 'rb') as f:
-        rml = pickle.load(f, encoding='bytes')
-
-    templates = {}
-    for mod_name, label_idx in MOD_TO_IDX.items():
-        mod_b = mod_name.encode()
-        psds = []
-        for snr in [10, 12, 14, 16, 18]:
-            key = (mod_b, snr)
-            if key not in rml:
-                continue
-            arr = rml[key]
-            iq = arr[:, 0, :] + 1j * arr[:, 1, :]
-            psds.append(np.mean(np.abs(np.fft.fft(iq, axis=1)) ** 2, axis=0))
-        if psds:
-            templates[mod_name] = np.mean(psds, axis=0)
-    return templates
+# Curriculum stages
+CURRICULUM_STAGES = ['phase_gain', 'phase_gain_cfo', 'rml_like']
 
 
-def spectral_shape(signals_2d, psd_target, psd_synth):
-    """Apply spectral shaping to match target PSD profile.
-
-    Args:
-        signals_2d: [N, 2, 128] array
-        psd_target: [128] target PSD from RML2016
-        psd_synth: [128] average PSD of synth signals
-
-    Returns:
-        shaped [N, 2, 128] array with same RMS as input
-    """
-    from scipy.ndimage import uniform_filter1d
-    H = np.sqrt(psd_target / (psd_synth + 1e-20))
-    H = uniform_filter1d(H, size=5, mode='wrap')
-
-    out = np.empty_like(signals_2d)
-    for i in range(len(signals_2d)):
-        iq = signals_2d[i, 0, :] + 1j * signals_2d[i, 1, :]
-        rms_before = np.sqrt(np.mean(np.abs(iq) ** 2))
-        S = np.fft.fft(iq)
-        iq_shaped = np.fft.ifft(S * H)
-        rms_after = np.sqrt(np.mean(np.abs(iq_shaped) ** 2))
-        if rms_after > 0:
-            iq_shaped = iq_shaped * (rms_before / rms_after)
-        out[i, 0, :] = iq_shaped.real.astype(np.float32)
-        out[i, 1, :] = iq_shaped.imag.astype(np.float32)
-    return out
-
+# ─────────────────────────────────────────────────────────────────────────────
+# Data generation
+# ─────────────────────────────────────────────────────────────────────────────
 
 def generate_synth_dataset(n_per_cell, snr_list=None, mod_list=None,
-                           multipath=True, sro=True, seed=42,
-                           target_rms=0.006, spectral_match=True):
-    """Generate synthetic IQ dataset matching RML2016.10a format.
+                           channel_preset='full', seed=42, target_rms=0.006):
+    """Generate synthetic IQ dataset for digital modulations.
 
-    Args:
-        n_per_cell: samples per (mod, snr) combination
-        snr_list: list of SNR values (default: RML2016 range)
-        mod_list: list of modulation types (default: all 8 digital mods)
-        multipath: enable random multipath fading
-        sro: enable random sample rate offset
-        seed: random seed
-        spectral_match: apply spectral shaping to match RML2016 PSD profile
+    Uses make_rml_like_burst() with the specified channel preset so that
+    ablation / curriculum experiments share the same generation path.
 
     Returns:
-        signals: [N, 2, 128] numpy array
-        labels: [N] int array (AWN class indices)
-        snrs: [N] int array
+        signals: [N, 2, 128] float32
+        labels:  [N] int64 (AWN class indices)
+        snrs:    [N] int64
     """
     if snr_list is None:
         snr_list = RML_SNRS
@@ -132,93 +88,97 @@ def generate_synth_dataset(n_per_cell, snr_list=None, mod_list=None,
         mod_list = SYNTH_MODS
 
     rng = np.random.default_rng(seed)
+    all_signals, all_labels, all_snrs = [], [], []
 
-    # Load PSD templates for spectral shaping
-    psd_templates = None
-    if spectral_match:
-        try:
-            psd_templates = compute_psd_templates()
-            print("  Spectral shaping: enabled (matching RML2016 PSD)")
-        except FileNotFoundError:
-            print("  Spectral shaping: disabled (RML2016 data not found)")
+    total = len(mod_list) * len(snr_list) * n_per_cell
+    with tqdm(total=total, desc=f'  Gen [{channel_preset}]', leave=False) as pbar:
+        for mod in mod_list:
+            if mod not in MOD_TO_IDX:
+                print(f"  Skipping {mod}: not in AWN class map")
+                continue
+            label_idx = MOD_TO_IDX[mod]
+            for snr_db in snr_list:
+                cell = []
+                for _ in range(n_per_cell):
+                    b = make_rml_like_burst(
+                        mod, snr_db, channel_preset,
+                        target_rms=target_rms, rng=rng,
+                    )
+                    cell.append(b['iq_tensor'][0])   # [2, 128]
+                    pbar.update(1)
+                all_signals.append(np.stack(cell, axis=0))
+                all_labels.extend([label_idx] * n_per_cell)
+                all_snrs.extend([int(snr_db)] * n_per_cell)
 
-    all_signals = []
-    all_labels = []
-    all_snrs = []
-
-    for mod in mod_list:
-        if mod not in MOD_TO_IDX:
-            print(f"  Skipping {mod}: not in AWN class map")
-            continue
-        label_idx = MOD_TO_IDX[mod]
-
-        # Collect all cells for this mod (for spectral shaping)
-        mod_signals = []
-        mod_snr_counts = []
-
-        for snr_db in snr_list:
-            signals_cell = []
-            for _ in range(n_per_cell):
-                # Random channel impairments
-                mp_taps = None
-                if multipath:
-                    mp_taps = random_multipath_taps(
-                        rng, n_taps=5, max_delay_spread=1.0)
-
-                sro_ppm = 0.0
-                if sro:
-                    sro_ppm = rng.normal(0, 5.0)  # ±5 PPM typical
-
-                b = generate_burst(
-                    mod, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
-                    snr_db=snr_db, target_rms=target_rms,
-                    cfo_std=0.015, rng=rng, n_guard=16,
-                    multipath_taps=mp_taps, sro_ppm=sro_ppm,
-                )
-                signals_cell.append(b['iq_tensor'][0])  # [2, 128]
-
-            cell_arr = np.stack(signals_cell, axis=0)  # [n_per_cell, 2, 128]
-            mod_signals.append(cell_arr)
-            mod_snr_counts.append((snr_db, n_per_cell))
-
-        # Stack all cells for this mod
-        mod_arr = np.concatenate(mod_signals, axis=0)
-
-        # Apply spectral shaping per modulation
-        if psd_templates is not None and mod in psd_templates:
-            psd_target = psd_templates[mod]
-            # Compute synth average PSD for this mod
-            iq_all = mod_arr[:, 0, :] + 1j * mod_arr[:, 1, :]
-            psd_synth = np.mean(np.abs(np.fft.fft(iq_all, axis=1)) ** 2, axis=0)
-            mod_arr = spectral_shape(mod_arr, psd_target, psd_synth)
-
-        # Split back into cells and append
-        offset = 0
-        for snr_db, count in mod_snr_counts:
-            all_signals.append(mod_arr[offset:offset + count])
-            all_labels.extend([label_idx] * count)
-            all_snrs.extend([snr_db] * count)
-            offset += count
-
-    signals = np.concatenate(all_signals, axis=0)  # [N, 2, 128]
-    labels = np.array(all_labels, dtype=np.int64)
-    snrs = np.array(all_snrs, dtype=np.int64)
-
+    signals = np.concatenate(all_signals, axis=0).astype(np.float32)
+    labels  = np.array(all_labels, dtype=np.int64)
+    snrs    = np.array(all_snrs,   dtype=np.int64)
     return signals, labels, snrs
+
+
+def load_analog_from_rml(rml_path='./data/RML2016.10a_dict.pkl', seed=42):
+    """Extract WBFM / AM-DSB / AM-SSB samples from real RML2016.
+
+    Returns:
+        signals: [N, 2, 128] float32
+        labels:  [N] int64
+        snrs:    [N] int64
+    """
+    with open(rml_path, 'rb') as f:
+        rml = pickle.load(f, encoding='bytes')
+
+    all_sigs, all_labs, all_snrs = [], [], []
+    for mod_name in ANALOG_MODS:
+        mod_b = mod_name.encode()
+        label_idx = MOD_TO_IDX[mod_name]
+        for snr in RML_SNRS:
+            key = (mod_b, snr)
+            if key not in rml:
+                continue
+            arr = rml[key].astype(np.float32)   # [N, 2, 128]
+            all_sigs.append(arr)
+            all_labs.extend([label_idx] * len(arr))
+            all_snrs.extend([snr] * len(arr))
+
+    return (np.concatenate(all_sigs, axis=0),
+            np.array(all_labs, dtype=np.int64),
+            np.array(all_snrs, dtype=np.int64))
+
+
+def load_rml_train_split(seed=42):
+    """Return the same train split used by original AWN training (all 11 mods).
+
+    Returns:
+        signals: [N, 2, 128] float32
+        labels:  [N] int64
+        snrs:    [N] int64 (per-sample SNR)
+    """
+    import logging
+    logger = logging.getLogger('sf_rml_load')
+    logger.setLevel(logging.WARNING)
+    Signals, Labels, SNRs, snrs, mods = Load_Dataset('2016.10a', logger)
+    fix_seed(seed)
+    train_set, _, _, test_idx = Dataset_Split(Signals, Labels, snrs, mods, logger)
+    Sig_train, Lab_train = train_set
+    snrs_all = np.array(SNRs, dtype=np.int64)          # per-sample SNR for all N samples
+    # Reconstruct train_idx: Dataset_Split doesn't return it, but we can derive
+    # from test_idx + val_idx.  Simplest: re-run same random split to get train_idx.
+    # Since we already have Sig_train and Lab_train we just pass dummy snrs.
+    return (Sig_train.numpy().astype(np.float32),
+            Lab_train.numpy(),
+            np.zeros(len(Lab_train), dtype=np.int64))  # snrs not needed for training
 
 
 def save_synth_dataset(signals, labels, snrs, path):
     """Save synthetic dataset as pickle (same key format as RML2016)."""
-    # Build dict keyed by (mod_bytes, snr_int) like RML2016
     dataset = {}
     for label_idx in np.unique(labels):
         mod_name = IDX_TO_MOD[label_idx]
-        mod_key = mod_name.encode()
+        mod_key  = mod_name.encode()
         for snr_val in np.unique(snrs):
             mask = (labels == label_idx) & (snrs == snr_val)
             if np.any(mask):
                 dataset[(mod_key, int(snr_val))] = signals[mask]
-
     with open(path, 'wb') as f:
         pickle.dump(dataset, f)
     print(f"Saved synthetic dataset: {path}")
@@ -230,410 +190,396 @@ def load_synth_dataset(path):
     """Load synthetic dataset from pickle."""
     with open(path, 'rb') as f:
         dataset = pickle.load(f, encoding='bytes')
-
-    signals_list = []
-    labels_list = []
-    snrs_list = []
-
+    sigs, labs, snrs = [], [], []
     classes = {v.encode(): k for k, v in IDX_TO_MOD.items()}
-
     for (mod_key, snr_val), arr in sorted(dataset.items()):
-        signals_list.append(arr)
         label_idx = classes.get(mod_key)
         if label_idx is not None:
-            labels_list.extend([label_idx] * len(arr))
-            snrs_list.extend([snr_val] * len(arr))
+            sigs.append(arr)
+            labs.extend([label_idx] * len(arr))
+            snrs.extend([snr_val] * len(arr))
+    return (np.concatenate(sigs, axis=0),
+            np.array(labs, dtype=np.int64),
+            np.array(snrs, dtype=np.int64))
 
-    signals = np.concatenate(signals_list, axis=0)
-    labels = np.array(labels_list, dtype=np.int64)
-    snrs = np.array(snrs_list, dtype=np.int64)
-    return signals, labels, snrs
 
+# ─────────────────────────────────────────────────────────────────────────────
+# DataLoader helpers
+# ─────────────────────────────────────────────────────────────────────────────
 
-def make_mixed_loaders(real_signals, real_labels, synth_signals, synth_labels,
-                       batch_size=128, val_ratio=0.15, seed=42):
-    """Create train/val DataLoaders from mixed real + synthetic data."""
+def make_loaders(signals, labels, batch_size=256, val_ratio=0.15, seed=42):
+    """Split array into train/val DataLoaders."""
     rng = np.random.default_rng(seed)
-
-    # Concatenate
-    all_signals = np.concatenate([real_signals, synth_signals], axis=0)
-    all_labels = np.concatenate([real_labels, synth_labels], axis=0)
-
-    n = len(all_labels)
-    indices = rng.permutation(n)
+    n   = len(labels)
+    idx = rng.permutation(n)
     n_val = int(n * val_ratio)
+    val_idx, train_idx = idx[:n_val], idx[n_val:]
 
-    val_idx = indices[:n_val]
-    train_idx = indices[n_val:]
+    def _loader(i, shuffle):
+        ds = Data.TensorDataset(
+            torch.from_numpy(signals[i].astype(np.float32)),
+            torch.from_numpy(labels[i]),
+        )
+        return Data.DataLoader(ds, batch_size=batch_size,
+                               shuffle=shuffle, num_workers=2, pin_memory=True)
 
-    train_ds = Data.TensorDataset(
-        torch.from_numpy(all_signals[train_idx].astype(np.float32)),
-        torch.from_numpy(all_labels[train_idx]),
-    )
-    val_ds = Data.TensorDataset(
-        torch.from_numpy(all_signals[val_idx].astype(np.float32)),
-        torch.from_numpy(all_labels[val_idx]),
-    )
+    print(f"  Dataset: {len(train_idx)} train, {n_val} val")
+    return _loader(train_idx, True), _loader(val_idx, False)
 
-    train_loader = Data.DataLoader(train_ds, batch_size=batch_size,
-                                   shuffle=True, num_workers=2)
-    val_loader = Data.DataLoader(val_ds, batch_size=batch_size,
-                                 shuffle=False, num_workers=2)
 
-    print(f"Mixed dataset: {len(train_ds)} train, {len(val_ds)} val")
-    print(f"  Real: {len(real_labels)}, Synth: {len(synth_labels)}")
-    return train_loader, val_loader
-
+# ─────────────────────────────────────────────────────────────────────────────
+# Training / finetuning
+# ─────────────────────────────────────────────────────────────────────────────
 
 def finetune(model, train_loader, val_loader, device,
-             lr=0.0001, epochs=20, patience=5, save_path=None):
-    """Finetune AWN model with lower learning rate."""
+             lr=1e-4, epochs=50, patience=8, save_path=None,
+             tag='FT'):
+    """Finetune AWN model; returns best validation accuracy."""
     model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.CrossEntropyLoss().to(device)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=patience // 2)
+        optimizer, mode='max', factor=0.5, patience=patience // 2, verbose=False)
 
     best_val_acc = 0.0
-    best_state = None
-    no_improve = 0
+    best_state   = None
+    no_improve   = 0
 
     for epoch in range(epochs):
         # Train
         model.train()
-        train_loss_sum = 0.0
-        train_correct = 0
-        train_total = 0
-
-        for sig_batch, lab_batch in tqdm(train_loader,
-                                         desc=f'FT Epoch {epoch+1}/{epochs}',
-                                         leave=False):
-            sig_batch = sig_batch.to(device)
-            lab_batch = lab_batch.to(device)
-
-            logit, regu_sum = model(sig_batch)
-            loss = criterion(logit, lab_batch) + sum(regu_sum)
-
+        n_correct = n_total = 0
+        for sig, lab in train_loader:
+            sig, lab = sig.to(device), lab.to(device)
+            logit, regu = model(sig)
+            loss = criterion(logit, lab) + sum(regu)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-
-            train_loss_sum += loss.item() * len(lab_batch)
-            train_correct += (logit.argmax(1) == lab_batch).sum().item()
-            train_total += len(lab_batch)
-
-        train_acc = train_correct / train_total
-        train_loss = train_loss_sum / train_total
+            n_correct += (logit.argmax(1) == lab).sum().item()
+            n_total   += len(lab)
+        train_acc = n_correct / n_total
 
         # Validate
         model.eval()
-        val_correct = 0
-        val_total = 0
-        val_loss_sum = 0.0
-
+        v_correct = v_total = v_loss = 0
         with torch.no_grad():
-            for sig_batch, lab_batch in val_loader:
-                sig_batch = sig_batch.to(device)
-                lab_batch = lab_batch.to(device)
-                logit, regu_sum = model(sig_batch)
-                loss = criterion(logit, lab_batch) + sum(regu_sum)
-                val_loss_sum += loss.item() * len(lab_batch)
-                val_correct += (logit.argmax(1) == lab_batch).sum().item()
-                val_total += len(lab_batch)
-
-        val_acc = val_correct / val_total
-        val_loss = val_loss_sum / val_total
-        scheduler.step(val_loss)
-
+            for sig, lab in val_loader:
+                sig, lab = sig.to(device), lab.to(device)
+                logit, regu = model(sig)
+                v_loss   += (criterion(logit, lab) + sum(regu)).item() * len(lab)
+                v_correct += (logit.argmax(1) == lab).sum().item()
+                v_total   += len(lab)
+        val_acc  = v_correct / v_total
+        val_loss = v_loss / v_total
+        scheduler.step(val_acc)
         lr_now = optimizer.param_groups[0]['lr']
-        print(f"  Epoch {epoch+1:3d}: train_acc={train_acc:.4f} "
-              f"val_acc={val_acc:.4f} val_loss={val_loss:.4f} lr={lr_now:.6f}")
+
+        print(f"  [{tag}] Ep {epoch+1:3d}: "
+              f"train={100*train_acc:.1f}%  val={100*val_acc:.1f}%  "
+              f"lr={lr_now:.2e}")
 
         if val_acc > best_val_acc:
             best_val_acc = val_acc
-            best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
-            no_improve = 0
+            best_state   = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+            no_improve   = 0
+            if save_path:
+                torch.save(best_state, save_path)
         else:
             no_improve += 1
 
         if no_improve >= patience:
-            print(f"  Early stopping at epoch {epoch+1}")
+            print(f"  Early stopping at epoch {epoch+1} "
+                  f"(best val={100*best_val_acc:.2f}%)")
             break
 
     if best_state is not None:
         model.load_state_dict(best_state)
         if save_path:
-            torch.save(best_state, save_path)
-            print(f"  Saved best model: {save_path} (val_acc={best_val_acc:.4f})")
-
+            print(f"  Saved: {save_path}  (val={100*best_val_acc:.2f}%)")
     return best_val_acc
 
 
-def evaluate_on_real(model, device, dataset='2016.10a'):
-    """Evaluate model on real RML2016 test set."""
+# ─────────────────────────────────────────────────────────────────────────────
+# Evaluation helpers
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _eval_loader(model, loader, device):
+    model.eval()
+    correct = total = 0
+    preds_all, labs_all = [], []
+    with torch.no_grad():
+        for sig, lab in loader:
+            sig, lab = sig.to(device), lab.to(device)
+            logit, _ = model(sig)
+            preds = logit.argmax(1)
+            correct += (preds == lab).sum().item()
+            total   += len(lab)
+            preds_all.append(preds.cpu())
+            labs_all.append(lab.cpu())
+    return correct / total, torch.cat(preds_all).numpy(), torch.cat(labs_all).numpy()
+
+
+def evaluate_on_real(model, device, dataset='2016.10a', seed=42):
+    """Evaluate on real RML2016 test set (same split as original training)."""
     import logging
-    logger = logging.getLogger('synth_ft_eval')
-    logger.setLevel(logging.WARNING)
-    handler = logging.StreamHandler()
-    logger.addHandler(handler)
-
+    logger = logging.getLogger('sf_eval'); logger.setLevel(logging.WARNING)
     Signals, Labels, SNRs, snrs, mods = Load_Dataset(dataset, logger)
-    cfg = Config(dataset, train=False)
-    cfg.device = device
+    cfg         = Config(dataset, train=False)
+    cfg.device  = device
+    fix_seed(seed)
+    _, test_set, _, test_idx = Dataset_Split(Signals, Labels, snrs, mods, logger)
+    Sig_test, Lab_test = test_set
+    snrs_arr = np.array(SNRs)[test_idx]
 
-    # Use same split as original training
-    fix_seed(42)
-    train_set, test_set, val_set, test_idx = Dataset_Split(
-        Signals, Labels, snrs, mods, logger)
-    Signals_test, Labels_test = test_set
-
-    test_ds = Data.TensorDataset(Signals_test, Labels_test)
-    test_loader = Data.DataLoader(test_ds, batch_size=64, shuffle=False)
-
-    model.eval()
-    correct = 0
-    total = 0
-    # Per-SNR accuracy
-    snr_correct = {}
-    snr_total = {}
-
-    with torch.no_grad():
-        for sig_batch, lab_batch in test_loader:
-            sig_batch = sig_batch.to(device)
-            lab_batch = lab_batch.to(device)
-            logit, _ = model(sig_batch)
-            preds = logit.argmax(1)
-            correct += (preds == lab_batch).sum().item()
-            total += len(lab_batch)
-
-    overall_acc = correct / total
-    print(f"\n  Real RML2016 test accuracy: {100*overall_acc:.2f}% ({correct}/{total})")
-    return overall_acc
-
-
-def evaluate_on_synth(model, device, synth_signals, synth_labels):
-    """Evaluate model on synthetic test data."""
-    ds = Data.TensorDataset(
-        torch.from_numpy(synth_signals.astype(np.float32)),
-        torch.from_numpy(synth_labels),
-    )
-    loader = Data.DataLoader(ds, batch_size=64, shuffle=False)
-
-    model.eval()
-    correct = 0
-    total = 0
-
-    with torch.no_grad():
-        for sig_batch, lab_batch in loader:
-            sig_batch = sig_batch.to(device)
-            lab_batch = lab_batch.to(device)
-            logit, _ = model(sig_batch)
-            preds = logit.argmax(1)
-            correct += (preds == lab_batch).sum().item()
-            total += len(lab_batch)
-
-    acc = correct / total
-    print(f"  Synthetic test accuracy: {100*acc:.2f}% ({correct}/{total})")
+    loader = Data.DataLoader(
+        Data.TensorDataset(Sig_test, Lab_test),
+        batch_size=256, shuffle=False, num_workers=2)
+    acc, preds, labs = _eval_loader(model, loader, device)
+    print(f"\n  RML2016 test accuracy : {100*acc:.2f}%")
+    for snr in range(-20, 20, 4):
+        mask = snrs_arr == snr
+        if mask.any():
+            a = (preds[mask] == labs[mask]).mean()
+            print(f"    SNR={snr:3d}: {100*a:.1f}%")
     return acc
 
+
+def evaluate_on_synth(model, device, signals, labels, snrs_arr=None, tag='Synth'):
+    """Evaluate model on a numpy signal array."""
+    loader = Data.DataLoader(
+        Data.TensorDataset(
+            torch.from_numpy(signals.astype(np.float32)),
+            torch.from_numpy(labels)),
+        batch_size=256, shuffle=False, num_workers=2)
+    acc, preds, labs = _eval_loader(model, loader, device)
+    print(f"\n  {tag} accuracy : {100*acc:.2f}%")
+    if snrs_arr is not None:
+        for snr in range(-20, 20, 4):
+            mask = snrs_arr == snr
+            if mask.any():
+                a = (preds[mask] == labs[mask]).mean()
+                print(f"    SNR={snr:3d}: {100*a:.1f}%")
+    return acc
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Main
+# ─────────────────────────────────────────────────────────────────────────────
 
 def main():
     parser = argparse.ArgumentParser(
         description='Synthetic Dataset Generator + AWN Finetuning')
     parser.add_argument('--mode', type=str, default='finetune',
-                        choices=['gen', 'finetune', 'eval'],
-                        help='gen: generate only, finetune: gen+finetune, eval: evaluate')
-    parser.add_argument('--n_per_cell', type=int, default=500,
+                        choices=['gen', 'finetune', 'eval'])
+    parser.add_argument('--channel_preset', type=str, default='full',
+                        choices=list(CHAN_PRESETS.keys()),
+                        help='Channel impairment preset for synthetic data')
+    parser.add_argument('--curriculum', action='store_true',
+                        help='3-stage curriculum: phase_gain -> phase_gain_cfo -> full')
+    parser.add_argument('--n_per_cell', type=int, default=2000,
                         help='Synthetic samples per (mod, snr) cell')
     parser.add_argument('--snr_list', type=str, default=None,
                         help='Comma-separated SNR values (default: full RML range)')
     parser.add_argument('--mod_list', type=str, default=None,
-                        help='Comma-separated mods (default: all 8 digital)')
-    parser.add_argument('--no_multipath', action='store_true',
-                        help='Disable multipath fading')
-    parser.add_argument('--no_sro', action='store_true',
-                        help='Disable sample rate offset')
-    parser.add_argument('--no_spectral_match', action='store_true',
-                        help='Disable spectral shaping to match RML2016 PSD')
-    parser.add_argument('--target_rms', type=float, default=0.00854,
-                        help='Target RMS amplitude (default: 0.00854, matching RML2016 complex RMS)')
+                        help='Comma-separated digital mods (default: all 8)')
+    parser.add_argument('--target_rms', type=float, default=0.006,
+                        help='Target RMS for synthetic bursts')
     parser.add_argument('--synth_path', type=str,
                         default='./data/synth_2016.10a.pkl',
                         help='Path to save/load synthetic dataset')
     parser.add_argument('--ckpt_path', type=str, default='./checkpoint',
-                        help='Model checkpoint directory (or path for eval)')
-    parser.add_argument('--ft_epochs', type=int, default=20,
-                        help='Finetuning epochs')
-    parser.add_argument('--ft_lr', type=float, default=0.0001,
+                        help='Checkpoint dir (or .pkl path for eval)')
+    parser.add_argument('--ft_epochs', type=int, default=50,
+                        help='Max finetuning epochs per stage')
+    parser.add_argument('--ft_lr', type=float, default=1e-4,
                         help='Finetuning learning rate')
-    parser.add_argument('--ft_patience', type=int, default=5,
+    parser.add_argument('--ft_patience', type=int, default=8,
                         help='Early stopping patience')
-    parser.add_argument('--batch_size', type=int, default=128)
+    parser.add_argument('--batch_size', type=int, default=256)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--device', type=str, default='auto')
+    parser.add_argument('--resume', action='store_true',
+                        help='Load 2016.10a_AWN_ft.pkl instead of base checkpoint')
 
-    args = parser.parse_args()
-
+    args   = parser.parse_args()
     fix_seed(args.seed)
+
     device = args.device
     if device == 'auto':
         device = 'cuda' if torch.cuda.is_available() else 'cpu'
     device = torch.device(device)
+    print(f"Device: {device}")
 
-    snr_list = None
-    if args.snr_list:
-        snr_list = [int(s.strip()) for s in args.snr_list.split(',')]
+    snr_list = [int(s.strip()) for s in args.snr_list.split(',')] \
+        if args.snr_list else None
+    mod_list = [m.strip() for m in args.mod_list.split(',')] \
+        if args.mod_list else None
 
-    mod_list = None
-    if args.mod_list:
-        mod_list = [m.strip() for m in args.mod_list.split(',')]
-
-    # =====================================================
+    # ──────────────────────────────────────────────────────────────────────────
     # Step 1: Generate synthetic dataset
-    # =====================================================
+    # ──────────────────────────────────────────────────────────────────────────
     if args.mode in ('gen', 'finetune'):
         print("=" * 60)
         print("  Step 1: Generate Synthetic Dataset")
         print("=" * 60)
-
-        mods_str = ', '.join(mod_list or SYNTH_MODS)
-        snrs_str = str(snr_list or RML_SNRS)
-        print(f"  Mods: {mods_str}")
-        print(f"  SNRs: {snrs_str}")
-        print(f"  Samples/cell: {args.n_per_cell}")
-        print(f"  Multipath: {not args.no_multipath}")
-        print(f"  SRO: {not args.no_sro}")
-        print(f"  Target RMS: {args.target_rms}")
+        preset = args.channel_preset if not args.curriculum else 'full'
+        mods   = mod_list or SYNTH_MODS
+        snrs   = snr_list or RML_SNRS
+        print(f"  Preset : {preset}")
+        print(f"  Mods   : {', '.join(mods)}")
+        print(f"  SNRs   : {snrs}")
+        print(f"  N/cell : {args.n_per_cell}")
 
         t0 = time.time()
-        signals, labels, snrs = generate_synth_dataset(
+        signals, labels, snrs_arr = generate_synth_dataset(
             n_per_cell=args.n_per_cell,
-            snr_list=snr_list,
-            mod_list=mod_list,
-            multipath=not args.no_multipath,
-            sro=not args.no_sro,
+            snr_list=snrs,
+            mod_list=mods,
+            channel_preset=preset,
             seed=args.seed,
             target_rms=args.target_rms,
-            spectral_match=not args.no_spectral_match,
         )
-        elapsed = time.time() - t0
-        print(f"\n  Generated {len(labels)} samples in {elapsed:.1f}s")
+        print(f"\n  Generated {len(labels)} samples in {time.time()-t0:.1f}s")
         print(f"  Shape: {signals.shape}")
-        print(f"  RMS: {np.sqrt(np.mean(signals**2)):.6f}")
-
-        # Per-mod counts
-        for idx in sorted(np.unique(labels)):
-            mod_name = IDX_TO_MOD[idx]
-            count = np.sum(labels == idx)
-            print(f"    {mod_name}: {count}")
-
-        save_synth_dataset(signals, labels, snrs, args.synth_path)
+        save_synth_dataset(signals, labels, snrs_arr, args.synth_path)
 
     if args.mode == 'gen':
-        print("\nDone (generation only).")
         return
 
-    # =====================================================
-    # Step 2: Load real + synthetic data, create loaders
-    # =====================================================
+    # ──────────────────────────────────────────────────────────────────────────
+    # Step 2: Load model + data, finetune
+    # ──────────────────────────────────────────────────────────────────────────
     if args.mode == 'finetune':
         print("\n" + "=" * 60)
-        print("  Step 2: Finetune AWN on Mixed Data")
+        print("  Step 2: Finetune AWN")
         print("=" * 60)
 
-        # Load real RML2016 data
-        import logging
-        logger = logging.getLogger('synth_ft')
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        logger.addHandler(handler)
-
-        Signals_real, Labels_real, SNRs_real, snrs_r, mods_r = Load_Dataset(
-            '2016.10a', logger)
-        real_signals = Signals_real.numpy()
-        real_labels = Labels_real.numpy()
-
-        # Load synthetic
-        synth_signals, synth_labels, synth_snrs = load_synth_dataset(
-            args.synth_path)
-
-        # Split synthetic into train (85%) / test (15%)
-        rng = np.random.default_rng(args.seed)
-        n_synth = len(synth_labels)
-        synth_perm = rng.permutation(n_synth)
-        n_synth_test = int(n_synth * 0.15)
-        synth_test_idx = synth_perm[:n_synth_test]
-        synth_train_idx = synth_perm[n_synth_test:]
-
-        synth_test_signals = synth_signals[synth_test_idx]
-        synth_test_labels = synth_labels[synth_test_idx]
-
-        # Mixed train+val from real + synthetic train portion
-        train_loader, val_loader = make_mixed_loaders(
-            real_signals, real_labels,
-            synth_signals[synth_train_idx], synth_labels[synth_train_idx],
-            batch_size=args.batch_size, seed=args.seed,
-        )
-
         # Load pretrained model
-        cfg = Config('2016.10a', train=False)
+        cfg       = Config('2016.10a', train=False)
         cfg.device = device
-        model = create_model(cfg, model_name='awn')
-
-        ckpt_file = os.path.join(args.ckpt_path, '2016.10a_AWN.pkl')
-        state_dict = torch.load(ckpt_file, map_location=device)
-        model.load_state_dict(state_dict)
-        print(f"  Loaded pretrained model: {ckpt_file}")
-
-        # Evaluate before finetuning
-        print("\n  --- Before finetuning ---")
+        model      = create_model(cfg, model_name='awn')
+        ft_ckpt    = os.path.join(args.ckpt_path, '2016.10a_AWN_ft.pkl')
+        base_ckpt  = os.path.join(args.ckpt_path, '2016.10a_AWN.pkl')
+        ckpt       = ft_ckpt if (args.resume and os.path.exists(ft_ckpt)) else base_ckpt
+        model.load_state_dict(
+            torch.load(ckpt, map_location=device, weights_only=True))
         model.to(device)
-        evaluate_on_real(model, device)
-        evaluate_on_synth(model, device, synth_test_signals, synth_test_labels)
+        print(f"  Loaded model: {ckpt}")
 
-        # Finetune
-        print("\n  --- Finetuning ---")
+        # Load full real RML2016 train split (all 11 mods) — prevents forgetting
+        print("\n  Loading real RML2016 train split (all 11 mods)...")
+        real_sigs, real_labs, _ = load_rml_train_split(seed=args.seed)
+        print(f"  Real RML2016 train samples: {len(real_labs)}")
+
+        # Load analog-only slice for the held-out test evaluation
+        analog_sigs, analog_labs, analog_snrs = load_analog_from_rml()
+        rng = np.random.default_rng(args.seed)
+        ap  = rng.permutation(len(analog_labs))
+        n_a_test = int(len(analog_labs) * 0.15)
+        a_test   = ap[:n_a_test]
+
+        # Synthetic test split (15% held out from the full-preset dataset)
+        synth_sigs, synth_labs, synth_snrs = load_synth_dataset(args.synth_path)
+        sp       = rng.permutation(len(synth_labs))
+        n_s_test = int(len(synth_labs) * 0.15)
+        s_test   = sp[:n_s_test]
+        s_train  = sp[n_s_test:]
+
+        # Baseline before finetuning
+        print("\n  ── Before finetuning ──")
+        evaluate_on_real(model, device)
+        evaluate_on_synth(model, device,
+                          synth_sigs[s_test], synth_labs[s_test],
+                          synth_snrs[s_test], tag='Synthetic (full)')
+
         save_path = os.path.join(args.ckpt_path, '2016.10a_AWN_ft.pkl')
-        best_acc = finetune(
-            model, train_loader, val_loader, device,
-            lr=args.ft_lr, epochs=args.ft_epochs,
-            patience=args.ft_patience, save_path=save_path,
-        )
 
-        # Evaluate after finetuning
-        print("\n  --- After finetuning ---")
+        if args.curriculum:
+            # ── Curriculum: 3 stages, each mixes synth + real RML ────────────
+            # LR decays each stage; real-RML anchors prevent catastrophic forgetting.
+            print("\n  ── Curriculum Finetuning (3 stages, mixed real+synth) ──")
+            stage_lrs = [args.ft_lr, args.ft_lr * 0.5, args.ft_lr * 0.25]
+            for stage_idx, (stage_preset, stage_lr) in enumerate(
+                    zip(CURRICULUM_STAGES, stage_lrs)):
+                print(f"\n  Stage {stage_idx+1}/3 — preset={stage_preset}  lr={stage_lr:.2e}")
+                stage_sigs, stage_labs, _ = generate_synth_dataset(
+                    n_per_cell=args.n_per_cell,
+                    snr_list=snr_list or RML_SNRS,
+                    mod_list=mod_list or SYNTH_MODS,
+                    channel_preset=stage_preset,
+                    seed=args.seed + stage_idx,
+                    target_rms=args.target_rms,
+                )
+                # Combine synthetic digital mods + full real RML (anchor)
+                all_sigs = np.concatenate([stage_sigs, real_sigs], axis=0)
+                all_labs = np.concatenate([stage_labs, real_labs], axis=0)
+                print(f"  Mix: {len(stage_sigs)} synth + {len(real_sigs)} real = {len(all_sigs)}")
+                train_loader, val_loader = make_loaders(
+                    all_sigs, all_labs,
+                    batch_size=args.batch_size, seed=args.seed + stage_idx)
+
+                finetune(model, train_loader, val_loader, device,
+                         lr=stage_lr,
+                         epochs=args.ft_epochs,
+                         patience=args.ft_patience,
+                         save_path=save_path,
+                         tag=f'S{stage_idx+1}:{stage_preset}')
+        else:
+            # ── Single-stage: full-preset synth + full real RML ───────────────
+            all_sigs = np.concatenate([synth_sigs[s_train], real_sigs], axis=0)
+            all_labs = np.concatenate([synth_labs[s_train], real_labs], axis=0)
+            print(f"\n  Training on {len(all_labs)} samples "
+                  f"({len(s_train)} synth + {len(real_sigs)} real)")
+            train_loader, val_loader = make_loaders(
+                all_sigs, all_labs,
+                batch_size=args.batch_size, seed=args.seed)
+            finetune(model, train_loader, val_loader, device,
+                     lr=args.ft_lr,
+                     epochs=args.ft_epochs,
+                     patience=args.ft_patience,
+                     save_path=save_path,
+                     tag='FT')
+
+        # ── Final evaluation ──────────────────────────────────────────────────
+        print("\n  ── After finetuning ──")
         evaluate_on_real(model, device)
-        evaluate_on_synth(model, device, synth_test_signals, synth_test_labels)
+        evaluate_on_synth(model, device,
+                          synth_sigs[s_test], synth_labs[s_test],
+                          synth_snrs[s_test], tag='Synthetic (full)')
+        evaluate_on_synth(model, device,
+                          analog_sigs[a_test], analog_labs[a_test],
+                          analog_snrs[a_test], tag='Analog (real)')
 
-    # =====================================================
-    # Eval mode: just evaluate a checkpoint
-    # =====================================================
+    # ──────────────────────────────────────────────────────────────────────────
+    # Eval mode
+    # ──────────────────────────────────────────────────────────────────────────
     if args.mode == 'eval':
         print("=" * 60)
         print("  Evaluate Model")
         print("=" * 60)
 
-        cfg = Config('2016.10a', train=False)
+        cfg       = Config('2016.10a', train=False)
         cfg.device = device
-        model = create_model(cfg, model_name='awn')
+        model      = create_model(cfg, model_name='awn')
 
         ckpt_file = args.ckpt_path
         if os.path.isdir(ckpt_file):
-            # Try finetuned first, fall back to original
-            ft_path = os.path.join(ckpt_file, '2016.10a_AWN_ft.pkl')
+            ft_path   = os.path.join(ckpt_file, '2016.10a_AWN_ft.pkl')
             orig_path = os.path.join(ckpt_file, '2016.10a_AWN.pkl')
             ckpt_file = ft_path if os.path.exists(ft_path) else orig_path
 
-        state_dict = torch.load(ckpt_file, map_location=device)
-        model.load_state_dict(state_dict)
+        model.load_state_dict(
+            torch.load(ckpt_file, map_location=device, weights_only=True))
         model.to(device)
         print(f"  Loaded: {ckpt_file}")
 
         evaluate_on_real(model, device)
 
         if os.path.exists(args.synth_path):
-            synth_signals, synth_labels, _ = load_synth_dataset(args.synth_path)
-            evaluate_on_synth(model, device, synth_signals, synth_labels)
+            synth_sigs, synth_labs, synth_snrs = load_synth_dataset(args.synth_path)
+            evaluate_on_synth(model, device, synth_sigs, synth_labs,
+                              synth_snrs, tag='Synthetic')
 
 
 if __name__ == '__main__':

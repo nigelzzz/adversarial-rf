@@ -195,6 +195,8 @@ def main():
                         default='./results/crc_defense_fec')
     parser.add_argument('--device', type=str, default='auto')
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument('--use_ft', action='store_true',
+                        help='Use finetuned checkpoint (2016.10a_AWN_ft.pkl)')
     args = parser.parse_args()
 
     device = args.device
@@ -209,7 +211,8 @@ def main():
     cfg = Config('2016.10a', train=False)
     cfg.device = device
     model = create_model(cfg, model_name='awn')
-    ckpt_file = os.path.join(args.ckpt, '2016.10a_AWN.pkl')
+    ckpt_name = '2016.10a_AWN_ft.pkl' if args.use_ft else '2016.10a_AWN.pkl'
+    ckpt_file = os.path.join(args.ckpt, ckpt_name)
     model.load_state_dict(torch.load(ckpt_file, map_location=device))
     model.eval()
 
@@ -240,6 +243,7 @@ def main():
     print('  Top-K:       %s' % topk_values)
     print('  Mods:        %s' % mods)
     print('  N bursts:    %d' % args.n_bursts)
+    print('  Checkpoint:  %s' % ckpt_name)
     print('  Device:      %s' % device)
     print()
 
@@ -273,9 +277,9 @@ def main():
             hdr = '%-6s %-5s %8s %8s %10s' % (
                 'Mod', 'FEC', 'ClnAMC', 'AttAMC', 'Att+Oracl')
             for tc in topk_cols:
-                hdr += ' %8s' % tc
+                hdr += ' %8s %8s' % (tc+'CRC', tc+'AMC')
             print(hdr)
-            print('-' * (50 + 9 * len(topk_values)))
+            print('-' * (50 + 18 * len(topk_values)))
 
             for mod in mods:
                 if mod not in ALL_DIGITAL_MODS:
@@ -302,7 +306,9 @@ def main():
                         clean_acc * 100, adv_acc * 100,
                         res['Att+Oracle'] * 100)
                     for k in topk_values:
-                        row += ' %7.1f%%' % (res['Top%d' % k] * 100)
+                        row += ' %7.1f%% %7.1f%%' % (
+                            res['Top%d' % k] * 100,
+                            topk_accs[k] * 100)
                     row += '  (%.1fs)' % elapsed
                     print(row)
 
@@ -409,6 +415,55 @@ def print_summary(all_results, attack_names, mods, snr_list, topk_values):
                     else:
                         line += ' %8s' % '---'
                 print(line)
+
+
+    # Top-K AMC Recovery summary
+    print('\n' + '=' * 90)
+    print('  SUMMARY: Top-K AMC Recovery (attack -> Top-K -> classify)')
+    print('=' * 90)
+
+    for snr in snr_list:
+        for k in topk_values:
+            print('\n  SNR=%d, Top-%d:' % (snr, k))
+            hdr = '  %-6s %-5s %8s %8s' % ('Mod', 'FEC', 'AttAMC', 'TopKAMC')
+            for atk in attack_names:
+                hdr += ' %8s' % atk[:8]
+            print(hdr)
+            print('  ' + '-' * (30 + 9 * len(attack_names)))
+
+            for mod in mods:
+                if mod not in ALL_DIGITAL_MODS:
+                    continue
+                for fec_val in [False, True]:
+                    fec_label = 'FEC' if fec_val else 'noFEC'
+                    line = '  %-6s %-5s' % (mod, fec_label)
+                    has_data = False
+                    parts = []
+                    for atk in attack_names:
+                        rows = [r for r in all_results
+                                if r['attack'] == atk and r['mod'] == mod
+                                and r['snr'] == snr and r['fec'] == fec_val]
+                        if rows:
+                            has_data = True
+                            att_amc = rows[0]['attack_amc_acc'] * 100
+                            key = 'top%d_amc' % k
+                            topk_amc = rows[0].get(key, 0) * 100
+                            parts.append((att_amc, topk_amc))
+                        else:
+                            parts.append(None)
+                    if not has_data:
+                        continue
+                    # Show avg att_amc and first topk_amc, then per-attack topk_amc
+                    valid = [p for p in parts if p is not None]
+                    avg_att = np.mean([p[0] for p in valid])
+                    avg_topk = np.mean([p[1] for p in valid])
+                    line += ' %7.1f%% %7.1f%%' % (avg_att, avg_topk)
+                    for p in parts:
+                        if p:
+                            line += ' %7.1f%%' % p[1]
+                        else:
+                            line += ' %8s' % '---'
+                    print(line)
 
 
 if __name__ == '__main__':

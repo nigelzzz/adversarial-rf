@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 CRC Experiment: AMC Accuracy vs Data Integrity under CW Attack.
 
@@ -31,6 +32,7 @@ import torch
 
 from util.synth_txrx import (
     generate_burst, demodulate_burst, get_bits_per_symbol,
+    make_rml_like_burst, PRESETS as CHAN_PRESETS,
 )
 from util.utils import create_model, fix_seed
 from util.config import Config
@@ -54,17 +56,22 @@ DEMOD_MODS = {'BPSK', 'QPSK', '8PSK', 'QAM16', 'QAM64', 'PAM4', 'CPFSK', 'GFSK'}
 IDX_TO_DEMOD_MOD = {k: v for k, v in IDX_TO_MOD.items() if v in DEMOD_MODS}
 
 
-def load_model(ckpt_path, device):
-    """Load AWN model from checkpoint."""
+def load_model(ckpt_path, device, use_ft=False):
+    """Load AWN model from checkpoint.
+
+    Args:
+        use_ft: if True, load finetuned 2016.10a_AWN_ft.pkl instead of base.
+    """
     cfg = Config('2016.10a', train=False)
     cfg.device = device
     model = create_model(cfg, model_name='awn')
 
-    ckpt_file = os.path.join(ckpt_path, '2016.10a_AWN.pkl')
+    fname = '2016.10a_AWN_ft.pkl' if use_ft else '2016.10a_AWN.pkl'
+    ckpt_file = os.path.join(ckpt_path, fname)
     if not os.path.exists(ckpt_file):
         raise FileNotFoundError(f"Checkpoint not found: {ckpt_file}")
 
-    state_dict = torch.load(ckpt_file, map_location=device)
+    state_dict = torch.load(ckpt_file, map_location=device, weights_only=True)
     model.load_state_dict(state_dict)
     model.eval()
     return model, cfg
@@ -144,17 +151,26 @@ def run_experiment(args):
     print(f"N bursts (synthetic): {args.n_bursts}")
     if attack_name == 'cw':
         print(f"CW params: c={args.cw_c}, steps={args.cw_steps}")
+    chan_cfg = CHAN_PRESETS[args.channel_preset]
+    print(f"Channel preset: {args.channel_preset} | "
+          f"phase={chan_cfg.use_phase}, gain_jitter={chan_cfg.use_gain_jitter}, "
+          f"cfo={chan_cfg.use_cfo} (std={chan_cfg.cfo_std}), "
+          f"multipath={chan_cfg.use_multipath} (taps={chan_cfg.mp_n_taps})")
     print()
 
     # Load model
     print("Loading AWN model...")
-    model, cfg = load_model(args.ckpt_path, device)
+    model, cfg = load_model(args.ckpt_path, device, use_ft=args.use_ft)
+    print(f"  Checkpoint: {'finetuned (AWN_ft)' if args.use_ft else 'base (AWN)'}")
+    print(f"  FEC: {args.fec}")
     cfg.cw_c = args.cw_c
     cfg.cw_steps = args.cw_steps
     cfg.cw_lr = 0.005
     cfg.attack_eps = getattr(args, 'attack_eps', 0.1)
     cfg.ta_box = args.ta_box
     cfg.num_classes = 11
+    cfg.deepfool_steps = getattr(args, 'deepfool_steps', 50)
+    cfg.deepfool_overshoot = getattr(args, 'deepfool_overshoot', 0.02)
 
     # Wrap model for torchattacks
     wrapped_model = Model01Wrapper(model)
@@ -230,9 +246,10 @@ def run_experiment(args):
 
                 bursts = []
                 for _ in range(args.n_bursts):
-                    b = generate_burst(
-                        mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
-                        snr_db=snr_db, target_rms=0.006, cfo_std=0.0, rng=rng,
+                    b = make_rml_like_burst(
+                        mod_type, snr_db, args.channel_preset,
+                        n_symbols=16, n_pilots=2, sps=8, beta=0.35,
+                        target_rms=0.006, rng=rng, fec=args.fec,
                     )
                     bursts.append(b)
 
@@ -399,9 +416,21 @@ def main():
                         help='Output directory')
     parser.add_argument('--batch_size', type=int, default=128,
                         help='Attack batch size')
+    parser.add_argument('--deepfool_steps', type=int, default=50,
+                        help='DeepFool max iterations (default 50)')
+    parser.add_argument('--deepfool_overshoot', type=float, default=0.02,
+                        help='DeepFool overshoot past decision boundary (default 0.02)')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--device', type=str, default='auto',
                         help='Device: auto, cpu, or cuda')
+    parser.add_argument('--channel_preset', type=str, default='clean',
+                        choices=['clean', 'phase_gain', 'phase_gain_cfo', 'full', 'rml_like'],
+                        help='Channel impairment preset for synthetic bursts '
+                             '(clean=backward-compat, rml_like=matches RML2016 params)')
+    parser.add_argument('--fec', action='store_true',
+                        help='Enable FEC (rate-1/2 conv coding) in synthetic bursts')
+    parser.add_argument('--use_ft', action='store_true',
+                        help='Use finetuned model (2016.10a_AWN_ft.pkl) instead of base')
 
     args = parser.parse_args()
 

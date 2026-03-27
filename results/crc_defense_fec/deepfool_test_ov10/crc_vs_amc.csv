@@ -1,0 +1,9 @@
+mod,snr,scenario,amc_acc,crc_pass,n
+BPSK,18,Clean+Oracle,0.98,1.0,50
+BPSK,18,Clean+AMC,0.98,1.0,50
+BPSK,18,Adv+Oracle,0.438,0.8,50
+BPSK,18,Adv+AMC,0.438,0.24,50
+QAM64,18,Clean+Oracle,0.956,0.96,50
+QAM64,18,Clean+AMC,0.956,0.92,50
+QAM64,18,Adv+Oracle,0.494,0.08,50
+QAM64,18,Adv+AMC,0.494,0.06,50

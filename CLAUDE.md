@@ -240,6 +240,157 @@ python main.py --mode build_psd_mask --dataset 2016.10a --mod_filter QAM16 --snr
 python main.py --mode adv_bench --dataset 2016.10a
 ```
 
+## Synthetic Data Generation & Finetuning
+
+### Overview
+
+The pipeline generates synthetic IQ bursts that mimic RML2016.10a characteristics, then finetunes the pretrained AWN model on a mix of synthetic + real data. This improves robustness to channel impairments and adversarial attacks while preventing catastrophic forgetting of analog modulations (WBFM, AM-DSB, AM-SSB) which cannot be synthesized.
+
+**Key files:**
+- `synth_finetune.py` — Main finetuning script (data gen + training + eval)
+- `util/synth_txrx.py` — Burst generator, channel models, modulation/demodulation
+
+### Step 1: Synthetic Burst Generation
+
+`make_rml_like_burst()` in `util/synth_txrx.py` generates IQ bursts with configurable channel impairments controlled by `RmlChanCfg` presets:
+
+| Preset | Phase | Gain Jitter | CFO | Multipath | Use Case |
+|--------|-------|-------------|-----|-----------|----------|
+| `clean` | No | No | No | No | Baseline (no impairments) |
+| `phase_gain` | Yes | Yes | No | No | Curriculum stage 1 |
+| `phase_gain_cfo` | Yes | Yes | Yes (std=0.015) | No | Curriculum stage 2 |
+| `full` | Yes | Yes | Yes (std=0.015) | Yes (3 taps, decay=1.5) | Single-stage finetune |
+| `rml_like` | Yes | Yes | Yes (std=0.007) | Yes (2 taps, decay=0.5) | Matches RML2016 parameters |
+
+**Channel impairment details:**
+- **Random phase**: Uniform initial carrier phase U(0, 2π)
+- **Gain jitter**: Log-normal RMS rescaling per burst (CV varies by mod: BPSK=0.09, QAM64=0.06)
+- **CFO**: Carrier frequency offset as phase ramp, `cfo ~ N(0, cfo_std²)`
+- **Multipath**: Rayleigh-faded FIR taps with exponential power-delay profile
+
+**Supported modulations (8 digital):**
+- Constellation: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4
+- FSK: CPFSK, GFSK
+
+**Burst structure:** 16 symbols × 8 sps = 128 samples (matches RML2016 signal length), with 2 pilot symbols, RRC pulse shaping (β=0.35), target RMS=0.006.
+
+```bash
+# Generate synthetic dataset only (no training)
+python synth_finetune.py --mode gen --n_per_cell 2000 --channel_preset full
+
+# Custom SNR range and modulations
+python synth_finetune.py --mode gen --n_per_cell 1000 \
+  --snr_list "-4,-2,0,2,4,6,8,10,12,14,16,18" \
+  --mod_list "BPSK,QPSK,8PSK,QAM16,QAM64,PAM4"
+```
+
+### Step 2: Finetuning
+
+Two strategies available:
+
+#### Curriculum Finetuning (Recommended)
+
+Three progressive stages with decaying learning rate. Each stage mixes synthetic data (current preset) with full real RML2016 train split to prevent catastrophic forgetting.
+
+```
+Stage 1: phase_gain      (LR = 1e-4)    — learn phase/gain invariance
+Stage 2: phase_gain_cfo  (LR = 5e-5)    — add CFO robustness
+Stage 3: rml_like        (LR = 2.5e-5)  — add mild multipath
+```
+
+```bash
+# Curriculum finetune (recommended)
+python synth_finetune.py --mode finetune --curriculum \
+  --n_per_cell 2000 --ft_epochs 50 --ft_lr 1e-4 --ft_patience 8
+
+# Resume from existing finetuned checkpoint
+python synth_finetune.py --mode finetune --curriculum --resume \
+  --n_per_cell 2000 --ft_epochs 50
+```
+
+#### Single-Stage Finetuning
+
+Uses `full` preset synthetic + real RML data in one training run.
+
+```bash
+python synth_finetune.py --mode finetune \
+  --channel_preset full --n_per_cell 2000 --ft_epochs 50
+```
+
+**Training details:**
+- **Optimizer:** Adam (LR=1e-4 default)
+- **Loss:** CrossEntropyLoss + AWN internal regularization
+- **Scheduler:** ReduceLROnPlateau (factor=0.5, patience=4)
+- **Early stopping:** patience=8 epochs
+- **Data mix:** `N_synth_digital + N_real_all_11_mods` (real data anchors analog classes)
+- **Train/val split:** 85/15
+- **Batch size:** 256
+- **Output:** `checkpoint/2016.10a_AWN_ft.pkl`
+
+### Step 3: Evaluation
+
+```bash
+# Evaluate finetuned model on real RML2016 test set
+python synth_finetune.py --mode eval --ckpt_path ./checkpoint/2016.10a_AWN_ft.pkl
+
+# Evaluate on real + synthetic test sets
+python synth_finetune.py --mode eval --ckpt_path ./checkpoint/2016.10a_AWN_ft.pkl \
+  --synth_path ./data/synth_2016.10a.pkl
+```
+
+**What to check:**
+- Real RML test accuracy should stay within ~1-2% of base model (no forgetting)
+- Synthetic test accuracy should be significantly higher than base model
+- Per-SNR breakdown shows improvements primarily at SNR ≥ 0 dB
+
+### Key Parameters Reference
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `--n_per_cell` | 2000 | Synthetic samples per (mod, snr) cell |
+| `--channel_preset` | `full` | Channel impairment preset |
+| `--curriculum` | off | Enable 3-stage curriculum training |
+| `--ft_epochs` | 50 | Max epochs per stage |
+| `--ft_lr` | 1e-4 | Initial learning rate |
+| `--ft_patience` | 8 | Early stopping patience |
+| `--batch_size` | 256 | Training batch size |
+| `--target_rms` | 0.006 | Burst RMS normalization target |
+| `--resume` | off | Resume from `2016.10a_AWN_ft.pkl` |
+| `--seed` | 42 | Random seed |
+
+### Typical Workflow
+
+```bash
+# 1. Activate environment
+source venv/bin/activate
+
+# 2. Curriculum finetune (generates data + trains + evaluates)
+python synth_finetune.py --mode finetune --curriculum --n_per_cell 2000
+
+# 3. Verify finetuned model on adversarial attacks
+python crc_defense_fec_multi_attack.py --use_ft \
+  --attacks "deepfool,eadl1,cw,fgsm,pgd" \
+  --snr "0,18" --mods "BPSK,QPSK,8PSK,QAM16,QAM64,PAM4"
+
+# 4. Compare base vs finetuned on SigGuard evaluation
+python main.py --mode sigguard_eval --dataset 2016.10a --ckpt_path ./checkpoint \
+  --ta_box minmax --attack_eps 0.1
+```
+
+### Making Results Similar to RML2016a
+
+The `rml_like` preset is calibrated to match RML2016.10a signal statistics:
+- **CFO std=0.007**: Matches RML2016 uniform[-0.1, 0.1] × symbol_rate at sps=8
+- **Multipath 2 taps, decay=0.5**: Mild frequency-selective fading (RML uses simple channels)
+- **Gain jitter CV by mod**: Calibrated from RML2016 inter-burst RMS variance
+- **Random phase**: Always present (RML has arbitrary carrier phase)
+
+If synthetic signals still differ from RML, tune these knobs:
+1. **Increase `n_per_cell`** (more diversity per cell)
+2. **Adjust `cfo_std`** (higher = more frequency offset spread)
+3. **Adjust `mp_decay`** (lower = stronger multipath effect)
+4. **Use curriculum** (progressive exposure prevents overfitting to one channel condition)
+
 ## Attack and Defense Pipeline
 
 ### CW Attack with Recovery (AWN_All.py Pattern)

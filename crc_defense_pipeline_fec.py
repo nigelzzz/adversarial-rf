@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 """
 FEC-Enabled CRC Defense Pipeline:
-    synth(CRC+FEC) -> IQ -> AWN -> CW attack -> FFT Top-K -> AWN -> demod(FEC) -> CRC
+    synth(CRC+FEC) -> IQ -> AWN -> attack -> FFT Top-K -> AWN -> demod(FEC) -> CRC
 
-Compares FEC vs no-FEC side by side across multiple SNRs.
+Compares FEC vs no-FEC side by side across multiple SNRs and attacks.
 
 Scenarios (same 7 as crc_defense_pipeline.py):
   1. Clean + Oracle:      synth IQ -> demod(true mod) -> CRC
   2. Clean + AMC:         synth IQ -> AWN -> demod(AWN pred) -> CRC
-  3. CW + Oracle:         synth IQ -> CW -> demod(true mod) -> CRC
-  4. CW + AMC:            synth IQ -> CW -> AWN -> demod(AWN pred) -> CRC
-  5. CW + Top-K + Oracle: synth IQ -> CW -> Top-K -> demod(true mod) -> CRC
-  6. CW + Top-K + AMC:    synth IQ -> CW -> Top-K -> AWN -> demod(AWN pred) -> CRC
+  3. Atk + Oracle:        synth IQ -> attack -> demod(true mod) -> CRC
+  4. Atk + AMC:           synth IQ -> attack -> AWN -> demod(AWN pred) -> CRC
+  5. Atk + Top-K + Oracle:synth IQ -> attack -> Top-K -> demod(true mod) -> CRC
+  6. Atk + Top-K + AMC:   synth IQ -> attack -> Top-K -> AWN -> demod(AWN pred) -> CRC
   7. Clean + Top-K:       synth IQ -> Top-K -> demod(true mod) -> CRC  (defense cost)
 
 Each scenario is run with FEC enabled and disabled for comparison.
@@ -20,6 +20,7 @@ Usage:
     python crc_defense_pipeline_fec.py --snr 18,0
     python crc_defense_pipeline_fec.py --snr 18,0 --topk 10,20,50
     python crc_defense_pipeline_fec.py --snr 0 --n_bursts 500 --mods QPSK,8PSK,QAM16
+    python crc_defense_pipeline_fec.py --snr 18,0 --attack eaden,eadl1,fab
 """
 
 import argparse
@@ -76,10 +77,40 @@ def attack_batch(attack, x_np, labels_np, wrapped_model, device,
     for i in range(0, len(x_np), batch_size):
         x_b = x_t[i:i+batch_size]
         y_b = labels_t[i:i+batch_size]
-        x_adv = generate_adversarial(attack, x_b, y_b,
-                                     wrapped_model=wrapped_model,
-                                     ta_box=ta_box)
-        adv_list.append(x_adv.cpu())
+        try:
+            x_adv = generate_adversarial(attack, x_b, y_b,
+                                         wrapped_model=wrapped_model,
+                                         ta_box=ta_box)
+            adv_list.append(x_adv.cpu())
+        except RuntimeError as e:
+            if 'cuda' in str(e).lower() or 'CUDA' in str(e):
+                # CUDA state corrupted — retry on CPU
+                print('  [WARNING] CUDA error in attack, retrying on CPU: %s' %
+                      str(e)[:80])
+                try:
+                    cpu_dev = torch.device('cpu')
+                    x_b_cpu = x_b.cpu()
+                    y_b_cpu = y_b.cpu()
+                    # Move attack to CPU temporarily
+                    attack.device = cpu_dev
+                    if hasattr(wrapped_model, 'model'):
+                        wrapped_model.model.cpu()
+                        wrapped_model.cpu()
+                    x_adv_cpu = generate_adversarial(
+                        attack, x_b_cpu, y_b_cpu,
+                        wrapped_model=wrapped_model, ta_box=ta_box)
+                    adv_list.append(x_adv_cpu.cpu())
+                    # Move back to original device
+                    wrapped_model.to(device)
+                    attack.device = device
+                except Exception as e2:
+                    print('  [WARNING] CPU fallback also failed: %s' %
+                          str(e2)[:80])
+                    adv_list.append(x_b.cpu())  # use originals
+            else:
+                print('  [WARNING] Attack error, using originals: %s' %
+                      str(e)[:80])
+                adv_list.append(x_b.cpu())
     return torch.cat(adv_list, dim=0).numpy()
 
 
@@ -137,8 +168,8 @@ def compute_ber(tx_bits, rx_bits):
 # ============================================================
 
 def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
-                  model, wrapped_model, cw_attack, device, seed):
-    """Run all 7 scenarios for a given (mod, snr, fec) combination.
+                  model, wrapped_model, atk_obj, atk_name, ta_box, device, seed):
+    """Run all 7 scenarios for a given (mod, snr, fec, attack) combination.
 
     Returns list of result dicts.
     """
@@ -160,10 +191,10 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
     clean_preds = classify_batch(model, iq_batch, device)
     clean_acc = float(np.mean(clean_preds == true_idx))
 
-    # Step 3: CW attack
+    # Step 3: adversarial attack
     labels = np.full(n_bursts, true_idx)
-    adv_batch = attack_batch(cw_attack, iq_batch, labels,
-                             wrapped_model, device, ta_box='minmax')
+    adv_batch = attack_batch(atk_obj, iq_batch, labels,
+                             wrapped_model, device, ta_box=ta_box)
     adv_preds = classify_batch(model, adv_batch, device)
     adv_acc = float(np.mean(adv_preds == true_idx))
 
@@ -180,7 +211,7 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
 
     # Step 5: Demodulate all scenarios
     scenario_results = {}
-    fec_label = 'FEC' if actual_fec else 'noFEC'
+    atk = atk_name.upper()
 
     # 5a. Clean + Oracle
     crc_cnt = sum(
@@ -202,17 +233,17 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
     scenario_results['Clean+AMC'] = {
         'crc': crc_cnt / n_bursts, 'amc_acc': clean_acc}
 
-    # 5c. CW + Oracle
+    # 5c. Atk + Oracle
     crc_cnt = 0
     for i in range(n_bursts):
         adv_iq = tensor_to_complex(adv_batch[i])
         r = demod_burst(bursts[i], mod, override_iq_complex=adv_iq,
                         fec=actual_fec)
         crc_cnt += int(r['crc_pass'])
-    scenario_results['CW'] = {
+    scenario_results[atk] = {
         'crc': crc_cnt / n_bursts, 'amc_acc': adv_acc}
 
-    # 5d. CW + AMC
+    # 5d. Atk + AMC
     crc_cnt = 0
     for i in range(n_bursts):
         ap = int(adv_preds[i])
@@ -224,7 +255,7 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
         else:
             r = {'crc_pass': False}
         crc_cnt += int(r['crc_pass'])
-    scenario_results['CW+AMC'] = {
+    scenario_results['%s+AMC' % atk] = {
         'crc': crc_cnt / n_bursts, 'amc_acc': adv_acc}
 
     # 5e. For each Top-K value
@@ -233,17 +264,17 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
         rec_p = topk_preds[k]
         rec_acc = topk_accs[k]
 
-        # CW + Top-K + Oracle
+        # Atk + Top-K + Oracle
         crc_cnt = 0
         for i in range(n_bursts):
             rec_iq = tensor_to_complex(rec_batch[i])
             r = demod_burst(bursts[i], mod, override_iq_complex=rec_iq,
                             fec=actual_fec)
             crc_cnt += int(r['crc_pass'])
-        scenario_results['CW+Top%d' % k] = {
+        scenario_results['%s+Top%d' % (atk, k)] = {
             'crc': crc_cnt / n_bursts, 'amc_acc': rec_acc}
 
-        # CW + Top-K + AMC
+        # Atk + Top-K + AMC
         crc_cnt = 0
         for i in range(n_bursts):
             rec_iq = tensor_to_complex(rec_batch[i])
@@ -255,7 +286,7 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
             else:
                 r = {'crc_pass': False}
             crc_cnt += int(r['crc_pass'])
-        scenario_results['CW+Top%d+AMC' % k] = {
+        scenario_results['%s+Top%d+AMC' % (atk, k)] = {
             'crc': crc_cnt / n_bursts, 'amc_acc': rec_acc}
 
         # Clean + Top-K + Oracle (defense cost)
@@ -273,7 +304,7 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
     rows = []
     for sc_name, sc_data in scenario_results.items():
         rows.append({
-            'mod': mod, 'snr': snr, 'fec': actual_fec,
+            'attack': atk_name, 'mod': mod, 'snr': snr, 'fec': actual_fec,
             'scenario': sc_name,
             'crc_pass_rate': round(sc_data['crc'], 4),
             'amc_acc': round(sc_data.get('amc_acc', -1), 4),
@@ -285,74 +316,79 @@ def run_scenarios(mod, snr, fec_flag, n_bursts, topk_values, target_rms,
 # Printing & plotting
 # ============================================================
 
-def print_comparison_table(all_rows, mods, topk_values, snr_list):
+def print_comparison_table(all_rows, mods, topk_values, snr_list, attack_list):
     """Print FEC vs no-FEC comparison table."""
     digital = [m for m in mods if m in ALL_DIGITAL_MODS]
 
-    for snr in snr_list:
-        print('\n' + '=' * 80)
-        print('  FEC vs no-FEC Comparison (SNR=%d dB)' % snr)
-        print('=' * 80)
+    for atk_name in attack_list:
+        atk = atk_name.upper()
+        atk_rows = [x for x in all_rows if x['attack'] == atk_name]
 
-        # Oracle demod scenarios
-        oracle_sc = ['Clean', 'CW'] + ['CW+Top%d' % k for k in topk_values]
-        header = '  %-6s' % 'Mod'
-        for sc in oracle_sc:
-            header += '  %s' % sc.center(19)
-        print('\n  Oracle Demod:')
-        print(header)
+        for snr in snr_list:
+            print('\n' + '=' * 80)
+            print('  FEC vs no-FEC Comparison — %s (SNR=%d dB)' % (atk, snr))
+            print('=' * 80)
 
-        sub_header = '  %-6s' % ''
-        for sc in oracle_sc:
-            sub_header += '  %s  %s' % ('noFEC'.center(9), 'FEC'.center(8))
-        print(sub_header)
-        print('  ' + '-' * (len(sub_header) - 2))
-
-        for mod in digital:
-            line = '  %-6s' % mod
+            # Oracle demod scenarios
+            oracle_sc = ['Clean', atk] + ['%s+Top%d' % (atk, k) for k in topk_values]
+            header = '  %-6s' % 'Mod'
             for sc in oracle_sc:
-                for fec_val in [False, True]:
-                    r = [x for x in all_rows
-                         if x['mod'] == mod and x['snr'] == snr
-                         and x['scenario'] == sc and x['fec'] == fec_val]
-                    if r:
-                        val = r[0]['crc_pass_rate'] * 100
-                        line += ' %8.1f%%' % val
-                    else:
-                        line += ' %9s' % '---'
-            print(line)
+                header += '  %s' % sc.center(19)
+            print('\n  Oracle Demod:')
+            print(header)
 
-        # AMC demod scenarios
-        amc_sc = ['Clean+AMC', 'CW+AMC'] + \
-            ['CW+Top%d+AMC' % k for k in topk_values]
-        print('\n  AMC Demod:')
-        header = '  %-6s' % 'Mod'
-        for sc in amc_sc:
-            header += '  %s' % sc.center(19)
-        print(header)
+            sub_header = '  %-6s' % ''
+            for sc in oracle_sc:
+                sub_header += '  %s  %s' % ('noFEC'.center(9), 'FEC'.center(8))
+            print(sub_header)
+            print('  ' + '-' * (len(sub_header) - 2))
 
-        sub_header = '  %-6s' % ''
-        for sc in amc_sc:
-            sub_header += '  %s  %s' % ('noFEC'.center(9), 'FEC'.center(8))
-        print(sub_header)
-        print('  ' + '-' * (len(sub_header) - 2))
+            for mod in digital:
+                line = '  %-6s' % mod
+                for sc in oracle_sc:
+                    for fec_val in [False, True]:
+                        r = [x for x in atk_rows
+                             if x['mod'] == mod and x['snr'] == snr
+                             and x['scenario'] == sc and x['fec'] == fec_val]
+                        if r:
+                            val = r[0]['crc_pass_rate'] * 100
+                            line += ' %8.1f%%' % val
+                        else:
+                            line += ' %9s' % '---'
+                print(line)
 
-        for mod in digital:
-            line = '  %-6s' % mod
+            # AMC demod scenarios
+            amc_sc = ['Clean+AMC', '%s+AMC' % atk] + \
+                ['%s+Top%d+AMC' % (atk, k) for k in topk_values]
+            print('\n  AMC Demod:')
+            header = '  %-6s' % 'Mod'
             for sc in amc_sc:
-                for fec_val in [False, True]:
-                    r = [x for x in all_rows
-                         if x['mod'] == mod and x['snr'] == snr
-                         and x['scenario'] == sc and x['fec'] == fec_val]
-                    if r:
-                        val = r[0]['crc_pass_rate'] * 100
-                        line += ' %8.1f%%' % val
-                    else:
-                        line += ' %9s' % '---'
-            print(line)
+                header += '  %s' % sc.center(19)
+            print(header)
+
+            sub_header = '  %-6s' % ''
+            for sc in amc_sc:
+                sub_header += '  %s  %s' % ('noFEC'.center(9), 'FEC'.center(8))
+            print(sub_header)
+            print('  ' + '-' * (len(sub_header) - 2))
+
+            for mod in digital:
+                line = '  %-6s' % mod
+                for sc in amc_sc:
+                    for fec_val in [False, True]:
+                        r = [x for x in atk_rows
+                             if x['mod'] == mod and x['snr'] == snr
+                             and x['scenario'] == sc and x['fec'] == fec_val]
+                        if r:
+                            val = r[0]['crc_pass_rate'] * 100
+                            line += ' %8.1f%%' % val
+                        else:
+                            line += ' %9s' % '---'
+                print(line)
 
 
-def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
+def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir,
+                        attack_list=None):
     """Plot FEC vs no-FEC comparison."""
     digital = [m for m in mods if m in ALL_DIGITAL_MODS]
     n_snrs = len(snr_list)
@@ -362,21 +398,28 @@ def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
 
     colors = plt.cm.tab10(np.linspace(0, 1, len(digital)))
 
+    # Use first attack for plot labels (or 'ATK' if multiple)
+    plot_atk = (attack_list[0].upper() if attack_list and len(attack_list) == 1
+                else 'ATK')
+    # For plotting, use rows from first attack only (or all if single attack)
+    plot_rows = ([x for x in all_rows if x['attack'] == attack_list[0]]
+                 if attack_list and len(attack_list) == 1 else all_rows)
+
     for si, snr in enumerate(snr_list):
-        # Panel 1: Oracle CRC — noFEC vs FEC (CW + TopK recovery)
+        # Panel 1: Oracle CRC — noFEC vs FEC (Atk + TopK recovery)
         ax = axes[si, 0]
         for mi, mod in enumerate(digital):
             for fec_val, ls in [(False, '--'), (True, '-')]:
                 pts = []
-                cw = [x for x in all_rows
-                      if x['mod'] == mod and x['snr'] == snr
-                      and x['scenario'] == 'CW' and x['fec'] == fec_val]
-                if cw:
-                    pts.append((0, cw[0]['crc_pass_rate'] * 100))
-                for k in topk_values:
-                    r = [x for x in all_rows
+                atk_r = [x for x in plot_rows
                          if x['mod'] == mod and x['snr'] == snr
-                         and x['scenario'] == 'CW+Top%d' % k
+                         and x['scenario'] == plot_atk and x['fec'] == fec_val]
+                if atk_r:
+                    pts.append((0, atk_r[0]['crc_pass_rate'] * 100))
+                for k in topk_values:
+                    r = [x for x in plot_rows
+                         if x['mod'] == mod and x['snr'] == snr
+                         and x['scenario'] == '%s+Top%d' % (plot_atk, k)
                          and x['fec'] == fec_val]
                     if r:
                         pts.append((k, r[0]['crc_pass_rate'] * 100))
@@ -389,7 +432,7 @@ def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
                             alpha=1.0 if fec_val else 0.5)
         ax.set_xlabel('Top-K (0 = no defense)')
         ax.set_ylabel('CRC Pass Rate (%)')
-        ax.set_title('Oracle: CW Recovery (SNR=%d)' % snr)
+        ax.set_title('Oracle: %s Recovery (SNR=%d)' % (plot_atk, snr))
         ax.set_ylim(-5, 105)
         ax.legend(fontsize=6, ncol=2)
         ax.grid(True, alpha=0.3)
@@ -403,7 +446,7 @@ def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
                  (True, 'FEC', bar_width/2)]):
             vals = []
             for mod in digital:
-                r = [x for x in all_rows
+                r = [x for x in plot_rows
                      if x['mod'] == mod and x['snr'] == snr
                      and x['scenario'] == 'Clean' and x['fec'] == fec_val]
                 vals.append(r[0]['crc_pass_rate'] * 100 if r else 0)
@@ -417,19 +460,19 @@ def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
         ax.legend()
         ax.grid(True, alpha=0.3, axis='y')
 
-        # Panel 3: FEC improvement (delta) for CW+TopK Oracle
+        # Panel 3: FEC improvement (delta) for Atk+TopK Oracle
         ax = axes[si, 2]
         for mi, mod in enumerate(digital):
             deltas = []
             ks = []
             for k in topk_values:
-                nofec = [x for x in all_rows
+                nofec = [x for x in plot_rows
                          if x['mod'] == mod and x['snr'] == snr
-                         and x['scenario'] == 'CW+Top%d' % k
+                         and x['scenario'] == '%s+Top%d' % (plot_atk, k)
                          and x['fec'] == False]
-                fec = [x for x in all_rows
+                fec = [x for x in plot_rows
                        if x['mod'] == mod and x['snr'] == snr
-                       and x['scenario'] == 'CW+Top%d' % k
+                       and x['scenario'] == '%s+Top%d' % (plot_atk, k)
                        and x['fec'] == True]
                 if nofec and fec:
                     delta = (fec[0]['crc_pass_rate'] -
@@ -452,6 +495,24 @@ def plot_fec_comparison(all_rows, mods, topk_values, snr_list, output_dir):
     plt.savefig(fig_path, dpi=150, bbox_inches='tight')
     plt.close()
     print('  Saved: %s' % fig_path)
+
+
+# ============================================================
+# Helpers for saving
+# ============================================================
+
+def _save_results(rows, output_dir):
+    """Save intermediate results to CSV and JSON."""
+    os.makedirs(output_dir, exist_ok=True)
+    cols = ['attack', 'mod', 'snr', 'fec', 'scenario', 'crc_pass_rate', 'amc_acc']
+    csv_path = os.path.join(output_dir, 'crc_defense_fec.csv')
+    with open(csv_path, 'w') as f:
+        f.write(','.join(cols) + '\n')
+        for r in rows:
+            f.write(','.join(str(r[c]) for c in cols) + '\n')
+    json_path = os.path.join(output_dir, 'crc_defense_fec.json')
+    with open(json_path, 'w') as f:
+        json.dump(rows, f, indent=2)
 
 
 # ============================================================
@@ -479,128 +540,138 @@ def run(args):
     wrapped_model.to(device)
     wrapped_model.eval()
 
-    # CW attack
-    cfg.cw_c = args.cw_c
-    cfg.cw_steps = args.cw_steps
-    cfg.cw_lr = 0.01
-    cfg.attack_eps = 0.03
-    cfg.ta_box = 'minmax'
-    cw_attack = create_attack('cw', wrapped_model, cfg)
-
     snr_list = [int(x) for x in args.snr.split(',')]
     topk_values = [int(x) for x in args.topk.split(',')]
     mods = args.mods.split(',')
     target_rms = args.target_rms
     n_bursts = args.n_bursts
+    attack_list = [a.strip() for a in args.attack.split(',')]
+    ta_box = args.ta_box
+
+    # Build attack config
+    cfg.cw_c = args.cw_c
+    cfg.cw_steps = args.cw_steps
+    cfg.cw_lr = 0.01
+    cfg.attack_eps = args.attack_eps
+    cfg.ta_box = ta_box
 
     print('=' * 80)
     print('  FEC-Enabled CRC Defense Pipeline')
-    print('  synth(CRC+FEC) -> IQ -> AWN -> CW -> Top-K -> AWN -> demod(FEC) -> CRC')
+    print('  synth(CRC+FEC) -> IQ -> AWN -> attack -> Top-K -> AWN -> demod(FEC) -> CRC')
     print('=' * 80)
+    print('  Attacks:     %s' % attack_list)
     print('  SNRs:        %s dB' % snr_list)
     print('  Top-K:       %s' % topk_values)
     print('  Mods:        %s' % mods)
     print('  N bursts:    %d' % n_bursts)
     print('  Target RMS:  %s' % target_rms)
-    print('  CW:          c=%s, steps=%s' % (args.cw_c, args.cw_steps))
+    print('  eps/ta_box:  %s / %s' % (args.attack_eps, ta_box))
     print('  Device:      %s' % device)
 
     all_rows = []
 
-    for snr in snr_list:
-        for mod in mods:
-            if mod not in ALL_DIGITAL_MODS:
-                print('\n  Skipping %s (not a digital mod)' % mod)
-                continue
+    for atk_name in attack_list:
+        print('\n' + '#' * 80)
+        print('  ATTACK: %s' % atk_name.upper())
+        print('#' * 80)
 
-            for fec_flag in [False, True]:
-                fec_label = 'FEC' if fec_flag else 'noFEC'
+        atk_obj = create_attack(atk_name, wrapped_model, cfg)
 
-                # Check if FEC is even possible for this mod
-                bps = get_bits_per_symbol(mod)
-                _, can_fec = fec_payload_capacity(14, bps)
-                if fec_flag and not can_fec:
-                    print('\n  %s SNR=%d %s: skipped (FEC not possible, '
-                          '1 bps)' % (mod, snr, fec_label))
+        for snr in snr_list:
+            for mod in mods:
+                if mod not in ALL_DIGITAL_MODS:
+                    print('\n  Skipping %s (not a digital mod)' % mod)
                     continue
 
-                print('\n%s' % ('=' * 80))
-                print('  %s (SNR=%d dB, %s)' % (mod, snr, fec_label))
-                print('%s' % ('=' * 80))
+                for fec_flag in [False, True]:
+                    fec_label = 'FEC' if fec_flag else 'noFEC'
 
-                t0 = time.time()
-                rows, clean_acc, adv_acc, topk_accs = run_scenarios(
-                    mod, snr, fec_flag, n_bursts, topk_values, target_rms,
-                    model, wrapped_model, cw_attack, device, args.seed)
-                elapsed = time.time() - t0
+                    # Check if FEC is even possible for this mod
+                    bps = get_bits_per_symbol(mod)
+                    _, can_fec = fec_payload_capacity(14, bps)
+                    if fec_flag and not can_fec:
+                        print('\n  %s SNR=%d %s: skipped (FEC not possible, '
+                              '1 bps)' % (mod, snr, fec_label))
+                        continue
 
-                print('  Clean AMC: %.1f%%, CW AMC: %.1f%% (%.1fs)' %
-                      (100 * clean_acc, 100 * adv_acc, elapsed))
+                    print('\n%s' % ('=' * 80))
+                    print('  %s | %s | SNR=%d dB | %s' % (
+                        atk_name.upper(), mod, snr, fec_label))
+                    print('%s' % ('=' * 80))
 
-                # Print scenario CRC rates
-                for r in rows:
-                    sc = r['scenario']
-                    crc = r['crc_pass_rate'] * 100
-                    print('    %-22s CRC: %6.1f%%' % (sc, crc))
+                    t0 = time.time()
+                    rows, clean_acc, adv_acc, topk_accs = run_scenarios(
+                        mod, snr, fec_flag, n_bursts, topk_values, target_rms,
+                        model, wrapped_model, atk_obj, atk_name, ta_box,
+                        device, args.seed)
+                    elapsed = time.time() - t0
 
-                all_rows.extend(rows)
+                    print('  Clean AMC: %.1f%%, %s AMC: %.1f%% (%.1fs)' %
+                          (100 * clean_acc, atk_name.upper(),
+                           100 * adv_acc, elapsed))
 
-    # Save CSV
-    csv_path = os.path.join(args.output_dir, 'crc_defense_fec.csv')
-    cols = ['mod', 'snr', 'fec', 'scenario', 'crc_pass_rate', 'amc_acc']
-    with open(csv_path, 'w') as f:
-        f.write(','.join(cols) + '\n')
-        for r in all_rows:
-            f.write(','.join(str(r[c]) for c in cols) + '\n')
-    print('\n  Saved: %s' % csv_path)
+                    for r in rows:
+                        sc = r['scenario']
+                        crc = r['crc_pass_rate'] * 100
+                        print('    %-26s CRC: %6.1f%%' % (sc, crc))
 
-    # Save JSON
-    json_path = os.path.join(args.output_dir, 'crc_defense_fec.json')
-    with open(json_path, 'w') as f:
-        json.dump(all_rows, f, indent=2)
-    print('  Saved: %s' % json_path)
+                    all_rows.extend(rows)
+
+        # Intermediate save after each attack completes
+        _save_results(all_rows, args.output_dir)
+        print('\n  [Intermediate save after %s]' % atk_name.upper())
+
+    # Final save
+    _save_results(all_rows, args.output_dir)
+    print('\n  Saved: %s' % os.path.join(args.output_dir, 'crc_defense_fec.csv'))
+    print('  Saved: %s' % os.path.join(args.output_dir, 'crc_defense_fec.json'))
 
     # Print comparison table
-    print_comparison_table(all_rows, mods, topk_values, snr_list)
+    print_comparison_table(all_rows, mods, topk_values, snr_list, attack_list)
 
-    # Plot
-    plot_fec_comparison(all_rows, mods, topk_values, snr_list, args.output_dir)
+    # Plot (uses first attack if multiple)
+    plot_fec_comparison(all_rows, mods, topk_values, snr_list,
+                        args.output_dir, attack_list)
 
     # Summary report
-    print_summary_report(all_rows, mods, topk_values, snr_list)
+    print_summary_report(all_rows, mods, topk_values, snr_list, attack_list)
 
     return all_rows
 
 
-def print_summary_report(all_rows, mods, topk_values, snr_list):
+def print_summary_report(all_rows, mods, topk_values, snr_list, attack_list):
     """Print a concise summary of FEC coding gain."""
     digital = [m for m in mods if m in ALL_DIGITAL_MODS]
 
-    print('\n' + '=' * 80)
-    print('  FEC CODING GAIN SUMMARY')
-    print('=' * 80)
+    for atk_name in attack_list:
+        atk = atk_name.upper()
+        atk_rows = [x for x in all_rows if x['attack'] == atk_name]
 
-    for snr in snr_list:
-        print('\n  SNR = %d dB:' % snr)
-        print('  %-6s  %-12s  %8s  %8s  %8s' %
-              ('Mod', 'Scenario', 'noFEC', 'FEC', 'Gain'))
-        print('  ' + '-' * 50)
+        print('\n' + '=' * 80)
+        print('  FEC CODING GAIN SUMMARY — %s' % atk)
+        print('=' * 80)
 
-        for mod in digital:
-            for sc in ['Clean'] + ['CW+Top%d' % k for k in topk_values]:
-                nofec = [x for x in all_rows
-                         if x['mod'] == mod and x['snr'] == snr
-                         and x['scenario'] == sc and x['fec'] == False]
-                fec = [x for x in all_rows
-                       if x['mod'] == mod and x['snr'] == snr
-                       and x['scenario'] == sc and x['fec'] == True]
-                if nofec and fec:
-                    nv = nofec[0]['crc_pass_rate'] * 100
-                    fv = fec[0]['crc_pass_rate'] * 100
-                    gain = fv - nv
-                    sign = '+' if gain >= 0 else ''
-                    print('  %-6s  %-12s  %7.1f%%  %7.1f%%  %s%.1f pp' %
-                          (mod, sc, nv, fv, sign, gain))
+        for snr in snr_list:
+            print('\n  SNR = %d dB:' % snr)
+            print('  %-6s  %-20s  %8s  %8s  %8s' %
+                  ('Mod', 'Scenario', 'noFEC', 'FEC', 'Gain'))
+            print('  ' + '-' * 58)
+
+            for mod in digital:
+                for sc in ['Clean'] + ['%s+Top%d' % (atk, k) for k in topk_values]:
+                    nofec = [x for x in atk_rows
+                             if x['mod'] == mod and x['snr'] == snr
+                             and x['scenario'] == sc and x['fec'] == False]
+                    fec = [x for x in atk_rows
+                           if x['mod'] == mod and x['snr'] == snr
+                           and x['scenario'] == sc and x['fec'] == True]
+                    if nofec and fec:
+                        nv = nofec[0]['crc_pass_rate'] * 100
+                        fv = fec[0]['crc_pass_rate'] * 100
+                        gain = fv - nv
+                        sign = '+' if gain >= 0 else ''
+                        print('  %-6s  %-20s  %7.1f%%  %7.1f%%  %s%.1f pp' %
+                              (mod, sc, nv, fv, sign, gain))
 
 
 if __name__ == '__main__':
@@ -608,6 +679,12 @@ if __name__ == '__main__':
         description='FEC-Enabled CRC Defense Pipeline')
     parser.add_argument('--snr', type=str, default='18,0',
                         help='Comma-separated SNR values (dB)')
+    parser.add_argument('--attack', type=str, default='cw',
+                        help='Comma-separated attack names (e.g. eaden,eadl1,fab,cw)')
+    parser.add_argument('--attack_eps', type=float, default=0.1,
+                        help='Epsilon for attacks (minmax scale)')
+    parser.add_argument('--ta_box', type=str, default='minmax',
+                        help='Normalization mode: unit or minmax')
     parser.add_argument('--n_bursts', type=int, default=200)
     parser.add_argument('--topk', type=str, default='10,20,50',
                         help='Comma-separated Top-K values')

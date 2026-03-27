@@ -1,0 +1,66 @@
+[
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.98,
+    "crc_pass": 1.0,
+    "n": 50
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.98,
+    "crc_pass": 1.0,
+    "n": 50
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.586,
+    "crc_pass": 0.98,
+    "n": 50
+  },
+  {
+    "mod": "BPSK",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.586,
+    "crc_pass": 0.4,
+    "n": 50
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+Oracle",
+    "amc_acc": 0.956,
+    "crc_pass": 0.96,
+    "n": 50
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Clean+AMC",
+    "amc_acc": 0.956,
+    "crc_pass": 0.92,
+    "n": 50
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Adv+Oracle",
+    "amc_acc": 0.658,
+    "crc_pass": 0.38,
+    "n": 50
+  },
+  {
+    "mod": "QAM64",
+    "snr": 18,
+    "scenario": "Adv+AMC",
+    "amc_acc": 0.658,
+    "crc_pass": 0.3,
+    "n": 50
+  }
+]

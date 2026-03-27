@@ -10,6 +10,7 @@ Pure numpy module (no ML dependencies). Provides:
 """
 
 import numpy as np
+from dataclasses import dataclass, field
 from util.utils import rrc_filter
 
 # ---------------------------------------------------------------------------
@@ -564,10 +565,116 @@ def random_multipath_taps(rng, n_taps=3, max_delay_spread=0.5):
     return h
 
 
+@dataclass
+class RmlChanCfg:
+    """Channel impairment configuration for make_rml_like_burst().
+
+    Each flag independently enables/disables one impairment category,
+    enabling ablation studies to identify which impairments matter most.
+    """
+    use_phase: bool = True        # random initial carrier phase
+    use_gain_jitter: bool = True  # log-normal RMS diversity across bursts
+    use_cfo: bool = True          # carrier frequency offset
+    cfo_std: float = 0.015        # CFO std-dev (normalized frequency)
+    use_multipath: bool = True    # short FIR multipath channel
+    mp_n_taps: int = 3            # number of multipath taps
+    mp_decay: float = 1.5         # exponential power-delay profile decay
+
+
+PRESETS: dict = {
+    'clean': RmlChanCfg(
+        use_phase=False, use_gain_jitter=False,
+        use_cfo=False,   use_multipath=False,
+    ),
+    'phase_gain': RmlChanCfg(
+        use_phase=True, use_gain_jitter=True,
+        use_cfo=False,  use_multipath=False,
+    ),
+    'phase_gain_cfo': RmlChanCfg(
+        use_phase=True, use_gain_jitter=True,
+        use_cfo=True,   use_multipath=False,
+    ),
+    'full': RmlChanCfg(
+        use_phase=True, use_gain_jitter=True,
+        use_cfo=True,   use_multipath=True,
+    ),
+    # rml_like: matches RML2016.10a impairment parameters.
+    # RML2016 uses CFO ~ uniform[-0.1, 0.1] x symbol_rate, i.e. max +/-0.0125
+    # cycles/sample at sps=8, so std ~ 0.007.  Multipath is mild (1-2 taps).
+    'rml_like': RmlChanCfg(
+        use_phase=True, use_gain_jitter=True,
+        use_cfo=True,   use_multipath=True,
+        cfo_std=0.007,
+        mp_n_taps=2,    mp_decay=0.5,
+    ),
+}
+
+
+def make_rml_like_burst(mod_type, snr_db, chan_cfg=None, *,
+                        n_symbols=16, n_pilots=2, sps=8, beta=0.35,
+                        target_rms=0.006, n_guard=16, fec=False,
+                        sro_ppm=0.0, rng=None):
+    """Generate a burst with RML-like channel impairments.
+
+    Thin wrapper around generate_burst() that uses an RmlChanCfg to
+    independently toggle phase, gain-jitter, CFO, and multipath — useful
+    for ablation studies comparing synthetic vs real RML2016 signals.
+
+    Args:
+        mod_type: Modulation type string (e.g. 'BPSK', 'QAM16').
+        snr_db: Signal-to-noise ratio in dB.
+        chan_cfg: RmlChanCfg instance, or a preset name string
+                 ('clean', 'phase_gain', 'phase_gain_cfo', 'full').
+                 Defaults to PRESETS['clean'] if None.
+        rng: numpy random Generator (created if None).
+        All remaining kwargs are forwarded to generate_burst().
+
+    Returns:
+        Same dict as generate_burst().
+    """
+    if chan_cfg is None:
+        chan_cfg = PRESETS['clean']
+    elif isinstance(chan_cfg, str):
+        if chan_cfg not in PRESETS:
+            raise ValueError(
+                f"Unknown channel preset '{chan_cfg}'. "
+                f"Choose from: {sorted(PRESETS)}")
+        chan_cfg = PRESETS[chan_cfg]
+
+    if rng is None:
+        rng = np.random.default_rng()
+
+    cfo_std = chan_cfg.cfo_std if chan_cfg.use_cfo else 0.0
+
+    multipath_taps = None
+    if chan_cfg.use_multipath:
+        multipath_taps = random_multipath_taps(
+            rng, n_taps=chan_cfg.mp_n_taps, max_delay_spread=chan_cfg.mp_decay)
+
+    return generate_burst(
+        mod_type,
+        n_symbols=n_symbols,
+        n_pilots=n_pilots,
+        sps=sps,
+        beta=beta,
+        snr_db=snr_db,
+        target_rms=target_rms,
+        cfo_std=cfo_std,
+        rng=rng,
+        n_guard=n_guard,
+        fec=fec,
+        multipath_taps=multipath_taps,
+        sro_ppm=sro_ppm,
+        use_phase=chan_cfg.use_phase,
+        use_gain_jitter=chan_cfg.use_gain_jitter,
+    )
+
+
 def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
                    snr_db=18.0, target_rms=0.006, cfo_std=0.015,
                    rng=None, n_guard=16, fec=False,
-                   multipath_taps=None, sro_ppm=0.0):
+                   multipath_taps=None, sro_ppm=0.0,
+                   use_phase=True, use_gain_jitter=True):
     """
     Generate a single burst with known bits, CRC, and pilot symbols/bits.
 
@@ -614,14 +721,18 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
                                    snr_db, target_rms, cfo_std, rng,
                                    fec=fec,
                                    multipath_taps=multipath_taps,
-                                   sro_ppm=sro_ppm)
+                                   sro_ppm=sro_ppm,
+                                   use_phase=use_phase,
+                                   use_gain_jitter=use_gain_jitter)
     elif mod in CONSTELLATION_MODS:
         return _generate_burst_constellation(mod, n_symbols, n_pilots, sps,
                                              beta, snr_db, target_rms,
                                              cfo_std, rng, n_guard=n_guard,
                                              fec=fec,
                                              multipath_taps=multipath_taps,
-                                             sro_ppm=sro_ppm)
+                                             sro_ppm=sro_ppm,
+                                             use_phase=use_phase,
+                                             use_gain_jitter=use_gain_jitter)
     else:
         raise ValueError(f"Unknown modulation: {mod_type}. "
                          f"Supported: {sorted(ALL_DIGITAL_MODS)}")
@@ -630,7 +741,8 @@ def generate_burst(mod_type, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
 def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
                                   snr_db, target_rms, cfo_std, rng,
                                   n_guard=16, fec=False,
-                                  multipath_taps=None, sro_ppm=0.0):
+                                  multipath_taps=None, sro_ppm=0.0,
+                                  use_phase=True, use_gain_jitter=True):
     """Generate burst for constellation-based modulations.
 
     Uses guard symbols before/after the data+pilot region so the TX RRC
@@ -736,7 +848,7 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
 
     # Apply carrier frequency offset and random phase to FULL signal
     cfo = cfo_std * rng.standard_normal()
-    phase0 = rng.uniform(0, 2 * np.pi)
+    phase0 = rng.uniform(0, 2 * np.pi) if use_phase else 0.0
     n_idx = np.arange(n_full_samples)
     phase_ramp = np.exp(1j * (2 * np.pi * cfo * n_idx + phase0))
     shaped_full = shaped_full * phase_ramp
@@ -757,7 +869,7 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
         'BPSK': 0.09, 'QPSK': 0.08, '8PSK': 0.07,
         'QAM16': 0.06, 'QAM64': 0.06, 'PAM4': 0.07,
     }
-    cv = _RMS_CV.get(mod, 0.05)
+    cv = _RMS_CV.get(mod, 0.05) if use_gain_jitter else 0.0
     # Log-normal: mean=target_rms, std=cv*target_rms
     if cv > 0:
         burst_rms_target = target_rms * np.exp(
@@ -805,7 +917,8 @@ def _generate_burst_constellation(mod, n_symbols, n_pilots, sps, beta,
 def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
                         snr_db, target_rms, cfo_std, rng,
                         h=0.5, bt=None, fec=False,
-                        multipath_taps=None, sro_ppm=0.0):
+                        multipath_taps=None, sro_ppm=0.0,
+                        use_phase=True, use_gain_jitter=True):
     """Generate burst for FSK modulations (CPFSK, GFSK).
 
     CPFSK: rectangular frequency pulse, mod index h=0.5 (MSK)
@@ -877,7 +990,7 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
 
     # Apply CFO and random initial phase
     cfo = cfo_std * rng.standard_normal()
-    phase0 = rng.uniform(0, 2 * np.pi)
+    phase0 = rng.uniform(0, 2 * np.pi) if use_phase else 0.0
     n_idx = np.arange(n_samples)
     phase_ramp = np.exp(1j * (2 * np.pi * cfo * n_idx + phase0))
     signal = signal * phase_ramp
@@ -893,7 +1006,7 @@ def _generate_burst_fsk(mod, n_symbols, n_pilots, sps,
     # Rescale total (signal+noise) with per-burst RMS diversity.
     # FSK mods have near-zero inter-burst variance in RML2016.
     _FSK_CV = {'CPFSK': 0.003, 'GFSK': 0.001}
-    cv = _FSK_CV.get(mod, 0.003)
+    cv = _FSK_CV.get(mod, 0.003) if use_gain_jitter else 0.0
     burst_rms_target = target_rms * np.exp(
         cv * rng.standard_normal() - 0.5 * cv ** 2)
 

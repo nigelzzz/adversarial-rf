@@ -96,7 +96,9 @@ def create_attack(
         return torchattacks.CW(wrapped_model, c=c, steps=cw_steps, lr=cw_lr)
 
     elif name == 'deepfool':
-        return torchattacks.DeepFool(wrapped_model, steps=50, overshoot=0.02)
+        df_steps = getattr(cfg, 'deepfool_steps', 50)
+        df_overshoot = getattr(cfg, 'deepfool_overshoot', 0.02)
+        return torchattacks.DeepFool(wrapped_model, steps=df_steps, overshoot=df_overshoot)
 
     elif name == 'apgd':
         # APGD can have batch size issues - use n_restarts=1 for stability

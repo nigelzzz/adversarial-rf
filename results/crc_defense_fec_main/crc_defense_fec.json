@@ -1,0 +1,6086 @@
+[
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.995
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.995
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.97,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.975,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.6
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.62,
+    "amc_acc": 0.6
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.57
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.59,
+    "amc_acc": 0.57
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.795,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.795,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.55
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.55,
+    "amc_acc": 0.55
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.635,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.035,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.945,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.09,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.09,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.245
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.25,
+    "amc_acc": 0.245
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.2,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.96
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.96,
+    "amc_acc": 0.96
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.985,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.215
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.215,
+    "amc_acc": 0.215
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.16
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.16,
+    "amc_acc": 0.16
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.775
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.775,
+    "amc_acc": 0.775
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.065
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.065
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.92,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.23,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.93,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.275
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.28,
+    "amc_acc": 0.275
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.725
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.725,
+    "amc_acc": 0.725
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.91,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.085,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.905,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.29
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.29,
+    "amc_acc": 0.29
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.24
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.245,
+    "amc_acc": 0.24
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.935,
+    "amc_acc": 0.97
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.905,
+    "amc_acc": 0.97
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.89,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.92
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.92
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.375,
+    "amc_acc": 0.91
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.34,
+    "amc_acc": 0.91
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.45,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.815,
+    "amc_acc": 0.81
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.65,
+    "amc_acc": 0.81
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.865,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.925,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.225,
+    "amc_acc": 0.955
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.21,
+    "amc_acc": 0.955
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.225,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.985,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.845,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.79
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.79,
+    "amc_acc": 0.79
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.985,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.085,
+    "amc_acc": 0.895
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.075,
+    "amc_acc": 0.895
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.125,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.945,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.89,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.835,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.14,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.08,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.895,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.9,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.05
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.05
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.025
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.085,
+    "amc_acc": 0.025
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.045
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.045,
+    "amc_acc": 0.045
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.445
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.445,
+    "amc_acc": 0.445
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.69
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.69,
+    "amc_acc": 0.69
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.895,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.89,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.075,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.76,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.885,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.77
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.77,
+    "amc_acc": 0.77
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.77,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.02,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.795,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.97,
+    "amc_acc": 0.11
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.105,
+    "amc_acc": 0.11
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.98,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.355
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.355,
+    "amc_acc": 0.355
+  },
+  {
+    "attack": "eaden",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.995,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.76,
+    "amc_acc": 0.49
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.405,
+    "amc_acc": 0.49
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.755,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.205,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.485,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.505,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.69,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.17,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.7,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.915,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.915,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.975,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.975,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eaden",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.055,
+    "amc_acc": 0.43
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.02,
+    "amc_acc": 0.43
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.025,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.375,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.86,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.86,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.97,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.075,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.97,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.335,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eaden",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.615
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.615
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.595
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.595
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.015,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.86,
+    "amc_acc": 0.62
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.525,
+    "amc_acc": 0.62
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.865,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.42,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.43,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.71,
+    "amc_acc": 0.255
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.165,
+    "amc_acc": 0.255
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.705,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.845,
+    "amc_acc": 0.53
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.455,
+    "amc_acc": 0.53
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.84,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.18
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.18
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.88
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.88
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.27
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.27
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.15
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.15
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.905
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.905
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.05,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.145,
+    "amc_acc": 0.285
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.045,
+    "amc_acc": 0.285
+  },
+  {
+    "attack": "eaden",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.145,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.2,
+    "amc_acc": 0.825
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.175,
+    "amc_acc": 0.825
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.22,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.065,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.105,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.2,
+    "amc_acc": 0.75
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.16,
+    "amc_acc": 0.75
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.2,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.815,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.455,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.81,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.3,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.645,
+    "amc_acc": 0.115
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.1,
+    "amc_acc": 0.115
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.635,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.725,
+    "amc_acc": 0.195
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.21,
+    "amc_acc": 0.195
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.76,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.815,
+    "amc_acc": 0.21
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.305,
+    "amc_acc": 0.21
+  },
+  {
+    "attack": "eaden",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.81,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.545
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.545
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.105
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.105
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.295
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.295
+  },
+  {
+    "attack": "eaden",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top20+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADEN+Top50+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eaden",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.995
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.995
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.97,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.975,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.65,
+    "amc_acc": 0.635
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.615,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.78,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.795,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.56
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.56,
+    "amc_acc": 0.56
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.67
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.67,
+    "amc_acc": 0.67
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.035,
+    "amc_acc": 0.035
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.945,
+    "amc_acc": 0.945
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.09,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.09,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.27
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.28,
+    "amc_acc": 0.27
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.325
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.325,
+    "amc_acc": 0.325
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.96
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.96,
+    "amc_acc": 0.96
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.985,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.25
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.25,
+    "amc_acc": 0.25
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.26,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.775
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.775,
+    "amc_acc": 0.775
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.065
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.065
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.915,
+    "amc_acc": 0.28
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.245,
+    "amc_acc": 0.28
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.93,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.355
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.36,
+    "amc_acc": 0.355
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.725
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.725,
+    "amc_acc": 0.725
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.91,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.085,
+    "amc_acc": 0.08
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.905,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.32
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.32,
+    "amc_acc": 0.32
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.355,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.935,
+    "amc_acc": 0.97
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.905,
+    "amc_acc": 0.97
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.87,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.915
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.915
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.36,
+    "amc_acc": 0.93
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.335,
+    "amc_acc": 0.93
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.45,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.81,
+    "amc_acc": 0.88
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.71,
+    "amc_acc": 0.88
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.865,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.925,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.225,
+    "amc_acc": 0.955
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.21,
+    "amc_acc": 0.955
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.225,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.875
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.865,
+    "amc_acc": 0.875
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.84
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.84,
+    "amc_acc": 0.84
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.975,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.07,
+    "amc_acc": 0.895
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.07,
+    "amc_acc": 0.895
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.125,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.94,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.865,
+    "amc_acc": 0.925
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.835,
+    "amc_acc": 0.855
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.14,
+    "amc_acc": 0.075
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.08,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.895,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.9,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.05
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.05
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.09,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 18,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 1.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.045
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.045,
+    "amc_acc": 0.045
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.44
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.44,
+    "amc_acc": 0.44
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.705
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.705,
+    "amc_acc": 0.705
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.895,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.89,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.075,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.76,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.99,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.885,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 18,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.99,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.77
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.77,
+    "amc_acc": 0.77
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.78,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.795,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.96,
+    "amc_acc": 0.135
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.13,
+    "amc_acc": 0.135
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.98,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.365
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.365,
+    "amc_acc": 0.365
+  },
+  {
+    "attack": "eadl1",
+    "mod": "BPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.995,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.76,
+    "amc_acc": 0.49
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.405,
+    "amc_acc": 0.49
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.75,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.205,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.495,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.02
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.505,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.68,
+    "amc_acc": 0.23
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.185,
+    "amc_acc": 0.23
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.7,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.915,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.915,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.975,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.975,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.035,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QPSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 1.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.055,
+    "amc_acc": 0.43
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.02,
+    "amc_acc": 0.43
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.055,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.025,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.025,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.365
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.365
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.375,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.995,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.86,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.86,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.965,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.08,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.97,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.335,
+    "amc_acc": 0.34
+  },
+  {
+    "attack": "eadl1",
+    "mod": "8PSK",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.98,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.615
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.615
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.085
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.35
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.575
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.575
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.015,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.86,
+    "amc_acc": 0.62
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.525,
+    "amc_acc": 0.62
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.86,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.425,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.43,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.715,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.17,
+    "amc_acc": 0.26
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.705,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.85,
+    "amc_acc": 0.525
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.445,
+    "amc_acc": 0.525
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM16",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.84,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.18
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.18
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.885
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.885
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.665
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.275
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.275
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.0,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.15
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.15
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.9
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.9
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.005,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.605
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.05,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.14,
+    "amc_acc": 0.28
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.045,
+    "amc_acc": 0.28
+  },
+  {
+    "attack": "eadl1",
+    "mod": "QAM64",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.145,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.2,
+    "amc_acc": 0.825
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.175,
+    "amc_acc": 0.825
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.21,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.63
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.63
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.01,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.09,
+    "amc_acc": 0.66
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.06,
+    "amc_acc": 0.66
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.105,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.195,
+    "amc_acc": 0.765
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.16,
+    "amc_acc": 0.765
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.2,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.815,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.455,
+    "amc_acc": 0.375
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.815,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.3,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.65,
+    "amc_acc": 0.12
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.1,
+    "amc_acc": 0.12
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.635,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.73,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.215,
+    "amc_acc": 0.2
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.76,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.81,
+    "amc_acc": 0.23
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.31,
+    "amc_acc": 0.23
+  },
+  {
+    "attack": "eadl1",
+    "mod": "PAM4",
+    "snr": 0,
+    "fec": true,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.81,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.545
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.05,
+    "amc_acc": 0.545
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.025
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.0,
+    "amc_acc": 0.025
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.095,
+    "amc_acc": 0.325
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.03,
+    "amc_acc": 0.325
+  },
+  {
+    "attack": "eadl1",
+    "mod": "CPFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.095,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.005
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.0
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top10+AMC",
+    "crc_pass_rate": 0.005,
+    "amc_acc": 0.03
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top10",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top20+AMC",
+    "crc_pass_rate": 0.01,
+    "amc_acc": 0.015
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top20",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "EADL1+Top50+AMC",
+    "crc_pass_rate": 0.015,
+    "amc_acc": 0.01
+  },
+  {
+    "attack": "eadl1",
+    "mod": "GFSK",
+    "snr": 0,
+    "fec": false,
+    "scenario": "Clean+Top50",
+    "crc_pass_rate": 0.04,
+    "amc_acc": -1
+  }
+]
