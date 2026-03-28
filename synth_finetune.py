@@ -109,7 +109,8 @@ def spectral_shape(signals_2d, psd_target, psd_synth):
 
 def generate_synth_dataset(n_per_cell, snr_list=None, mod_list=None,
                            multipath=True, sro=True, seed=42,
-                           target_rms=0.006, spectral_match=True):
+                           target_rms=0.00854, spectral_match=True,
+                           cfo_std=0.005):
     """Generate synthetic IQ dataset matching RML2016.10a format.
 
     Args:
@@ -120,6 +121,7 @@ def generate_synth_dataset(n_per_cell, snr_list=None, mod_list=None,
         sro: enable random sample rate offset
         seed: random seed
         spectral_match: apply spectral shaping to match RML2016 PSD profile
+        cfo_std: carrier frequency offset std (default 0.005, ~4 rad over 128 samples)
 
     Returns:
         signals: [N, 2, 128] numpy array
@@ -172,7 +174,7 @@ def generate_synth_dataset(n_per_cell, snr_list=None, mod_list=None,
                 b = generate_burst(
                     mod, n_symbols=16, n_pilots=2, sps=8, beta=0.35,
                     snr_db=snr_db, target_rms=target_rms,
-                    cfo_std=0.015, rng=rng, n_guard=16,
+                    cfo_std=cfo_std, rng=rng, n_guard=16,
                     multipath_taps=mp_taps, sro_ppm=sro_ppm,
                 )
                 signals_cell.append(b['iq_tensor'][0])  # [2, 128]
@@ -286,13 +288,29 @@ def make_mixed_loaders(real_signals, real_labels, synth_signals, synth_labels,
 
 
 def finetune(model, train_loader, val_loader, device,
-             lr=0.0001, epochs=20, patience=5, save_path=None):
-    """Finetune AWN model with lower learning rate."""
+             lr=0.0001, epochs=20, patience=5, save_path=None,
+             freeze_conv=False):
+    """Finetune AWN model with lower learning rate.
+
+    Args:
+        freeze_conv: If True, freeze conv1/conv2 layers (only train wavelet +
+                     classifier). Helps preserve learned low-level features.
+    """
     model.to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
+    if freeze_conv:
+        for name, param in model.named_parameters():
+            if name.startswith('conv1') or name.startswith('conv2'):
+                param.requires_grad = False
+        trainable = [p for p in model.parameters() if p.requires_grad]
+        print(f"  Frozen conv1/conv2. Trainable params: {sum(p.numel() for p in trainable)}")
+        optimizer = torch.optim.Adam(trainable, lr=lr)
+    else:
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+
     criterion = nn.CrossEntropyLoss().to(device)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='min', factor=0.5, patience=patience // 2)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+        optimizer, T_max=epochs, eta_min=lr * 0.01)
 
     best_val_acc = 0.0
     best_state = None
@@ -343,7 +361,7 @@ def finetune(model, train_loader, val_loader, device,
 
         val_acc = val_correct / val_total
         val_loss = val_loss_sum / val_total
-        scheduler.step(val_loss)
+        scheduler.step()
 
         lr_now = optimizer.param_groups[0]['lr']
         print(f"  Epoch {epoch+1:3d}: train_acc={train_acc:.4f} "
@@ -468,6 +486,10 @@ def main():
                         help='Finetuning learning rate')
     parser.add_argument('--ft_patience', type=int, default=5,
                         help='Early stopping patience')
+    parser.add_argument('--cfo_std', type=float, default=0.005,
+                        help='CFO std (default 0.005; RML2016 generation used ~0.01)')
+    parser.add_argument('--freeze_conv', action='store_true',
+                        help='Freeze conv1/conv2 layers during finetuning')
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--device', type=str, default='auto')
@@ -515,6 +537,7 @@ def main():
             seed=args.seed,
             target_rms=args.target_rms,
             spectral_match=not args.no_spectral_match,
+            cfo_std=args.cfo_std,
         )
         elapsed = time.time() - t0
         print(f"\n  Generated {len(labels)} samples in {elapsed:.1f}s")
@@ -598,6 +621,7 @@ def main():
             model, train_loader, val_loader, device,
             lr=args.ft_lr, epochs=args.ft_epochs,
             patience=args.ft_patience, save_path=save_path,
+            freeze_conv=args.freeze_conv,
         )
 
         # Evaluate after finetuning
