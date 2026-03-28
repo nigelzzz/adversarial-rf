@@ -1,0 +1,9 @@
+{
+  "mae_db": 4.18779182434082,
+  "rmse_db": 4.593607425689697,
+  "spec_type": "psd_band",
+  "eval_limit": 64,
+  "cw_c": 0.5,
+  "cw_steps": 10,
+  "lowpass": true
+}

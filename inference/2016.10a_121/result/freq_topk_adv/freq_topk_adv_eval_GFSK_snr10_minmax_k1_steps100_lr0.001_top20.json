@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 1.0,
+    "GFSK": 1.0
+  },
+  "cw": {
+    "overall": 0.175,
+    "GFSK": 0.175
+  },
+  "cw_top20": {
+    "overall": 0.865,
+    "GFSK": 0.865
+  }
+}

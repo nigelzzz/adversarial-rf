@@ -1,0 +1,22 @@
+{
+  "mae_db": 4.18779182434082,
+  "rmse_db": 4.593607425689697,
+  "spec_type": "psd_band",
+  "eval_limit": 64,
+  "cw_c": 0.5,
+  "cw_steps": 10,
+  "lowpass": true,
+  "mse_cw_vs_orig": 3.519758138281759e-07,
+  "mse_spec_vs_orig": 2.1727126764403693e-08,
+  "mse_cw_vs_spec": 3.020575150003424e-07,
+  "inband_mse": {
+    "mse_cw_vs_orig": 3.2600951271888334e-06,
+    "mse_spec_vs_orig": 1.9937614581522212e-07,
+    "mse_cw_vs_spec": 2.8026531708746916e-06
+  },
+  "outband_mse": {
+    "mse_cw_vs_orig": 9.959235658385523e-10,
+    "mse_spec_vs_orig": 2.867298343200986e-10,
+    "mse_cw_vs_spec": 2.614298777459112e-10
+  }
+}

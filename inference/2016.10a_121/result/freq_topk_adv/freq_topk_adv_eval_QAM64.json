@@ -1,0 +1,50 @@
+{
+  "clean": {
+    "overall": 0.942,
+    "QAM64": 0.942
+  },
+  "cw": {
+    "overall": 0.0,
+    "QAM64": 0.0
+  },
+  "cw_top10": {
+    "overall": 0.8595,
+    "QAM64": 0.8595
+  },
+  "cw_top15": {
+    "overall": 0.2945,
+    "QAM64": 0.2945
+  },
+  "cw_top20": {
+    "overall": 0.107,
+    "QAM64": 0.107
+  },
+  "cw_top25": {
+    "overall": 0.076,
+    "QAM64": 0.076
+  },
+  "cw_top30": {
+    "overall": 0.0525,
+    "QAM64": 0.0525
+  },
+  "cw_top35": {
+    "overall": 0.034,
+    "QAM64": 0.034
+  },
+  "cw_top40": {
+    "overall": 0.022,
+    "QAM64": 0.022
+  },
+  "cw_top45": {
+    "overall": 0.0155,
+    "QAM64": 0.0155
+  },
+  "cw_top50": {
+    "overall": 0.012,
+    "QAM64": 0.012
+  },
+  "cw_top55": {
+    "overall": 0.009,
+    "QAM64": 0.009
+  }
+}

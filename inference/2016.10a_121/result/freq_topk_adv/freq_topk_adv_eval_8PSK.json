@@ -1,0 +1,50 @@
+{
+  "clean": {
+    "overall": 0.969,
+    "8PSK": 0.969
+  },
+  "cw": {
+    "overall": 0.0,
+    "8PSK": 0.0
+  },
+  "cw_top10": {
+    "overall": 0.009,
+    "8PSK": 0.009
+  },
+  "cw_top15": {
+    "overall": 0.0145,
+    "8PSK": 0.0145
+  },
+  "cw_top20": {
+    "overall": 0.007,
+    "8PSK": 0.007
+  },
+  "cw_top25": {
+    "overall": 0.0075,
+    "8PSK": 0.0075
+  },
+  "cw_top30": {
+    "overall": 0.007,
+    "8PSK": 0.007
+  },
+  "cw_top35": {
+    "overall": 0.0075,
+    "8PSK": 0.0075
+  },
+  "cw_top40": {
+    "overall": 0.006,
+    "8PSK": 0.006
+  },
+  "cw_top45": {
+    "overall": 0.0035,
+    "8PSK": 0.0035
+  },
+  "cw_top50": {
+    "overall": 0.003,
+    "8PSK": 0.003
+  },
+  "cw_top55": {
+    "overall": 0.0025,
+    "8PSK": 0.0025
+  }
+}

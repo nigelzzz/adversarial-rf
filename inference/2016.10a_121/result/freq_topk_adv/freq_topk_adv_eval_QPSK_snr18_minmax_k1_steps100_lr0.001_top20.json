@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 1.0,
+    "QPSK": 1.0
+  },
+  "cw": {
+    "overall": 0.61,
+    "QPSK": 0.61
+  },
+  "cw_top20": {
+    "overall": 0.945,
+    "QPSK": 0.945
+  }
+}

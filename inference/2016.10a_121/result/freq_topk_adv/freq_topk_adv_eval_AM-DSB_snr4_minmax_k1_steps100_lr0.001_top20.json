@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 0.99,
+    "AM-DSB": 0.99
+  },
+  "cw": {
+    "overall": 0.185,
+    "AM-DSB": 0.185
+  },
+  "cw_top20": {
+    "overall": 0.845,
+    "AM-DSB": 0.845
+  }
+}

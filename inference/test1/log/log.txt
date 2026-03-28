@@ -1,0 +1,216 @@
+[2026-02-08 23:57:44,330] ====================
+[2026-02-08 23:57:44,330] dataset : 2016.10a
+[2026-02-08 23:57:44,330] base_dir : inference
+[2026-02-08 23:57:44,330] epochs : 100
+[2026-02-08 23:57:44,330] batch_size : 128
+[2026-02-08 23:57:44,330] patience : 10
+[2026-02-08 23:57:44,330] milestone_step : 3
+[2026-02-08 23:57:44,330] gamma : 0.5
+[2026-02-08 23:57:44,330] lr : 0.001
+[2026-02-08 23:57:44,330] num_classes : 11
+[2026-02-08 23:57:44,330] num_level : 1
+[2026-02-08 23:57:44,330] regu_details : 0.01
+[2026-02-08 23:57:44,330] regu_approx : 0.01
+[2026-02-08 23:57:44,330] kernel_size : 3
+[2026-02-08 23:57:44,330] in_channels : 64
+[2026-02-08 23:57:44,330] latent_dim : 320
+[2026-02-08 23:57:44,330] monitor : acc
+[2026-02-08 23:57:44,330] test_batch_size : 64
+[2026-02-08 23:57:44,330] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2026-02-08 23:57:44,330] cfg_dir : inference/test1
+[2026-02-08 23:57:44,330] model_dir : inference/test1/models
+[2026-02-08 23:57:44,330] log_dir : inference/test1/log
+[2026-02-08 23:57:44,330] result_dir : inference/test1/result
+[2026-02-08 23:57:44,330] mode : sigguard_eval
+[2026-02-08 23:57:44,330] model : awn
+[2026-02-08 23:57:44,330] seed : 2022
+[2026-02-08 23:57:44,330] device : cuda
+[2026-02-08 23:57:44,330] ckpt_path : ./checkpoint
+[2026-02-08 23:57:44,330] num_workers : 0
+[2026-02-08 23:57:44,331] Draw_Confmat : True
+[2026-02-08 23:57:44,331] Draw_Acc_Curve : True
+[2026-02-08 23:57:44,331] mod_filter : BPSK
+[2026-02-08 23:57:44,331] snr_filter : 18
+[2026-02-08 23:57:44,331] attack : cw
+[2026-02-08 23:57:44,331] cw_c : 1.0
+[2026-02-08 23:57:44,331] cw_kappa : 0.0
+[2026-02-08 23:57:44,331] cw_steps : 100
+[2026-02-08 23:57:44,331] cw_lr : 0.01
+[2026-02-08 23:57:44,331] cw_targeted : False
+[2026-02-08 23:57:44,331] cw_scale : None
+[2026-02-08 23:57:44,331] lowpass : True
+[2026-02-08 23:57:44,331] lowpass_kernel : 17
+[2026-02-08 23:57:44,331] spec_type : cw_tone
+[2026-02-08 23:57:44,331] spec_eps : 0.1
+[2026-02-08 23:57:44,331] spec_jnr_db : None
+[2026-02-08 23:57:44,331] tone_freq : None
+[2026-02-08 23:57:44,331] spec_band_low : 0.05
+[2026-02-08 23:57:44,331] spec_band_high : 0.25
+[2026-02-08 23:57:44,331] spec_mask_path : None
+[2026-02-08 23:57:44,331] eval_limit : None
+[2026-02-08 23:57:44,331] attack_backend : torchattacks
+[2026-02-08 23:57:44,331] ta_box : minmax
+[2026-02-08 23:57:44,331] spec_mask_out : None
+[2026-02-08 23:57:44,331] def_band_low : None
+[2026-02-08 23:57:44,331] def_band_high : None
+[2026-02-08 23:57:44,331] def_mask_path : None
+[2026-02-08 23:57:44,331] cmp_defense : False
+[2026-02-08 23:57:44,331] def_notch_depth : 1.0
+[2026-02-08 23:57:44,331] def_notch_trans : 3
+[2026-02-08 23:57:44,331] def_hp_order : 1
+[2026-02-08 23:57:44,331] def_auto_fmax : 0.08
+[2026-02-08 23:57:44,331] def_auto_ref_low : 0.15
+[2026-02-08 23:57:44,331] def_auto_ref_high : 0.5
+[2026-02-08 23:57:44,331] def_auto_tau : 2.0
+[2026-02-08 23:57:44,332] def_auto_max_width : 3
+[2026-02-08 23:57:44,332] def_auto_depth_max : 0.8
+[2026-02-08 23:57:44,332] def_auto_trans : 4
+[2026-02-08 23:57:44,332] defense : none
+[2026-02-08 23:57:44,332] def_ens_depths : 0.55,0.6,0.65
+[2026-02-08 23:57:44,332] def_ens_trans : 4
+[2026-02-08 23:57:44,332] def_topk : 50
+[2026-02-08 23:57:44,332] def_topk_percent : None
+[2026-02-08 23:57:44,332] detector_ckpt : None
+[2026-02-08 23:57:44,332] detector_threshold : 0.004468164592981338
+[2026-02-08 23:57:44,332] detector_norm_offset : 0.02
+[2026-02-08 23:57:44,332] detector_norm_scale : 0.04
+[2026-02-08 23:57:44,332] det_epochs : 10
+[2026-02-08 23:57:44,332] det_batch_size : 256
+[2026-02-08 23:57:44,332] det_lr : 0.001
+[2026-02-08 23:57:44,332] det_wd : 0.0
+[2026-02-08 23:57:44,332] det_patience : 5
+[2026-02-08 23:57:44,332] det_train_limit : 20000
+[2026-02-08 23:57:44,332] det_calib_quantile : 0.9
+[2026-02-08 23:57:44,332] snr_min : None
+[2026-02-08 23:57:44,332] freq_percents : [0.1, 0.2, 0.3, 0.4, 0.5]
+[2026-02-08 23:57:44,332] dir_name : test1
+[2026-02-08 23:57:44,332] attack_list : None
+[2026-02-08 23:57:44,332] eval_limit_per_cell : None
+[2026-02-08 23:57:44,332] attack_eps : 0.03
+[2026-02-08 23:57:44,332] topk_list : 10,20
+[2026-02-08 23:57:44,332] plot_freq : False
+[2026-02-08 23:57:44,332] plot_iq : True
+[2026-02-08 23:57:44,332] plot_n_samples : 3
+[2026-02-08 23:57:44,332] sigguard_topk : 50
+[2026-02-08 23:57:44,332] no_plot_iq : False
+[2026-02-08 23:57:44,332] ead_kappa : 0
+[2026-02-08 23:57:44,332] ead_lr : 0.01
+[2026-02-08 23:57:44,332] ead_max_iterations : 100
+[2026-02-08 23:57:44,332] ead_binary_search_steps : 9
+[2026-02-08 23:57:44,333] ead_initial_const : 0.001
+[2026-02-08 23:57:44,333] ead_beta : 0.001
+[2026-02-08 23:57:44,333] ====================
+[2026-02-08 23:57:44,459] >>> Model: AWN
+[2026-02-08 23:57:44,460] >>> total params: 0.12M
+[2026-02-08 23:57:46,652] ********************
+[2026-02-08 23:57:46,653] Signals.shape: [1000, 2, 128]
+[2026-02-08 23:57:46,653] Labels.shape: [1000]
+[2026-02-08 23:57:46,653] ********************
+[2026-02-08 23:57:46,666] Signal_train.shape: [600, 2, 128]
+[2026-02-08 23:57:46,666] Signal_val.shape: [200, 2, 128]
+[2026-02-08 23:57:46,666] Signal_test.shape: [200, 2, 128]
+[2026-02-08 23:57:46,666] ********************
+[2026-02-08 23:57:47,084] Running SigGuard evaluation on 200 samples
+[2026-02-08 23:57:47,084] Attacks: ['fgsm', 'pgd', 'bim', 'cw', 'deepfool', 'apgd', 'mifgsm', 'rfgsm', 'upgd', 'eotpgd', 'vmifgsm', 'vnifgsm', 'jitter', 'ffgsm', 'pgdl2', 'eadl1', 'eaden']
+[2026-02-08 23:57:47,085] FFT Top-K defense with K=50
+[2026-02-08 23:57:47,085] Using ta_box=minmax normalization, eps=0.03
+[2026-02-08 23:57:47,085] IQ plots will be saved to: inference/test1/result/iq_plots
+[2026-02-08 23:57:47,085] 
+=== Intact (Clean) ===
+[2026-02-08 23:57:47,535] Intact: Disabled=99.00%, Enabled=99.00%
+[2026-02-08 23:57:47,535] 
+=== FGSM ===
+[2026-02-08 23:57:47,756] FGSM: Disabled=80.00%, Enabled=80.50%
+[2026-02-08 23:57:47,757] Generating IQ plots for fgsm...
+[2026-02-08 23:57:54,879] 
+=== PGD ===
+[2026-02-08 23:57:54,966] PGD: Disabled=67.50%, Enabled=67.50%
+[2026-02-08 23:57:54,966] Generating IQ plots for pgd...
+[2026-02-08 23:58:02,823] 
+=== BIM ===
+[2026-02-08 23:58:02,922] BIM: Disabled=66.50%, Enabled=67.50%
+[2026-02-08 23:58:02,922] Generating IQ plots for bim...
+[2026-02-08 23:58:11,245] 
+=== CW ===
+[2026-02-08 23:58:14,103] CW: Disabled=26.00%, Enabled=68.00%
+[2026-02-08 23:58:14,103] Generating IQ plots for cw...
+[2026-02-08 23:58:24,819] 
+=== DEEPFOOL ===
+[2026-02-08 23:58:48,985] DEEPFOOL: Disabled=84.00%, Enabled=85.00%
+[2026-02-08 23:58:48,986] Generating IQ plots for deepfool...
+[2026-02-08 23:58:59,250] 
+=== APGD ===
+[2026-02-08 23:59:08,877] APGD: Disabled=60.00%, Enabled=62.00%
+[2026-02-08 23:59:08,878] Generating IQ plots for apgd...
+[2026-02-08 23:59:18,704] 
+=== MIFGSM ===
+[2026-02-08 23:59:18,812] MIFGSM: Disabled=68.50%, Enabled=69.00%
+[2026-02-08 23:59:18,818] Generating IQ plots for mifgsm...
+[2026-02-08 23:59:28,278] 
+=== RFGSM ===
+[2026-02-08 23:59:28,383] RFGSM: Disabled=66.50%, Enabled=67.50%
+[2026-02-08 23:59:28,383] Generating IQ plots for rfgsm...
+[2026-02-08 23:59:37,782] 
+=== UPGD ===
+[2026-02-08 23:59:37,929] UPGD: Disabled=68.50%, Enabled=69.00%
+[2026-02-08 23:59:37,929] Generating IQ plots for upgd...
+[2026-02-08 23:59:47,253] 
+=== EOTPGD ===
+[2026-02-08 23:59:47,361] EOTPGD: Disabled=65.50%, Enabled=67.00%
+[2026-02-08 23:59:47,361] Generating IQ plots for eotpgd...
+[2026-02-08 23:59:57,002] 
+=== VMIFGSM ===
+[2026-02-08 23:59:57,563] VMIFGSM: Disabled=68.00%, Enabled=68.50%
+[2026-02-08 23:59:57,563] Generating IQ plots for vmifgsm...
+[2026-02-09 00:00:07,132] 
+=== VNIFGSM ===
+[2026-02-09 00:00:07,755] VNIFGSM: Disabled=69.50%, Enabled=68.00%
+[2026-02-09 00:00:07,756] Generating IQ plots for vnifgsm...
+[2026-02-09 00:00:19,390] 
+=== JITTER ===
+[2026-02-09 00:00:19,868] JITTER: Disabled=69.00%, Enabled=67.50%
+[2026-02-09 00:00:19,869] Generating IQ plots for jitter...
+[2026-02-09 00:00:31,758] 
+=== FFGSM ===
+[2026-02-09 00:00:31,789] FFGSM: Disabled=86.50%, Enabled=86.00%
+[2026-02-09 00:00:31,790] Generating IQ plots for ffgsm...
+[2026-02-09 00:00:42,460] 
+=== PGDL2 ===
+[2026-02-09 00:00:42,620] PGDL2: Disabled=78.00%, Enabled=79.00%
+[2026-02-09 00:00:42,621] Generating IQ plots for pgdl2...
+[2026-02-09 00:00:55,449] 
+=== EADL1 ===
+[2026-02-09 00:01:02,743] EADL1: Disabled=0.00%, Enabled=82.00%
+[2026-02-09 00:01:02,743] Generating IQ plots for eadl1...
+[2026-02-09 00:01:14,657] 
+=== EADEN ===
+[2026-02-09 00:01:21,949] EADEN: Disabled=0.00%, Enabled=73.00%
+[2026-02-09 00:01:21,949] Generating IQ plots for eaden...
+[2026-02-09 00:01:34,381] 
+  AWN - SigGuard Evaluation (Top-50)
+  ==================================================
+  Sample Type         Disabled      Enabled
+  --------------------------------------------------
+  Intact                99.00%       99.00%
+  FGSM                  80.00%       80.50%
+  PGD                   67.50%       67.50%
+  BIM                   66.50%       67.50%
+  CW                    26.00%       68.00%
+  DEEPFOOL              84.00%       85.00%
+  APGD                  60.00%       62.00%
+  MIFGSM                68.50%       69.00%
+  RFGSM                 66.50%       67.50%
+  UPGD                  68.50%       69.00%
+  EOTPGD                65.50%       67.00%
+  VMIFGSM               68.00%       68.50%
+  VNIFGSM               69.50%       68.00%
+  JITTER                69.00%       67.50%
+  FFGSM                 86.50%       86.00%
+  PGDL2                 78.00%       79.00%
+  EADL1                  0.00%       82.00%
+  EADEN                  0.00%       73.00%
+  ==================================================
+
+[2026-02-09 00:01:34,384] Saved results to: inference/test1/result/sigguard_eval.csv
+[2026-02-09 00:01:34,384] Saved table to: inference/test1/result/sigguard_eval_table.txt
+[2026-02-09 00:01:34,385] IQ plots saved to: inference/test1/result/iq_plots

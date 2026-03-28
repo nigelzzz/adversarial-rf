@@ -1,0 +1,542 @@
+[2026-02-08 23:43:45,347] ====================
+[2026-02-08 23:43:45,347] dataset : 2016.10a
+[2026-02-08 23:43:45,347] base_dir : inference
+[2026-02-08 23:43:45,347] epochs : 100
+[2026-02-08 23:43:45,347] batch_size : 128
+[2026-02-08 23:43:45,347] patience : 10
+[2026-02-08 23:43:45,347] milestone_step : 3
+[2026-02-08 23:43:45,347] gamma : 0.5
+[2026-02-08 23:43:45,347] lr : 0.001
+[2026-02-08 23:43:45,347] num_classes : 11
+[2026-02-08 23:43:45,347] num_level : 1
+[2026-02-08 23:43:45,347] regu_details : 0.01
+[2026-02-08 23:43:45,348] regu_approx : 0.01
+[2026-02-08 23:43:45,348] kernel_size : 3
+[2026-02-08 23:43:45,348] in_channels : 64
+[2026-02-08 23:43:45,348] latent_dim : 320
+[2026-02-08 23:43:45,348] monitor : acc
+[2026-02-08 23:43:45,348] test_batch_size : 64
+[2026-02-08 23:43:45,348] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2026-02-08 23:43:45,348] cfg_dir : inference/my_experiment_paper
+[2026-02-08 23:43:45,348] model_dir : inference/my_experiment_paper/models
+[2026-02-08 23:43:45,348] log_dir : inference/my_experiment_paper/log
+[2026-02-08 23:43:45,348] result_dir : inference/my_experiment_paper/result
+[2026-02-08 23:43:45,348] mode : sigguard_eval
+[2026-02-08 23:43:45,348] model : awn
+[2026-02-08 23:43:45,348] seed : 2022
+[2026-02-08 23:43:45,348] device : cuda
+[2026-02-08 23:43:45,348] ckpt_path : ./checkpoint
+[2026-02-08 23:43:45,348] num_workers : 0
+[2026-02-08 23:43:45,348] Draw_Confmat : True
+[2026-02-08 23:43:45,348] Draw_Acc_Curve : True
+[2026-02-08 23:43:45,348] mod_filter : None
+[2026-02-08 23:43:45,348] snr_filter : 18
+[2026-02-08 23:43:45,348] attack : cw
+[2026-02-08 23:43:45,348] cw_c : 1.0
+[2026-02-08 23:43:45,348] cw_kappa : 0.0
+[2026-02-08 23:43:45,348] cw_steps : 100
+[2026-02-08 23:43:45,348] cw_lr : 0.01
+[2026-02-08 23:43:45,348] cw_targeted : False
+[2026-02-08 23:43:45,348] cw_scale : None
+[2026-02-08 23:43:45,348] lowpass : True
+[2026-02-08 23:43:45,348] lowpass_kernel : 17
+[2026-02-08 23:43:45,348] spec_type : cw_tone
+[2026-02-08 23:43:45,348] spec_eps : 0.1
+[2026-02-08 23:43:45,348] spec_jnr_db : None
+[2026-02-08 23:43:45,348] tone_freq : None
+[2026-02-08 23:43:45,348] spec_band_low : 0.05
+[2026-02-08 23:43:45,349] spec_band_high : 0.25
+[2026-02-08 23:43:45,349] spec_mask_path : None
+[2026-02-08 23:43:45,349] eval_limit : None
+[2026-02-08 23:43:45,349] attack_backend : torchattacks
+[2026-02-08 23:43:45,349] ta_box : paper
+[2026-02-08 23:43:45,349] spec_mask_out : None
+[2026-02-08 23:43:45,349] def_band_low : None
+[2026-02-08 23:43:45,349] def_band_high : None
+[2026-02-08 23:43:45,349] def_mask_path : None
+[2026-02-08 23:43:45,349] cmp_defense : False
+[2026-02-08 23:43:45,349] def_notch_depth : 1.0
+[2026-02-08 23:43:45,349] def_notch_trans : 3
+[2026-02-08 23:43:45,349] def_hp_order : 1
+[2026-02-08 23:43:45,349] def_auto_fmax : 0.08
+[2026-02-08 23:43:45,349] def_auto_ref_low : 0.15
+[2026-02-08 23:43:45,349] def_auto_ref_high : 0.5
+[2026-02-08 23:43:45,349] def_auto_tau : 2.0
+[2026-02-08 23:43:45,349] def_auto_max_width : 3
+[2026-02-08 23:43:45,349] def_auto_depth_max : 0.8
+[2026-02-08 23:43:45,349] def_auto_trans : 4
+[2026-02-08 23:43:45,349] defense : none
+[2026-02-08 23:43:45,349] def_ens_depths : 0.55,0.6,0.65
+[2026-02-08 23:43:45,349] def_ens_trans : 4
+[2026-02-08 23:43:45,349] def_topk : 50
+[2026-02-08 23:43:45,349] def_topk_percent : None
+[2026-02-08 23:43:45,349] detector_ckpt : None
+[2026-02-08 23:43:45,349] detector_threshold : 0.004468164592981338
+[2026-02-08 23:43:45,349] detector_norm_offset : 0.02
+[2026-02-08 23:43:45,349] detector_norm_scale : 0.04
+[2026-02-08 23:43:45,349] det_epochs : 10
+[2026-02-08 23:43:45,349] det_batch_size : 256
+[2026-02-08 23:43:45,349] det_lr : 0.001
+[2026-02-08 23:43:45,349] det_wd : 0.0
+[2026-02-08 23:43:45,349] det_patience : 5
+[2026-02-08 23:43:45,349] det_train_limit : 20000
+[2026-02-08 23:43:45,350] det_calib_quantile : 0.9
+[2026-02-08 23:43:45,350] snr_min : None
+[2026-02-08 23:43:45,350] freq_percents : [0.1, 0.2, 0.3, 0.4, 0.5]
+[2026-02-08 23:43:45,350] dir_name : my_experiment_paper
+[2026-02-08 23:43:45,350] attack_list : fgsm
+[2026-02-08 23:43:45,350] eval_limit_per_cell : None
+[2026-02-08 23:43:45,350] attack_eps : 0.1
+[2026-02-08 23:43:45,350] plot_freq : False
+[2026-02-08 23:43:45,350] plot_iq : True
+[2026-02-08 23:43:45,350] plot_n_samples : 3
+[2026-02-08 23:43:45,350] sigguard_topk : 20
+[2026-02-08 23:43:45,350] no_plot_iq : False
+[2026-02-08 23:43:45,350] ead_kappa : 0
+[2026-02-08 23:43:45,350] ead_lr : 0.01
+[2026-02-08 23:43:45,350] ead_max_iterations : 100
+[2026-02-08 23:43:45,350] ead_binary_search_steps : 9
+[2026-02-08 23:43:45,350] ead_initial_const : 0.001
+[2026-02-08 23:43:45,350] ead_beta : 0.001
+[2026-02-08 23:43:45,350] ====================
+[2026-02-08 23:43:45,468] >>> Model: AWN
+[2026-02-08 23:43:45,469] >>> total params: 0.12M
+[2026-02-08 23:43:47,521] ********************
+[2026-02-08 23:43:47,521] Signals.shape: [11000, 2, 128]
+[2026-02-08 23:43:47,521] Labels.shape: [11000]
+[2026-02-08 23:43:47,521] ********************
+[2026-02-08 23:43:47,549] Signal_train.shape: [6600, 2, 128]
+[2026-02-08 23:43:47,550] Signal_val.shape: [2211, 2, 128]
+[2026-02-08 23:43:47,550] Signal_test.shape: [2189, 2, 128]
+[2026-02-08 23:43:47,550] ********************
+[2026-02-08 23:43:47,947] Running SigGuard evaluation on 2189 samples
+[2026-02-08 23:43:47,947] Attacks: ['fgsm']
+[2026-02-08 23:43:47,947] FFT Top-K defense with K=20
+[2026-02-08 23:43:47,947] Using ta_box=paper normalization, eps=0.1
+[2026-02-08 23:43:47,948] IQ plots will be saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:43:47,948] 
+=== Intact (Clean) ===
+[2026-02-08 23:43:48,429] Intact: Disabled=92.55%, Enabled=82.82%
+[2026-02-08 23:43:48,431] 
+=== FGSM ===
+[2026-02-08 23:43:48,768] FGSM: Disabled=22.66%, Enabled=19.14%
+[2026-02-08 23:43:48,770] Generating IQ plots for fgsm...
+[2026-02-08 23:44:11,563] 
+  AWN - SigGuard Evaluation (Top-20)
+  ==================================================
+  Sample Type         Disabled      Enabled
+  --------------------------------------------------
+  Intact                92.55%       82.82%
+  FGSM                  22.66%       19.14%
+  ==================================================
+
+[2026-02-08 23:44:11,565] Saved results to: inference/my_experiment_paper/result/sigguard_eval.csv
+[2026-02-08 23:44:11,565] Saved table to: inference/my_experiment_paper/result/sigguard_eval_table.txt
+[2026-02-08 23:44:11,565] IQ plots saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:46:01,502] ====================
+[2026-02-08 23:46:01,502] dataset : 2016.10a
+[2026-02-08 23:46:01,502] base_dir : inference
+[2026-02-08 23:46:01,502] epochs : 100
+[2026-02-08 23:46:01,502] batch_size : 128
+[2026-02-08 23:46:01,502] patience : 10
+[2026-02-08 23:46:01,502] milestone_step : 3
+[2026-02-08 23:46:01,502] gamma : 0.5
+[2026-02-08 23:46:01,502] lr : 0.001
+[2026-02-08 23:46:01,502] num_classes : 11
+[2026-02-08 23:46:01,502] num_level : 1
+[2026-02-08 23:46:01,502] regu_details : 0.01
+[2026-02-08 23:46:01,502] regu_approx : 0.01
+[2026-02-08 23:46:01,502] kernel_size : 3
+[2026-02-08 23:46:01,502] in_channels : 64
+[2026-02-08 23:46:01,502] latent_dim : 320
+[2026-02-08 23:46:01,502] monitor : acc
+[2026-02-08 23:46:01,502] test_batch_size : 64
+[2026-02-08 23:46:01,502] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2026-02-08 23:46:01,502] cfg_dir : inference/my_experiment_paper
+[2026-02-08 23:46:01,502] model_dir : inference/my_experiment_paper/models
+[2026-02-08 23:46:01,503] log_dir : inference/my_experiment_paper/log
+[2026-02-08 23:46:01,503] result_dir : inference/my_experiment_paper/result
+[2026-02-08 23:46:01,503] mode : sigguard_eval
+[2026-02-08 23:46:01,503] model : awn
+[2026-02-08 23:46:01,503] seed : 2022
+[2026-02-08 23:46:01,503] device : cuda
+[2026-02-08 23:46:01,503] ckpt_path : ./checkpoint
+[2026-02-08 23:46:01,503] num_workers : 0
+[2026-02-08 23:46:01,503] Draw_Confmat : True
+[2026-02-08 23:46:01,503] Draw_Acc_Curve : True
+[2026-02-08 23:46:01,503] mod_filter : None
+[2026-02-08 23:46:01,503] snr_filter : 18
+[2026-02-08 23:46:01,503] attack : cw
+[2026-02-08 23:46:01,503] cw_c : 1.0
+[2026-02-08 23:46:01,503] cw_kappa : 0.0
+[2026-02-08 23:46:01,503] cw_steps : 100
+[2026-02-08 23:46:01,503] cw_lr : 0.01
+[2026-02-08 23:46:01,503] cw_targeted : False
+[2026-02-08 23:46:01,503] cw_scale : None
+[2026-02-08 23:46:01,503] lowpass : True
+[2026-02-08 23:46:01,503] lowpass_kernel : 17
+[2026-02-08 23:46:01,503] spec_type : cw_tone
+[2026-02-08 23:46:01,503] spec_eps : 0.1
+[2026-02-08 23:46:01,503] spec_jnr_db : None
+[2026-02-08 23:46:01,503] tone_freq : None
+[2026-02-08 23:46:01,503] spec_band_low : 0.05
+[2026-02-08 23:46:01,503] spec_band_high : 0.25
+[2026-02-08 23:46:01,503] spec_mask_path : None
+[2026-02-08 23:46:01,503] eval_limit : None
+[2026-02-08 23:46:01,503] attack_backend : torchattacks
+[2026-02-08 23:46:01,503] ta_box : paper
+[2026-02-08 23:46:01,503] spec_mask_out : None
+[2026-02-08 23:46:01,503] def_band_low : None
+[2026-02-08 23:46:01,503] def_band_high : None
+[2026-02-08 23:46:01,504] def_mask_path : None
+[2026-02-08 23:46:01,504] cmp_defense : False
+[2026-02-08 23:46:01,504] def_notch_depth : 1.0
+[2026-02-08 23:46:01,504] def_notch_trans : 3
+[2026-02-08 23:46:01,504] def_hp_order : 1
+[2026-02-08 23:46:01,504] def_auto_fmax : 0.08
+[2026-02-08 23:46:01,504] def_auto_ref_low : 0.15
+[2026-02-08 23:46:01,504] def_auto_ref_high : 0.5
+[2026-02-08 23:46:01,504] def_auto_tau : 2.0
+[2026-02-08 23:46:01,504] def_auto_max_width : 3
+[2026-02-08 23:46:01,504] def_auto_depth_max : 0.8
+[2026-02-08 23:46:01,504] def_auto_trans : 4
+[2026-02-08 23:46:01,504] defense : none
+[2026-02-08 23:46:01,504] def_ens_depths : 0.55,0.6,0.65
+[2026-02-08 23:46:01,504] def_ens_trans : 4
+[2026-02-08 23:46:01,504] def_topk : 50
+[2026-02-08 23:46:01,504] def_topk_percent : None
+[2026-02-08 23:46:01,504] detector_ckpt : None
+[2026-02-08 23:46:01,504] detector_threshold : 0.004468164592981338
+[2026-02-08 23:46:01,504] detector_norm_offset : 0.02
+[2026-02-08 23:46:01,504] detector_norm_scale : 0.04
+[2026-02-08 23:46:01,504] det_epochs : 10
+[2026-02-08 23:46:01,504] det_batch_size : 256
+[2026-02-08 23:46:01,504] det_lr : 0.001
+[2026-02-08 23:46:01,504] det_wd : 0.0
+[2026-02-08 23:46:01,504] det_patience : 5
+[2026-02-08 23:46:01,504] det_train_limit : 20000
+[2026-02-08 23:46:01,504] det_calib_quantile : 0.9
+[2026-02-08 23:46:01,504] snr_min : None
+[2026-02-08 23:46:01,504] freq_percents : [0.1, 0.2, 0.3, 0.4, 0.5]
+[2026-02-08 23:46:01,504] dir_name : my_experiment_paper
+[2026-02-08 23:46:01,504] attack_list : fgsm
+[2026-02-08 23:46:01,504] eval_limit_per_cell : None
+[2026-02-08 23:46:01,504] attack_eps : 0.1
+[2026-02-08 23:46:01,504] plot_freq : False
+[2026-02-08 23:46:01,504] plot_iq : True
+[2026-02-08 23:46:01,505] plot_n_samples : 3
+[2026-02-08 23:46:01,505] sigguard_topk : 10
+[2026-02-08 23:46:01,505] no_plot_iq : False
+[2026-02-08 23:46:01,505] ead_kappa : 0
+[2026-02-08 23:46:01,505] ead_lr : 0.01
+[2026-02-08 23:46:01,505] ead_max_iterations : 100
+[2026-02-08 23:46:01,505] ead_binary_search_steps : 9
+[2026-02-08 23:46:01,505] ead_initial_const : 0.001
+[2026-02-08 23:46:01,505] ead_beta : 0.001
+[2026-02-08 23:46:01,505] ====================
+[2026-02-08 23:46:01,631] >>> Model: AWN
+[2026-02-08 23:46:01,632] >>> total params: 0.12M
+[2026-02-08 23:46:03,609] ********************
+[2026-02-08 23:46:03,609] Signals.shape: [11000, 2, 128]
+[2026-02-08 23:46:03,610] Labels.shape: [11000]
+[2026-02-08 23:46:03,610] ********************
+[2026-02-08 23:46:03,644] Signal_train.shape: [6600, 2, 128]
+[2026-02-08 23:46:03,644] Signal_val.shape: [2211, 2, 128]
+[2026-02-08 23:46:03,644] Signal_test.shape: [2189, 2, 128]
+[2026-02-08 23:46:03,644] ********************
+[2026-02-08 23:46:04,033] Running SigGuard evaluation on 2189 samples
+[2026-02-08 23:46:04,033] Attacks: ['fgsm']
+[2026-02-08 23:46:04,033] FFT Top-K defense with K=10
+[2026-02-08 23:46:04,034] Using ta_box=paper normalization, eps=0.1
+[2026-02-08 23:46:04,034] IQ plots will be saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:46:04,034] 
+=== Intact (Clean) ===
+[2026-02-08 23:46:04,542] Intact: Disabled=92.55%, Enabled=40.34%
+[2026-02-08 23:46:04,543] 
+=== FGSM ===
+[2026-02-08 23:46:04,838] FGSM: Disabled=22.66%, Enabled=22.16%
+[2026-02-08 23:46:04,841] Generating IQ plots for fgsm...
+[2026-02-08 23:46:24,125] 
+  AWN - SigGuard Evaluation (Top-10)
+  ==================================================
+  Sample Type         Disabled      Enabled
+  --------------------------------------------------
+  Intact                92.55%       40.34%
+  FGSM                  22.66%       22.16%
+  ==================================================
+
+[2026-02-08 23:46:24,126] Saved results to: inference/my_experiment_paper/result/sigguard_eval.csv
+[2026-02-08 23:46:24,126] Saved table to: inference/my_experiment_paper/result/sigguard_eval_table.txt
+[2026-02-08 23:46:24,127] IQ plots saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:46:45,642] ====================
+[2026-02-08 23:46:45,642] dataset : 2016.10a
+[2026-02-08 23:46:45,642] base_dir : inference
+[2026-02-08 23:46:45,642] epochs : 100
+[2026-02-08 23:46:45,642] batch_size : 128
+[2026-02-08 23:46:45,642] patience : 10
+[2026-02-08 23:46:45,642] milestone_step : 3
+[2026-02-08 23:46:45,642] gamma : 0.5
+[2026-02-08 23:46:45,642] lr : 0.001
+[2026-02-08 23:46:45,642] num_classes : 11
+[2026-02-08 23:46:45,642] num_level : 1
+[2026-02-08 23:46:45,642] regu_details : 0.01
+[2026-02-08 23:46:45,642] regu_approx : 0.01
+[2026-02-08 23:46:45,642] kernel_size : 3
+[2026-02-08 23:46:45,642] in_channels : 64
+[2026-02-08 23:46:45,642] latent_dim : 320
+[2026-02-08 23:46:45,642] monitor : acc
+[2026-02-08 23:46:45,642] test_batch_size : 64
+[2026-02-08 23:46:45,642] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2026-02-08 23:46:45,642] cfg_dir : inference/my_experiment_paper
+[2026-02-08 23:46:45,643] model_dir : inference/my_experiment_paper/models
+[2026-02-08 23:46:45,643] log_dir : inference/my_experiment_paper/log
+[2026-02-08 23:46:45,643] result_dir : inference/my_experiment_paper/result
+[2026-02-08 23:46:45,643] mode : sigguard_eval
+[2026-02-08 23:46:45,643] model : awn
+[2026-02-08 23:46:45,643] seed : 2022
+[2026-02-08 23:46:45,643] device : cuda
+[2026-02-08 23:46:45,643] ckpt_path : ./checkpoint
+[2026-02-08 23:46:45,643] num_workers : 0
+[2026-02-08 23:46:45,643] Draw_Confmat : True
+[2026-02-08 23:46:45,643] Draw_Acc_Curve : True
+[2026-02-08 23:46:45,643] mod_filter : None
+[2026-02-08 23:46:45,643] snr_filter : 18
+[2026-02-08 23:46:45,643] attack : cw
+[2026-02-08 23:46:45,643] cw_c : 1.0
+[2026-02-08 23:46:45,643] cw_kappa : 0.0
+[2026-02-08 23:46:45,643] cw_steps : 100
+[2026-02-08 23:46:45,643] cw_lr : 0.01
+[2026-02-08 23:46:45,643] cw_targeted : False
+[2026-02-08 23:46:45,643] cw_scale : None
+[2026-02-08 23:46:45,643] lowpass : True
+[2026-02-08 23:46:45,643] lowpass_kernel : 17
+[2026-02-08 23:46:45,643] spec_type : cw_tone
+[2026-02-08 23:46:45,643] spec_eps : 0.1
+[2026-02-08 23:46:45,643] spec_jnr_db : None
+[2026-02-08 23:46:45,643] tone_freq : None
+[2026-02-08 23:46:45,643] spec_band_low : 0.05
+[2026-02-08 23:46:45,643] spec_band_high : 0.25
+[2026-02-08 23:46:45,643] spec_mask_path : None
+[2026-02-08 23:46:45,643] eval_limit : None
+[2026-02-08 23:46:45,643] attack_backend : torchattacks
+[2026-02-08 23:46:45,643] ta_box : minmax
+[2026-02-08 23:46:45,643] spec_mask_out : None
+[2026-02-08 23:46:45,644] def_band_low : None
+[2026-02-08 23:46:45,644] def_band_high : None
+[2026-02-08 23:46:45,644] def_mask_path : None
+[2026-02-08 23:46:45,644] cmp_defense : False
+[2026-02-08 23:46:45,644] def_notch_depth : 1.0
+[2026-02-08 23:46:45,644] def_notch_trans : 3
+[2026-02-08 23:46:45,644] def_hp_order : 1
+[2026-02-08 23:46:45,644] def_auto_fmax : 0.08
+[2026-02-08 23:46:45,644] def_auto_ref_low : 0.15
+[2026-02-08 23:46:45,644] def_auto_ref_high : 0.5
+[2026-02-08 23:46:45,644] def_auto_tau : 2.0
+[2026-02-08 23:46:45,644] def_auto_max_width : 3
+[2026-02-08 23:46:45,644] def_auto_depth_max : 0.8
+[2026-02-08 23:46:45,644] def_auto_trans : 4
+[2026-02-08 23:46:45,644] defense : none
+[2026-02-08 23:46:45,644] def_ens_depths : 0.55,0.6,0.65
+[2026-02-08 23:46:45,644] def_ens_trans : 4
+[2026-02-08 23:46:45,644] def_topk : 50
+[2026-02-08 23:46:45,644] def_topk_percent : None
+[2026-02-08 23:46:45,644] detector_ckpt : None
+[2026-02-08 23:46:45,644] detector_threshold : 0.004468164592981338
+[2026-02-08 23:46:45,644] detector_norm_offset : 0.02
+[2026-02-08 23:46:45,644] detector_norm_scale : 0.04
+[2026-02-08 23:46:45,644] det_epochs : 10
+[2026-02-08 23:46:45,644] det_batch_size : 256
+[2026-02-08 23:46:45,644] det_lr : 0.001
+[2026-02-08 23:46:45,644] det_wd : 0.0
+[2026-02-08 23:46:45,644] det_patience : 5
+[2026-02-08 23:46:45,644] det_train_limit : 20000
+[2026-02-08 23:46:45,644] det_calib_quantile : 0.9
+[2026-02-08 23:46:45,644] snr_min : None
+[2026-02-08 23:46:45,644] freq_percents : [0.1, 0.2, 0.3, 0.4, 0.5]
+[2026-02-08 23:46:45,644] dir_name : my_experiment_paper
+[2026-02-08 23:46:45,645] attack_list : fgsm
+[2026-02-08 23:46:45,645] eval_limit_per_cell : None
+[2026-02-08 23:46:45,645] attack_eps : 0.1
+[2026-02-08 23:46:45,645] plot_freq : False
+[2026-02-08 23:46:45,645] plot_iq : True
+[2026-02-08 23:46:45,645] plot_n_samples : 3
+[2026-02-08 23:46:45,645] sigguard_topk : 10
+[2026-02-08 23:46:45,645] no_plot_iq : False
+[2026-02-08 23:46:45,645] ead_kappa : 0
+[2026-02-08 23:46:45,645] ead_lr : 0.01
+[2026-02-08 23:46:45,645] ead_max_iterations : 100
+[2026-02-08 23:46:45,645] ead_binary_search_steps : 9
+[2026-02-08 23:46:45,645] ead_initial_const : 0.001
+[2026-02-08 23:46:45,645] ead_beta : 0.001
+[2026-02-08 23:46:45,645] ====================
+[2026-02-08 23:46:45,772] >>> Model: AWN
+[2026-02-08 23:46:45,773] >>> total params: 0.12M
+[2026-02-08 23:46:48,057] ********************
+[2026-02-08 23:46:48,057] Signals.shape: [11000, 2, 128]
+[2026-02-08 23:46:48,057] Labels.shape: [11000]
+[2026-02-08 23:46:48,057] ********************
+[2026-02-08 23:46:48,094] Signal_train.shape: [6600, 2, 128]
+[2026-02-08 23:46:48,094] Signal_val.shape: [2211, 2, 128]
+[2026-02-08 23:46:48,094] Signal_test.shape: [2189, 2, 128]
+[2026-02-08 23:46:48,094] ********************
+[2026-02-08 23:46:48,531] Running SigGuard evaluation on 2189 samples
+[2026-02-08 23:46:48,531] Attacks: ['fgsm']
+[2026-02-08 23:46:48,531] FFT Top-K defense with K=10
+[2026-02-08 23:46:48,531] Using ta_box=minmax normalization, eps=0.1
+[2026-02-08 23:46:48,532] IQ plots will be saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:46:48,532] 
+=== Intact (Clean) ===
+[2026-02-08 23:46:49,117] Intact: Disabled=92.55%, Enabled=40.34%
+[2026-02-08 23:46:49,119] 
+=== FGSM ===
+[2026-02-08 23:46:49,456] FGSM: Disabled=27.04%, Enabled=26.50%
+[2026-02-08 23:46:49,458] Generating IQ plots for fgsm...
+[2026-02-08 23:47:11,194] 
+  AWN - SigGuard Evaluation (Top-10)
+  ==================================================
+  Sample Type         Disabled      Enabled
+  --------------------------------------------------
+  Intact                92.55%       40.34%
+  FGSM                  27.04%       26.50%
+  ==================================================
+
+[2026-02-08 23:47:11,196] Saved results to: inference/my_experiment_paper/result/sigguard_eval.csv
+[2026-02-08 23:47:11,196] Saved table to: inference/my_experiment_paper/result/sigguard_eval_table.txt
+[2026-02-08 23:47:11,196] IQ plots saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:47:48,983] ====================
+[2026-02-08 23:47:48,984] dataset : 2016.10a
+[2026-02-08 23:47:48,984] base_dir : inference
+[2026-02-08 23:47:48,984] epochs : 100
+[2026-02-08 23:47:48,984] batch_size : 128
+[2026-02-08 23:47:48,984] patience : 10
+[2026-02-08 23:47:48,984] milestone_step : 3
+[2026-02-08 23:47:48,984] gamma : 0.5
+[2026-02-08 23:47:48,984] lr : 0.001
+[2026-02-08 23:47:48,984] num_classes : 11
+[2026-02-08 23:47:48,984] num_level : 1
+[2026-02-08 23:47:48,984] regu_details : 0.01
+[2026-02-08 23:47:48,984] regu_approx : 0.01
+[2026-02-08 23:47:48,984] kernel_size : 3
+[2026-02-08 23:47:48,984] in_channels : 64
+[2026-02-08 23:47:48,984] latent_dim : 320
+[2026-02-08 23:47:48,984] monitor : acc
+[2026-02-08 23:47:48,984] test_batch_size : 64
+[2026-02-08 23:47:48,984] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2026-02-08 23:47:48,984] cfg_dir : inference/my_experiment_paper
+[2026-02-08 23:47:48,984] model_dir : inference/my_experiment_paper/models
+[2026-02-08 23:47:48,984] log_dir : inference/my_experiment_paper/log
+[2026-02-08 23:47:48,984] result_dir : inference/my_experiment_paper/result
+[2026-02-08 23:47:48,984] mode : sigguard_eval
+[2026-02-08 23:47:48,984] model : awn
+[2026-02-08 23:47:48,984] seed : 2022
+[2026-02-08 23:47:48,984] device : cuda
+[2026-02-08 23:47:48,984] ckpt_path : ./checkpoint
+[2026-02-08 23:47:48,984] num_workers : 0
+[2026-02-08 23:47:48,985] Draw_Confmat : True
+[2026-02-08 23:47:48,985] Draw_Acc_Curve : True
+[2026-02-08 23:47:48,985] mod_filter : None
+[2026-02-08 23:47:48,985] snr_filter : 18
+[2026-02-08 23:47:48,985] attack : cw
+[2026-02-08 23:47:48,985] cw_c : 1.0
+[2026-02-08 23:47:48,985] cw_kappa : 0.0
+[2026-02-08 23:47:48,985] cw_steps : 100
+[2026-02-08 23:47:48,985] cw_lr : 0.01
+[2026-02-08 23:47:48,985] cw_targeted : False
+[2026-02-08 23:47:48,985] cw_scale : None
+[2026-02-08 23:47:48,985] lowpass : True
+[2026-02-08 23:47:48,985] lowpass_kernel : 17
+[2026-02-08 23:47:48,985] spec_type : cw_tone
+[2026-02-08 23:47:48,985] spec_eps : 0.1
+[2026-02-08 23:47:48,985] spec_jnr_db : None
+[2026-02-08 23:47:48,985] tone_freq : None
+[2026-02-08 23:47:48,985] spec_band_low : 0.05
+[2026-02-08 23:47:48,985] spec_band_high : 0.25
+[2026-02-08 23:47:48,985] spec_mask_path : None
+[2026-02-08 23:47:48,985] eval_limit : None
+[2026-02-08 23:47:48,985] attack_backend : torchattacks
+[2026-02-08 23:47:48,985] ta_box : minmax
+[2026-02-08 23:47:48,985] spec_mask_out : None
+[2026-02-08 23:47:48,985] def_band_low : None
+[2026-02-08 23:47:48,985] def_band_high : None
+[2026-02-08 23:47:48,985] def_mask_path : None
+[2026-02-08 23:47:48,985] cmp_defense : False
+[2026-02-08 23:47:48,985] def_notch_depth : 1.0
+[2026-02-08 23:47:48,985] def_notch_trans : 3
+[2026-02-08 23:47:48,985] def_hp_order : 1
+[2026-02-08 23:47:48,985] def_auto_fmax : 0.08
+[2026-02-08 23:47:48,985] def_auto_ref_low : 0.15
+[2026-02-08 23:47:48,985] def_auto_ref_high : 0.5
+[2026-02-08 23:47:48,986] def_auto_tau : 2.0
+[2026-02-08 23:47:48,986] def_auto_max_width : 3
+[2026-02-08 23:47:48,986] def_auto_depth_max : 0.8
+[2026-02-08 23:47:48,986] def_auto_trans : 4
+[2026-02-08 23:47:48,986] defense : none
+[2026-02-08 23:47:48,986] def_ens_depths : 0.55,0.6,0.65
+[2026-02-08 23:47:48,986] def_ens_trans : 4
+[2026-02-08 23:47:48,986] def_topk : 50
+[2026-02-08 23:47:48,986] def_topk_percent : None
+[2026-02-08 23:47:48,986] detector_ckpt : None
+[2026-02-08 23:47:48,986] detector_threshold : 0.004468164592981338
+[2026-02-08 23:47:48,986] detector_norm_offset : 0.02
+[2026-02-08 23:47:48,986] detector_norm_scale : 0.04
+[2026-02-08 23:47:48,986] det_epochs : 10
+[2026-02-08 23:47:48,986] det_batch_size : 256
+[2026-02-08 23:47:48,986] det_lr : 0.001
+[2026-02-08 23:47:48,986] det_wd : 0.0
+[2026-02-08 23:47:48,986] det_patience : 5
+[2026-02-08 23:47:48,986] det_train_limit : 20000
+[2026-02-08 23:47:48,986] det_calib_quantile : 0.9
+[2026-02-08 23:47:48,986] snr_min : None
+[2026-02-08 23:47:48,986] freq_percents : [0.1, 0.2, 0.3, 0.4, 0.5]
+[2026-02-08 23:47:48,986] dir_name : my_experiment_paper
+[2026-02-08 23:47:48,986] attack_list : None
+[2026-02-08 23:47:48,986] eval_limit_per_cell : None
+[2026-02-08 23:47:48,986] attack_eps : 0.1
+[2026-02-08 23:47:48,986] plot_freq : False
+[2026-02-08 23:47:48,986] plot_iq : True
+[2026-02-08 23:47:48,986] plot_n_samples : 3
+[2026-02-08 23:47:48,986] sigguard_topk : 10
+[2026-02-08 23:47:48,986] no_plot_iq : False
+[2026-02-08 23:47:48,986] ead_kappa : 0
+[2026-02-08 23:47:48,986] ead_lr : 0.01
+[2026-02-08 23:47:48,986] ead_max_iterations : 100
+[2026-02-08 23:47:48,987] ead_binary_search_steps : 9
+[2026-02-08 23:47:48,987] ead_initial_const : 0.001
+[2026-02-08 23:47:48,987] ead_beta : 0.001
+[2026-02-08 23:47:48,987] ====================
+[2026-02-08 23:47:49,106] >>> Model: AWN
+[2026-02-08 23:47:49,106] >>> total params: 0.12M
+[2026-02-08 23:47:51,185] ********************
+[2026-02-08 23:47:51,185] Signals.shape: [11000, 2, 128]
+[2026-02-08 23:47:51,185] Labels.shape: [11000]
+[2026-02-08 23:47:51,185] ********************
+[2026-02-08 23:47:51,207] Signal_train.shape: [6600, 2, 128]
+[2026-02-08 23:47:51,207] Signal_val.shape: [2211, 2, 128]
+[2026-02-08 23:47:51,207] Signal_test.shape: [2189, 2, 128]
+[2026-02-08 23:47:51,207] ********************
+[2026-02-08 23:47:51,617] Running SigGuard evaluation on 2189 samples
+[2026-02-08 23:47:51,617] Attacks: ['fgsm', 'pgd', 'bim', 'cw', 'deepfool', 'apgd', 'mifgsm', 'rfgsm', 'upgd', 'eotpgd', 'vmifgsm', 'vnifgsm', 'jitter', 'ffgsm', 'pgdl2', 'eadl1', 'eaden']
+[2026-02-08 23:47:51,617] FFT Top-K defense with K=10
+[2026-02-08 23:47:51,617] Using ta_box=minmax normalization, eps=0.1
+[2026-02-08 23:47:51,617] IQ plots will be saved to: inference/my_experiment_paper/result/iq_plots
+[2026-02-08 23:47:51,618] 
+=== Intact (Clean) ===
+[2026-02-08 23:47:52,049] Intact: Disabled=92.55%, Enabled=40.34%
+[2026-02-08 23:47:52,050] 
+=== FGSM ===
+[2026-02-08 23:47:52,364] FGSM: Disabled=27.04%, Enabled=26.50%
+[2026-02-08 23:47:52,367] Generating IQ plots for fgsm...
+[2026-02-08 23:48:12,812] 
+=== PGD ===
+[2026-02-08 23:48:13,559] PGD: Disabled=2.65%, Enabled=18.50%
+[2026-02-08 23:48:13,561] Generating IQ plots for pgd...
+[2026-02-08 23:48:34,374] 
+=== BIM ===
+[2026-02-08 23:48:35,632] BIM: Disabled=2.47%, Enabled=17.04%
+[2026-02-08 23:48:35,634] Generating IQ plots for bim...
+[2026-02-08 23:49:02,480] 
+=== CW ===
+[2026-02-08 23:49:13,727] CW: Disabled=8.63%, Enabled=37.41%
+[2026-02-08 23:49:13,731] Generating IQ plots for cw...
+[2026-02-08 23:49:39,209] 
+=== DEEPFOOL ===

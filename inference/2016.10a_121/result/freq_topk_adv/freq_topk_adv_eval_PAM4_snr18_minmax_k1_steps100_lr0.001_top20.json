@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 1.0,
+    "PAM4": 1.0
+  },
+  "cw": {
+    "overall": 0.855,
+    "PAM4": 0.855
+  },
+  "cw_top20": {
+    "overall": 1.0,
+    "PAM4": 1.0
+  }
+}

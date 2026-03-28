@@ -1,0 +1,50 @@
+{
+  "clean": {
+    "overall": 0.375,
+    "WBFM": 0.375
+  },
+  "cw": {
+    "overall": 0.01,
+    "WBFM": 0.01
+  },
+  "cw_top10": {
+    "overall": 0.155,
+    "WBFM": 0.155
+  },
+  "cw_top15": {
+    "overall": 0.1015,
+    "WBFM": 0.1015
+  },
+  "cw_top20": {
+    "overall": 0.0695,
+    "WBFM": 0.0695
+  },
+  "cw_top25": {
+    "overall": 0.058,
+    "WBFM": 0.058
+  },
+  "cw_top30": {
+    "overall": 0.049,
+    "WBFM": 0.049
+  },
+  "cw_top35": {
+    "overall": 0.0435,
+    "WBFM": 0.0435
+  },
+  "cw_top40": {
+    "overall": 0.038,
+    "WBFM": 0.038
+  },
+  "cw_top45": {
+    "overall": 0.034,
+    "WBFM": 0.034
+  },
+  "cw_top50": {
+    "overall": 0.0315,
+    "WBFM": 0.0315
+  },
+  "cw_top55": {
+    "overall": 0.027,
+    "WBFM": 0.027
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 0.335,
+    "WBFM": 0.335
+  },
+  "cw": {
+    "overall": 0.125,
+    "WBFM": 0.125
+  },
+  "cw_top20": {
+    "overall": 0.36,
+    "WBFM": 0.36
+  }
+}

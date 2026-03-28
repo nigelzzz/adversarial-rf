@@ -1,0 +1,146 @@
+[2025-10-16 12:13:46,540] ====================
+[2025-10-16 12:13:46,540] dataset : 2016.10a
+[2025-10-16 12:13:46,540] base_dir : inference
+[2025-10-16 12:13:46,540] epochs : 100
+[2025-10-16 12:13:46,541] batch_size : 128
+[2025-10-16 12:13:46,541] patience : 10
+[2025-10-16 12:13:46,541] milestone_step : 3
+[2025-10-16 12:13:46,541] gamma : 0.5
+[2025-10-16 12:13:46,541] lr : 0.001
+[2025-10-16 12:13:46,541] num_classes : 11
+[2025-10-16 12:13:46,542] num_level : 1
+[2025-10-16 12:13:46,542] regu_details : 0.01
+[2025-10-16 12:13:46,542] regu_approx : 0.01
+[2025-10-16 12:13:46,542] kernel_size : 3
+[2025-10-16 12:13:46,542] in_channels : 64
+[2025-10-16 12:13:46,542] latent_dim : 320
+[2025-10-16 12:13:46,543] monitor : acc
+[2025-10-16 12:13:46,543] test_batch_size : 64
+[2025-10-16 12:13:46,543] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2025-10-16 12:13:46,543] cfg_dir : inference/2016.10a_78
+[2025-10-16 12:13:46,543] model_dir : inference/2016.10a_78/models
+[2025-10-16 12:13:46,543] log_dir : inference/2016.10a_78/log
+[2025-10-16 12:13:46,544] result_dir : inference/2016.10a_78/result
+[2025-10-16 12:13:46,544] mode : adv_eval
+[2025-10-16 12:13:46,544] seed : 2022
+[2025-10-16 12:13:46,544] device : cpu
+[2025-10-16 12:13:46,544] ckpt_path : ./checkpoint
+[2025-10-16 12:13:46,544] num_workers : 0
+[2025-10-16 12:13:46,544] Draw_Confmat : True
+[2025-10-16 12:13:46,545] Draw_Acc_Curve : True
+[2025-10-16 12:13:46,545] mod_filter : QAM16
+[2025-10-16 12:13:46,545] snr_filter : 18
+[2025-10-16 12:13:46,545] attack : spectral
+[2025-10-16 12:13:46,545] cw_c : 1.0
+[2025-10-16 12:13:46,545] cw_kappa : 0.0
+[2025-10-16 12:13:46,546] cw_steps : 100
+[2025-10-16 12:13:46,546] cw_lr : 0.01
+[2025-10-16 12:13:46,546] cw_targeted : False
+[2025-10-16 12:13:46,546] lowpass : True
+[2025-10-16 12:13:46,546] lowpass_kernel : 17
+[2025-10-16 12:13:46,546] spec_type : psd_band
+[2025-10-16 12:13:46,546] spec_eps : 0.1
+[2025-10-16 12:13:46,547] spec_jnr_db : None
+[2025-10-16 12:13:46,547] tone_freq : None
+[2025-10-16 12:13:46,547] spec_band_low : 0.0
+[2025-10-16 12:13:46,547] spec_band_high : 0.08
+[2025-10-16 12:13:46,547] spec_mask_path : None
+[2025-10-16 12:13:46,547] eval_limit : 1024
+[2025-10-16 12:13:46,548] attack_backend : internal
+[2025-10-16 12:13:46,548] spec_mask_out : None
+[2025-10-16 12:13:46,548] def_band_low : None
+[2025-10-16 12:13:46,548] def_band_high : None
+[2025-10-16 12:13:46,548] def_mask_path : None
+[2025-10-16 12:13:46,548] cmp_defense : True
+[2025-10-16 12:13:46,549] def_notch_depth : 1.0
+[2025-10-16 12:13:46,549] def_notch_trans : 3
+[2025-10-16 12:13:46,549] def_hp_order : 1
+[2025-10-16 12:13:46,549] def_auto_fmax : 0.08
+[2025-10-16 12:13:46,550] def_auto_ref_low : 0.15
+[2025-10-16 12:13:46,550] def_auto_ref_high : 0.5
+[2025-10-16 12:13:46,550] def_auto_tau : 2.0
+[2025-10-16 12:13:46,550] def_auto_max_width : 3
+[2025-10-16 12:13:46,550] def_auto_depth_max : 0.8
+[2025-10-16 12:13:46,550] def_auto_trans : 4
+[2025-10-16 12:13:46,550] defense : ae_fft_topk
+[2025-10-16 12:13:46,551] def_ens_depths : 0.55,0.6,0.65
+[2025-10-16 12:13:46,551] def_ens_trans : 4
+[2025-10-16 12:13:46,551] def_topk : 32
+[2025-10-16 12:13:46,551] def_topk_percent : None
+[2025-10-16 12:13:46,551] detector_ckpt : ./checkpoint/detector_ae.pth
+[2025-10-16 12:13:46,551] detector_threshold : 0.01
+[2025-10-16 12:13:46,551] detector_norm_offset : 0.02
+[2025-10-16 12:13:46,552] detector_norm_scale : 0.04
+[2025-10-16 12:13:46,552] det_epochs : 10
+[2025-10-16 12:13:46,552] det_batch_size : 256
+[2025-10-16 12:13:46,552] det_lr : 0.001
+[2025-10-16 12:13:46,552] det_wd : 0.0
+[2025-10-16 12:13:46,552] det_patience : 5
+[2025-10-16 12:13:46,553] det_train_limit : 20000
+[2025-10-16 12:13:46,553] det_calib_quantile : 0.9
+[2025-10-16 12:13:46,553] ====================
+[2025-10-16 12:13:46,570] >>> total params: 0.12M
+[2025-10-16 12:13:52,925] ********************
+[2025-10-16 12:13:52,926] Signals.shape: [1000, 2, 128]
+[2025-10-16 12:13:52,926] Labels.shape: [1000]
+[2025-10-16 12:13:52,926] ********************
+[2025-10-16 12:13:52,957] Signal_train.shape: [600, 2, 128]
+[2025-10-16 12:13:52,958] Signal_val.shape: [200, 2, 128]
+[2025-10-16 12:13:52,958] Signal_test.shape: [200, 2, 128]
+[2025-10-16 12:13:52,958] ********************
+[2025-10-16 12:13:53,154] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,201] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,229] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,271] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,324] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,351] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,390] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,426] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,466] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,515] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,554] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,600] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,643] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,671] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,704] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,745] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,784] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,822] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,869] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,912] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,951] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:53,977] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,022] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,063] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,103] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,128] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,164] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,207] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,237] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,268] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,304] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,337] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,366] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,406] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,435] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,463] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,492] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,530] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,561] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,596] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,624] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,651] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,678] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,716] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,747] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,778] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,829] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,866] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,908] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,947] [ae_fft_topk] defended ratio in batch: 1.00
+[2025-10-16 12:13:54,987] [Adversarial] overall accuracy is: 0.11
+[2025-10-16 12:13:54,987] [Adversarial] macro F1-score is: 0.09909909909909909
+[2025-10-16 12:13:54,987] [Adversarial] kappa coefficient is: 0.0
+[2025-10-16 12:13:54,993] [Defense ae_fft_topk ] overall accuracy is: 0.105
+[2025-10-16 12:13:54,993] [Defense] macro F1-score is: 0.09502262443438914
+[2025-10-16 12:13:54,994] [Defense] kappa coefficient is: 0.0

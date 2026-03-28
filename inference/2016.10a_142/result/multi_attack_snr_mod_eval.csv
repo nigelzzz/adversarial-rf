@@ -1,0 +1,2 @@
+attack,snr,modulation,n_samples,clean_acc,attack_acc,top10_acc,top20_acc,top50_acc
+fgsm,18,BPSK,200,0.99,0.8,0.02,0.795,0.8

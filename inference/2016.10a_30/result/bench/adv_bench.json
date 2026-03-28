@@ -1,0 +1,17 @@
+{
+  "n_samples": 128,
+  "batch_size": 64,
+  "device": "cpu",
+  "cw_steps": 10,
+  "cw_c": 0.5,
+  "lowpass": true,
+  "spec_type": "psd_band",
+  "spec_eps": 0.1,
+  "spec_jnr_db": null,
+  "tone_freq": null,
+  "total_time_cw_s": 37.47908097099935,
+  "total_time_spec_s": 0.14833763699971314,
+  "per_sample_cw_ms": 292.8053200859324,
+  "per_sample_spec_ms": 1.158887789060259,
+  "speedup_spec_vs_cw": 252.6606310377711
+}

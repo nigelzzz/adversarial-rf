@@ -1,0 +1,14 @@
+{
+  "clean": {
+    "overall": 0.985,
+    "BPSK": 0.985
+  },
+  "cw": {
+    "overall": 0.0,
+    "BPSK": 0.0
+  },
+  "cw_top20": {
+    "overall": 0.0,
+    "BPSK": 0.0
+  }
+}

@@ -1,0 +1,67 @@
+[2025-10-02 11:55:13,644] ====================
+[2025-10-02 11:55:13,644] dataset : 2016.10a
+[2025-10-02 11:55:13,644] base_dir : inference
+[2025-10-02 11:55:13,644] epochs : 100
+[2025-10-02 11:55:13,644] batch_size : 128
+[2025-10-02 11:55:13,644] patience : 10
+[2025-10-02 11:55:13,644] milestone_step : 3
+[2025-10-02 11:55:13,644] gamma : 0.5
+[2025-10-02 11:55:13,644] lr : 0.001
+[2025-10-02 11:55:13,645] num_classes : 11
+[2025-10-02 11:55:13,645] num_level : 1
+[2025-10-02 11:55:13,645] regu_details : 0.01
+[2025-10-02 11:55:13,645] regu_approx : 0.01
+[2025-10-02 11:55:13,645] kernel_size : 3
+[2025-10-02 11:55:13,645] in_channels : 64
+[2025-10-02 11:55:13,645] latent_dim : 320
+[2025-10-02 11:55:13,645] monitor : acc
+[2025-10-02 11:55:13,645] test_batch_size : 64
+[2025-10-02 11:55:13,645] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2025-10-02 11:55:13,645] cfg_dir : inference/2016.10a_38
+[2025-10-02 11:55:13,645] model_dir : inference/2016.10a_38/models
+[2025-10-02 11:55:13,645] log_dir : inference/2016.10a_38/log
+[2025-10-02 11:55:13,645] result_dir : inference/2016.10a_38/result
+[2025-10-02 11:55:13,645] mode : freq_compare
+[2025-10-02 11:55:13,645] seed : 2022
+[2025-10-02 11:55:13,645] device : cpu
+[2025-10-02 11:55:13,645] ckpt_path : ./checkpoint
+[2025-10-02 11:55:13,645] num_workers : 0
+[2025-10-02 11:55:13,645] Draw_Confmat : True
+[2025-10-02 11:55:13,645] Draw_Acc_Curve : True
+[2025-10-02 11:55:13,645] mod_filter : QAM16
+[2025-10-02 11:55:13,645] snr_filter : 18
+[2025-10-02 11:55:13,645] attack : cw
+[2025-10-02 11:55:13,645] cw_c : 0.5
+[2025-10-02 11:55:13,645] cw_kappa : 0.0
+[2025-10-02 11:55:13,645] cw_steps : 10
+[2025-10-02 11:55:13,646] cw_lr : 0.01
+[2025-10-02 11:55:13,646] cw_targeted : False
+[2025-10-02 11:55:13,646] lowpass : True
+[2025-10-02 11:55:13,646] lowpass_kernel : 17
+[2025-10-02 11:55:13,646] spec_type : psd_band
+[2025-10-02 11:55:13,646] spec_eps : 0.1
+[2025-10-02 11:55:13,646] spec_jnr_db : None
+[2025-10-02 11:55:13,646] tone_freq : None
+[2025-10-02 11:55:13,646] spec_band_low : 0.0
+[2025-10-02 11:55:13,646] spec_band_high : 0.05
+[2025-10-02 11:55:13,646] spec_mask_path : None
+[2025-10-02 11:55:13,646] eval_limit : 64
+[2025-10-02 11:55:13,646] attack_backend : internal
+[2025-10-02 11:55:13,646] spec_mask_out : None
+[2025-10-02 11:55:13,646] ====================
+[2025-10-02 11:55:13,650] >>> total params: 0.12M
+[2025-10-02 11:55:16,307] ********************
+[2025-10-02 11:55:16,307] Signals.shape: [1000, 2, 128]
+[2025-10-02 11:55:16,307] Labels.shape: [1000]
+[2025-10-02 11:55:16,307] ********************
+[2025-10-02 11:55:16,313] Signal_train.shape: [600, 2, 128]
+[2025-10-02 11:55:16,313] Signal_val.shape: [200, 2, 128]
+[2025-10-02 11:55:16,313] Signal_test.shape: [200, 2, 128]
+[2025-10-02 11:55:16,313] ********************
+[2025-10-02 11:55:20,390] Saved inference/2016.10a_38/result/freq/psd_compare_cw.svg
+[2025-10-02 11:55:20,936] Saved inference/2016.10a_38/result/freq/psd_compare_spectral.svg
+[2025-10-02 11:55:20,937] PSD closeness (CW vs Spectral): MAE=4.188 dB, RMSE=4.594 dB
+[2025-10-02 11:55:20,938] MSE (linear PSD): CW vs Orig=0.000000, Spectral vs Orig=0.000000, CW vs Spectral=0.000000
+[2025-10-02 11:55:20,939] In-band MSE (linear PSD): CW vs Orig=0.000003, Spectral vs Orig=0.000000, CW vs Spectral=0.000003
+[2025-10-02 11:55:20,939] Out-of-band MSE (linear PSD): CW vs Orig=0.000000, Spectral vs Orig=0.000000, CW vs Spectral=0.000000
+[2025-10-02 11:55:20,940] Saved inference/2016.10a_38/result/freq/psd_compare_metrics.json

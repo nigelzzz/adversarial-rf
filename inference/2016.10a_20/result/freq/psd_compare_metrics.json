@@ -1,0 +1,9 @@
+{
+  "mae_db": 1.275071382522583,
+  "rmse_db": 1.7184393405914307,
+  "spec_type": "psd_mask",
+  "eval_limit": 64,
+  "cw_c": 0.5,
+  "cw_steps": 10,
+  "lowpass": true
+}

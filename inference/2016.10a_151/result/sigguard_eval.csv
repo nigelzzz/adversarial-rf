@@ -1,0 +1,4 @@
+sample_type,disabled,top50_acc,energy_acc,confidence_acc,classify_acc,spectral_acc
+Intact,0.634,0.623,0.54,0.363,0.575,0.626
+CW,0.028,0.363,0.397,0.32,0.332,0.415
+EADEN,0.0,0.464,0.429,0.332,0.373,0.486

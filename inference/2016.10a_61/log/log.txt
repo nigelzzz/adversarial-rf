@@ -1,0 +1,139 @@
+[2025-10-16 11:50:28,336] ====================
+[2025-10-16 11:50:28,337] dataset : 2016.10a
+[2025-10-16 11:50:28,337] base_dir : inference
+[2025-10-16 11:50:28,337] epochs : 100
+[2025-10-16 11:50:28,337] batch_size : 128
+[2025-10-16 11:50:28,337] patience : 10
+[2025-10-16 11:50:28,337] milestone_step : 3
+[2025-10-16 11:50:28,337] gamma : 0.5
+[2025-10-16 11:50:28,337] lr : 0.001
+[2025-10-16 11:50:28,337] num_classes : 11
+[2025-10-16 11:50:28,337] num_level : 1
+[2025-10-16 11:50:28,337] regu_details : 0.01
+[2025-10-16 11:50:28,338] regu_approx : 0.01
+[2025-10-16 11:50:28,338] kernel_size : 3
+[2025-10-16 11:50:28,338] in_channels : 64
+[2025-10-16 11:50:28,338] latent_dim : 320
+[2025-10-16 11:50:28,338] monitor : acc
+[2025-10-16 11:50:28,338] test_batch_size : 64
+[2025-10-16 11:50:28,338] classes : {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4, b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
+[2025-10-16 11:50:28,338] cfg_dir : inference/2016.10a_61
+[2025-10-16 11:50:28,338] model_dir : inference/2016.10a_61/models
+[2025-10-16 11:50:28,338] log_dir : inference/2016.10a_61/log
+[2025-10-16 11:50:28,338] result_dir : inference/2016.10a_61/result
+[2025-10-16 11:50:28,338] mode : adv_eval
+[2025-10-16 11:50:28,338] seed : 2022
+[2025-10-16 11:50:28,338] device : cpu
+[2025-10-16 11:50:28,339] ckpt_path : ./checkpoint
+[2025-10-16 11:50:28,339] num_workers : 0
+[2025-10-16 11:50:28,339] Draw_Confmat : True
+[2025-10-16 11:50:28,339] Draw_Acc_Curve : True
+[2025-10-16 11:50:28,339] mod_filter : QAM16
+[2025-10-16 11:50:28,339] snr_filter : 18
+[2025-10-16 11:50:28,339] attack : spectral
+[2025-10-16 11:50:28,339] cw_c : 1.0
+[2025-10-16 11:50:28,339] cw_kappa : 0.0
+[2025-10-16 11:50:28,339] cw_steps : 100
+[2025-10-16 11:50:28,339] cw_lr : 0.01
+[2025-10-16 11:50:28,339] cw_targeted : False
+[2025-10-16 11:50:28,339] lowpass : True
+[2025-10-16 11:50:28,340] lowpass_kernel : 17
+[2025-10-16 11:50:28,340] spec_type : psd_band
+[2025-10-16 11:50:28,340] spec_eps : 0.1
+[2025-10-16 11:50:28,340] spec_jnr_db : None
+[2025-10-16 11:50:28,340] tone_freq : None
+[2025-10-16 11:50:28,340] spec_band_low : 0.0
+[2025-10-16 11:50:28,340] spec_band_high : 0.08
+[2025-10-16 11:50:28,340] spec_mask_path : None
+[2025-10-16 11:50:28,340] eval_limit : 1024
+[2025-10-16 11:50:28,340] attack_backend : internal
+[2025-10-16 11:50:28,340] spec_mask_out : None
+[2025-10-16 11:50:28,340] def_band_low : None
+[2025-10-16 11:50:28,340] def_band_high : None
+[2025-10-16 11:50:28,340] def_mask_path : None
+[2025-10-16 11:50:28,341] cmp_defense : True
+[2025-10-16 11:50:28,341] def_notch_depth : 1.0
+[2025-10-16 11:50:28,341] def_notch_trans : 3
+[2025-10-16 11:50:28,341] def_hp_order : 1
+[2025-10-16 11:50:28,341] def_auto_fmax : 0.08
+[2025-10-16 11:50:28,341] def_auto_ref_low : 0.15
+[2025-10-16 11:50:28,341] def_auto_ref_high : 0.5
+[2025-10-16 11:50:28,341] def_auto_tau : 2.0
+[2025-10-16 11:50:28,341] def_auto_max_width : 3
+[2025-10-16 11:50:28,341] def_auto_depth_max : 0.8
+[2025-10-16 11:50:28,341] def_auto_trans : 4
+[2025-10-16 11:50:28,341] defense : ae_fft_topk
+[2025-10-16 11:50:28,341] def_ens_depths : 0.55,0.6,0.65
+[2025-10-16 11:50:28,341] def_ens_trans : 4
+[2025-10-16 11:50:28,342] def_topk : 50
+[2025-10-16 11:50:28,342] def_topk_percent : None
+[2025-10-16 11:50:28,342] detector_ckpt : None
+[2025-10-16 11:50:28,342] detector_threshold : 0.004468164592981338
+[2025-10-16 11:50:28,342] detector_norm_offset : 0.02
+[2025-10-16 11:50:28,342] detector_norm_scale : 0.04
+[2025-10-16 11:50:28,342] ====================
+[2025-10-16 11:50:28,512] >>> total params: 0.12M
+[2025-10-16 11:50:51,402] ********************
+[2025-10-16 11:50:51,403] Signals.shape: [1000, 2, 128]
+[2025-10-16 11:50:51,403] Labels.shape: [1000]
+[2025-10-16 11:50:51,404] ********************
+[2025-10-16 11:50:51,440] Signal_train.shape: [600, 2, 128]
+[2025-10-16 11:50:51,441] Signal_val.shape: [200, 2, 128]
+[2025-10-16 11:50:51,441] Signal_test.shape: [200, 2, 128]
+[2025-10-16 11:50:51,441] ********************
+[2025-10-16 11:50:51,642] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,858] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,883] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,910] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,933] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,955] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,974] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:51,996] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,012] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,033] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,052] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,075] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,102] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,123] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,144] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,167] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,186] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,208] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,228] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,245] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,266] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,287] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,307] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,329] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,351] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,378] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,395] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,415] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,434] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,453] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,475] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,497] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,516] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,531] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,549] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,565] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,594] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,616] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,634] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,656] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,675] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,692] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,710] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,729] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,751] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,772] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,795] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,824] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,851] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,872] Detector checkpoint not provided; falling back to fft_topk on all samples.
+[2025-10-16 11:50:52,923] [Adversarial] overall accuracy is: 0.11
+[2025-10-16 11:50:52,923] [Adversarial] macro F1-score is: 0.09909909909909909
+[2025-10-16 11:50:52,924] [Adversarial] kappa coefficient is: 0.0
+[2025-10-16 11:50:52,930] [Defense ae_fft_topk ] overall accuracy is: 0.115
+[2025-10-16 11:50:52,931] [Defense] macro F1-score is: 0.1031390134529148
+[2025-10-16 11:50:52,931] [Defense] kappa coefficient is: 0.0

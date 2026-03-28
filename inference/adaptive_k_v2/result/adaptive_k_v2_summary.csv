@@ -1,0 +1,8 @@
+approach,accuracy,k_mean,k_std,time_s
+phase_coherence,0.162000,4.2,2.4,0.1
+best_small_k,0.156000,4.1,1.6,0.1
+dual_pass,0.141500,4.9,2.0,0.1
+pred_stability,0.139000,6.1,1.8,0.1
+iterative_refine,0.133500,6.5,2.6,0.1
+energy_ratio,0.101000,15.0,0.0,0.0
+spectral_flatness,0.086000,20.0,0.0,0.2
