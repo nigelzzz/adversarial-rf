@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR)
 - [x] 01-02-PLAN.md — Defense registry, unified pipeline, randomized smoothing
-- [ ] 01-03-PLAN.md — Parameter calibration sweep, latency benchmark, clean accuracy validation
+- [x] 01-03-PLAN.md — Parameter calibration sweep, latency benchmark, clean accuracy validation
 
 ### Phase 2: Experimental Results
 **Goal**: All numerical results needed for paper tables and figures exist as validated CSV files
