@@ -70,37 +70,37 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | TBD | Pending |
-| PIPE-02 | TBD | Pending |
-| PIPE-03 | TBD | Pending |
-| BASE-01 | TBD | Pending |
-| BASE-02 | TBD | Pending |
-| BASE-03 | TBD | Pending |
-| BASE-04 | TBD | Pending |
-| BASE-05 | TBD | Pending |
-| BASE-06 | TBD | Pending |
-| BASE-07 | TBD | Pending |
-| EVAL-01 | TBD | Pending |
-| EVAL-02 | TBD | Pending |
-| EVAL-03 | TBD | Pending |
-| EVAL-04 | TBD | Pending |
-| EVAL-05 | TBD | Pending |
-| PAPER-01 | TBD | Pending |
-| PAPER-02 | TBD | Pending |
-| PAPER-03 | TBD | Pending |
-| PAPER-04 | TBD | Pending |
-| PAPER-05 | TBD | Pending |
-| PAPER-06 | TBD | Pending |
-| PAPER-07 | TBD | Pending |
-| PAPER-08 | TBD | Pending |
-| PAPER-09 | TBD | Pending |
-| PAPER-10 | TBD | Pending |
+| PIPE-01 | Phase 1 | Pending |
+| PIPE-02 | Phase 1 | Pending |
+| PIPE-03 | Phase 1 | Pending |
+| BASE-01 | Phase 1 | Pending |
+| BASE-02 | Phase 1 | Pending |
+| BASE-03 | Phase 1 | Pending |
+| BASE-04 | Phase 1 | Pending |
+| BASE-05 | Phase 1 | Pending |
+| BASE-06 | Phase 1 | Pending |
+| BASE-07 | Phase 1 | Pending |
+| EVAL-01 | Phase 2 | Pending |
+| EVAL-02 | Phase 2 | Pending |
+| EVAL-03 | Phase 2 | Pending |
+| EVAL-04 | Phase 2 | Pending |
+| EVAL-05 | Phase 2 | Pending |
+| PAPER-01 | Phase 3 | Pending |
+| PAPER-02 | Phase 3 | Pending |
+| PAPER-03 | Phase 3 | Pending |
+| PAPER-04 | Phase 3 | Pending |
+| PAPER-05 | Phase 3 | Pending |
+| PAPER-06 | Phase 3 | Pending |
+| PAPER-07 | Phase 3 | Pending |
+| PAPER-08 | Phase 3 | Pending |
+| PAPER-09 | Phase 3 | Pending |
+| PAPER-10 | Phase 3 | Pending |
 
 **Coverage:**
 - v1 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25
+- Mapped to phases: 25
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-31*
-*Last updated: 2026-03-31 after initial definition*
+*Last updated: 2026-03-31 after roadmap creation*

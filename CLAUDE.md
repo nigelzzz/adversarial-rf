@@ -510,3 +510,310 @@ No formal unit tests exist. Validate changes via:
 - **Early stopping**: Monitors validation loss, triggers LR decay every `milestone_step` patience increments
 - **Spectral attacks**: Normalized frequencies in [0, 0.5] (Nyquist); `spec_eps` is L2 norm per sample
 - **Defense naming**: `fft_*` defenses apply real FFT, manipulate spectrum, then inverse FFT; `ae_fft_topk` gates Top-K denoising with an autoencoder anomaly detector
+
+<!-- GSD:project-start source:PROJECT.md -->
+## Project
+
+**Real-Time Defense Pipeline for Adversarial Attacks on AMC**
+
+A unified real-time defense framework for automatic modulation classification (AMC) that combines adversarial detection, frequency-domain recovery (FFT Top-K), and robust classification into a single pipeline. Targets IEEE TCCN/TWC submission using RML2016.10a data, comparing against classical signal processing baselines (Kalman, Wiener, Savitzky-Golay, Gaussian, FIR filters) and randomized smoothing.
+
+**Core Value:** Demonstrate that a unified detect→recover→classify pipeline outperforms individual classical filtering defenses against optimization-based adversarial attacks (CW, EAD) on RF signals, while maintaining real-time feasibility.
+
+### Constraints
+
+- **Data**: RML2016.10a only (11 classes, SNR range -20 to +18 dB)
+- **Timeline**: ~1 month to submission-ready paper
+- **Compute**: Single GPU (existing setup)
+- **Format**: IEEE transaction paper format (double-column LaTeX)
+- **Attacks**: Must cover CW (L2), EAD (L1, EN), FGSM, PGD at minimum
+- **Epsilon**: Must use RF-appropriate epsilon values (not image defaults)
+<!-- GSD:project-end -->
+
+<!-- GSD:stack-start source:codebase/STACK.md -->
+## Technology Stack
+
+## Languages
+- Python 3.6+ - All core source code, scripts, and utilities
+## Runtime
+- CPython 3.6+ (tested on 3.8+)
+- CUDA-capable GPU recommended (auto-detected, falls back to CPU)
+- pip
+- Lockfile: requirements.txt present
+## Frameworks
+- PyTorch 1.7+ (tested on 1.8.1) - Neural network training, inference, tensor operations
+- torchattacks - Adversarial attack library (FGSM, PGD, CW, DeepFool, and 12+ more)
+- No formal unit test framework detected
+- Validation via manual runs: `--mode train`, `--mode eval`, `--mode adv_eval`
+- argparse - Command-line argument parsing
+- tqdm - Progress bar visualization
+## Key Dependencies
+- numpy - Numerical computing, signal processing, array operations
+- torch - Deep learning framework (model, optim, data)
+- torchvision - Pretrained models (if extended), transforms
+- torchaudio - Audio processing utilities
+- torchattacks - Adversarial attack library (17 attack methods available)
+- scikit-learn 0.24+ - Metrics (accuracy_score, confusion_matrix, f1_score, cohen_kappa_score)
+- h5py - HDF5 dataset I/O for RML2018.01a format
+- pyyaml - YAML configuration parsing
+- scipy - Scientific computing (signal processing in defense/attack modules)
+- matplotlib - Plotting and visualization for analysis scripts
+- pandas - Data analysis and CSV/table output
+## Configuration
+- Runtime device selection: Auto-detects CUDA, falls back to CPU
+- Environment variable used: `PYHONHASHSEED` set in `util/utils.py:fix_seed()` for reproducibility
+- Model checkpoint path: Configurable via `--ckpt_path` (default: `./checkpoint`)
+- No build system (pure Python)
+- Entry point: `main.py` with mode-based dispatching (train, eval, adv_eval, visualize, etc.)
+- Dataset configs: YAML files in `config/` directory
+## Platform Requirements
+- Python 3.6+ with pip
+- PyTorch installation (CPU or GPU)
+- Disk space for dataset files (RML2016: ~500MB, RML2018: ~3GB)
+- Recommended: NVIDIA GPU with CUDA support for faster training
+- Same as development (pure Python + PyTorch)
+- Model checkpoint files: `<dataset>_AWN.pkl` (500MB-1.5GB per model)
+- Evaluation outputs: `inference/<dataset>_*/result/` directory structure
+## Data Storage
+- Pickle (`.pkl`) - RML2016.10a and RML2016.10b signal data
+- HDF5 (`.hdf5`) - RML2018.01a signal data
+- PyTorch `.pkl` format (state_dict)
+- Path: `./checkpoint/<dataset>_AWN.pkl` (main model)
+- Detector: `./checkpoint/detector_ae.pth` (autoencoder for adversarial detection)
+- Loading: `torch.load(ckpt_path, map_location=device, weights_only=True)`
+- Directory: `training/<dataset>_<index>/log/log.txt`
+- CSV output: `training/<dataset>_<index>/log/` (epoch stats)
+- Results: `training/<dataset>_<index>/result/` and `inference/<dataset>_*/result/`
+## Utility Libraries
+- scipy.signal - Filtering, FFT operations
+- numpy.fft - Fast Fourier Transform for frequency-domain analysis and defense
+- pandas - DataFrame operations for metric aggregation and CSV export
+- sklearn.metrics - Confusion matrix, F1, Kappa, accuracy computation
+- pickle - Python object serialization (dataset loading)
+- h5py - HDF5 file I/O (RML2018 dataset)
+## Code Structure
+- `main.py` - Primary command dispatcher for all modes (train, eval, adv_eval, visualize, etc.)
+- `synth_finetune.py` - Standalone script for synthetic data generation and finetuning
+- Multiple plot/test scripts: `plot_*.py`, `test_*.py`, `*_experiment.py`
+- `models/` - Neural network architectures
+- `util/` - Utilities and algorithms
+- `data_loader/` - Dataset loading and preprocessing
+<!-- GSD:stack-end -->
+
+<!-- GSD:conventions-start source:CONVENTIONS.md -->
+## Conventions
+
+## Naming Patterns
+- Snake_case with underscores: `data_loader.py`, `synth_txrx.py`, `adv_attack.py`
+- Main entry point: `main.py`
+- Experiment/standalone scripts: descriptive names in snake_case (e.g., `test_2016_10a.py`, `plot_iq_distribution.py`, `crc_experiment.py`)
+- **Core library functions:** PascalCase (preserve for backward compatibility)
+- **New utility functions:** snake_case preferred (e.g., `rrc_filter()`, `recover_constellation()`, `fix_seed()` in `util/utils.py`)
+- **Helper/internal functions:** snake_case with leading underscore if private (e.g., `_lowpass_filter()`, `_batch_clip()` in `util/adv_attack.py`)
+- All lowercase with underscores: `signal_len`, `num_classes`, `batch_size`, `test_idx`
+- Loop counters: Single letters acceptable (e.g., `i`, `snr_i`)
+- Tensor batch variables: Descriptive snake_case (e.g., `sig_batch`, `lab_batch`, `adv_norm`)
+- Constants: UPPER_CASE (e.g., `NUM_SAMPLES`, `SNR_THRESHOLD`, `DEVICE`)
+- All PascalCase: `AWN`, `Config`, `Trainer`, `EarlyStopping`, `LiftingScheme`, `AverageMeter`
+- No suffix for module classes (use `AWN` not `AWNModel`)
+- PascalCase in YAML files (config/*.yml) → snake_case when accessed as Python object attributes
+## Code Style
+- No automated formatter configured (no .eslintrc, .prettierrc, biome.json detected)
+- Follow Python style informally; consistency within files takes priority
+- 4-space indentation used throughout
+- Line length: Aim for ≤100 characters where practical (seen in docstrings and comments)
+- No linting rules enforced (no .eslintrc* files found)
+- Code relies on developer discipline; bugs discovered through runtime validation
+- No path aliases configured (no jsconfig/tsconfig-style aliases)
+- Relative imports from project root: `from models.model import AWN`, `from util.training import Trainer`
+## Error Handling
+- Use `try/except ImportError` for optional dependencies that will be selectively used
+- Use `try/except Exception` to skip non-critical features (plotting, visualization) and log the skip
+- Use `NotImplementedError` for unsupported dataset types or config options
+- Use `ValueError` with descriptive messages for invalid arguments (e.g., unknown model name)
+- Prefer explicit error messages with context (dataset name, config key, etc.)
+## Logging
+- Config/setup info: `log_exp_settings(logger, cfg)` in `util/utils.py` logs all config attributes once at startup
+- Per-epoch metrics: Loss, accuracy, learning rate, elapsed time
+- Important state changes: Model checkpoint saved, early stopping triggered, validation improved
+- Warnings: Skipped features, invalid filters applied, dataset splits
+- Individual batch processing (use tqdm progress bar instead)
+- Per-sample predictions (would flood log; compute aggregate metrics instead)
+## Comments
+- **Module-level docstrings:** Explain overall purpose and usage (especially test/experiment scripts)
+- **Class docstrings:** What the class does, key methods
+- **Complex algorithms:** Inline comments for mathematical operations (e.g., M-th power method in `recover_constellation()`)
+- **Non-obvious design choices:** Why a particular approach was selected
+- **Attribution:** Link to external sources (e.g., "adopted from pytorchtools: https://...") in `util/early_stop.py`
+- Not used (Python project)
+- Docstrings follow NumPy style informally where present:
+## Function Design
+- Typical range: 10-50 lines
+- Complex algorithms (signal processing): 50-100 lines acceptable (e.g., `Dataset_Split()` in `data_loader/data_loader.py` is 80 lines with per-SNR stratification logic)
+- Avoid exceeding 150 lines; split into smaller functions if logic becomes hard to follow
+- Order: Data → Configuration → Optional settings
+- Use keyword arguments for optional parameters (lambda functions use positional for brevity)
+- Default values preferred: `kernel_size=17`, `beta=0.35`, `mod_order=4`
+- Single return: scalar or array
+- Multiple returns: tuple (unpacking at call site)
+## Module Design
+- Public functions and classes: No `__all__` lists; anything not prefixed with `_` is public
+- Core library modules (`data_loader`, `util`, `models`): Export factory functions and main classes
+- Not used (no index.ts style)
+- Each module imported explicitly: `from util.training import Trainer`
+- Used for heavy/optional dependencies:
+## Special Patterns
+- Singleton Config per run: `cfg = Config(dataset, train=True/False)`
+- Args merged into Config: `cfg = merge_args2cfg(cfg, vars(args))`
+- Access via dot notation: `cfg.dataset`, `cfg.epochs`, `cfg.device`
+- Initialize directories after args merged: `cfg.init_dir()`
+- Used sparingly for cached state or module-level setup
+- Example: `_MCLDNN_PyTorch` in `util/utils.py` (lazy import cache)
+- Example: `global regu_d, regu_c` in `models/model.py` (in conditional block; not ideal but preserved)
+- Dataset class mappings use byte-string keys: `{b'BPSK': 4, b'QPSK': 9}`
+- Necessary because pickle dataset files store modulation names as bytes
+- Converted to int indices when building labels: `Labels = [classes[i] for i in Labels]`
+<!-- GSD:conventions-end -->
+
+<!-- GSD:architecture-start source:ARCHITECTURE.md -->
+## Architecture
+
+## Pattern Overview
+- Modular neural network layers for signal processing (convolution → wavelet decomposition → attention → classification)
+- Attack-defense evaluation pipeline with multiple threat models
+- Pluggable defense mechanisms in frequency and time domains
+- Dataset-agnostic modulation classification supporting RML2016 and RML2018 datasets
+- Synthetic data generation for robustness training
+## Layers
+- Purpose: Load and normalize RF IQ signal tensors
+- Location: `data_loader/data_loader.py:Load_Dataset()`
+- Contains: Dataset loaders for RML2016.10a/b and RML2018.01a (pickle/HDF5 formats)
+- Depends on: Config for class mappings and signal length parameters
+- Used by: Training and evaluation pipelines
+- Purpose: Integrate I/Q channels and extract temporal features
+- Location: `models/model.py:AWN.conv1`, `AWN.conv2`
+- Contains: 2D conv to merge I/Q channels, 1D temporal convolution with batch norm
+- Pattern: Zero-padded 2D conv `[2, 7]` kernel → squeeze to 1D → 1D conv with LeakyReLU
+- Output: `[batch, 64, time_len]` feature maps
+- Purpose: Multi-level learnable lifting scheme to capture multi-scale signal structure
+- Location: `models/lifting.py:LiftingScheme`, `models/model.py:LevelTWaveNet`
+- Contains: Signal splitting into even/odd samples, learnable Predictor (P) and Updator (U) operators
+- Pattern: Forward lifting scheme (split → update → predict → split again for next level)
+- Applied recursively: `num_levels` decompositions produce approximation and detail coefficients
+- Output: Multi-scale coefficient tensors fed into attention layer
+- Purpose: Weight and combine multi-scale features
+- Location: `models/model.py:AWN.SE_attention_score`, `AWN.avgpool`
+- Contains: Squeeze-excitation attention (linear → ReLU → sigmoid) and adaptive pooling
+- Pattern: Average pool detail/approximation coefficients per level → concatenate → pass through SE attention
+- Output: Attention-weighted feature vector ready for classification
+- Purpose: Map weighted features to modulation class logits
+- Location: `models/model.py:AWN.fc`
+- Contains: Two fully-connected layers with LeakyReLU, dropout on SE attention
+- Returns: `logit` (class logits) and `regu_sum` (list of regularization terms per level)
+- Purpose: Optimize model on clean and noisy signals
+- Location: `util/training.py:Trainer`
+- Pattern: Epoch-based training with per-batch forward pass, CrossEntropyLoss + regularization sum, Adam optimizer
+- Includes: Early stopping with learning rate decay on plateau, per-SNR stratified train/val/test split
+- Output: Model checkpoint saved to `<cfg.model_dir>/<dataset>_<model>.pkl`
+- Purpose: Generate adversarial examples for robustness evaluation
+- Location: `util/adv_attack.py`
+- Supports: CW L2 attack (internal implementation), torchattacks library attacks (FGSM, PGD, CW, APGD, DeepFool, EAD, etc.)
+- Normalization modes:
+- Features: Optional low-pass smoothing post-perturbation, spectral noise attacks (CW tone, band-limited noise)
+- Purpose: Recover from adversarial perturbations in frequency domain
+- Location: `util/defense.py`
+- Types:
+- Pattern: Normalize → rFFT → apply mask/filter → iRFFT → denormalize
+- Purpose: Identify adversarial samples without retraining main model
+- Location: `util/detector.py:RFSignalAutoEncoder`, `util/detector_train.py`
+- Architecture: 1D conv encoder (→ 128 latent dims) with channel attention + decoder with skip connections
+- Gating: Compute KL divergence between input and reconstruction; threshold determines if denoising is applied
+- Calibration: Quantile-based threshold selection on clean validation set (default 90th percentile)
+- Purpose: Compute per-SNR accuracy, confusion matrices, and robustness metrics
+- Location: `util/evaluation.py:Run_Eval()`, `util/adv_eval.py:Run_Adv_Eval()`
+- Metrics: Per-SNR accuracy, macro F1, Cohen's Kappa, confusion matrix heatmaps
+- Outputs: Plots to `<cfg.result_dir>/` (confusion matrix, SNR-accuracy curves)
+## Data Flow
+- Config object (`cfg`) holds dataset-specific parameters: class mappings, signal length, network hyperparameters
+- Model state dict saved/loaded via `torch.save/load()` to `checkpoint/<dataset>_<model>.pkl`
+- Detector state saved separately to `checkpoint/detector_ae.pth`
+- Per-run output directories auto-increment: `training/<dataset>_0/`, `inference/<dataset>_1/`, etc.
+## Key Abstractions
+- Representation: `[batch, 2, time_len]` where dimension 1 is I/Q channels
+- Normalization: IQ samples typically in [-0.02, 0.02] range; models expect [-1, 1] or [0, 1] depending on mode
+- Dataset variants: RML2016 has `time_len=128`, RML2018 has `time_len=1024`
+- Purpose: Adapt AWN (returns logits + regularization) for torchattacks (expects 4D image-style inputs)
+- Implementation: `util/adv_attack.py:Model01Wrapper`
+- Maps torchattacks [0,1] inputs back to [-1,1] IQ, forwards base model, returns logits only
+- Supports dual normalization: unit (linear) and minmax (per-sample)
+- Purpose: Centralized hyperparameter and path management
+- Location: `util/config.py:Config`
+- Init: Loads YAML from `config/<dataset>.yml` (epochs, lr, regularization weights, network depth)
+- Dir management: Auto-creates `training/` or `inference/` subdirs with auto-incrementing indices
+- Class mapping: Stores byte-keyed modulation↔int label dictionaries per dataset
+- Abstraction: All defenses follow same interface: `def defense_fn(x: Tensor, **params) -> Tensor`
+- Allows composability: can chain defenses or A/B test alternatives
+- Normalization-aware: normalize/denormalize calls managed separately from FFT operation
+## Entry Points
+- Location: `main.py:__main__`, args.mode == 'train'
+- Triggers: Command-line argument `--mode train`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'eval'
+- Triggers: `--mode eval --ckpt_path <checkpoint>`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'adv_eval'
+- Triggers: `--mode adv_eval --attack <type> --defense <type>`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'multi_attack_eval'
+- Triggers: `--mode multi_attack_eval --attack_list "fgsm,pgd,cw,..." --plot_freq`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'sigguard_eval'
+- Triggers: `--mode sigguard_eval --ckpt_path <checkpoint>`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'train_detector'
+- Triggers: `--mode train_detector --det_epochs 10 --det_batch_size 256`
+- Responsibilities:
+- Location: `main.py:__main__`, args.mode == 'calibrate_detector'
+- Triggers: `--mode calibrate_detector --detector_ckpt ./checkpoint/detector_ae.pth`
+- Responsibilities:
+## Error Handling
+- `torch.cuda.is_available()`: Auto-detect GPU, fallback to CPU
+- Dataset not found: Raise `NotImplementedError` with path hint
+- Config YAML missing: Raise `NotImplementedError` with expected location
+- Visualization imports optional: Try-except on `util.visualize`, log skip message
+- Defense mismatch: Check defense type against available functions, raise on unknown
+- Attack backend selection: Try `torchattacks` first, fallback to internal implementation if requested
+- Detector missing: Gracefully skip detector gating if `--detector_ckpt` not provided
+## Cross-Cutting Concerns
+- Framework: Python `logging` module via `util/logger.py:create_logger()`
+- Pattern: All major functions log progress, warnings, and results to both file and console
+- Location: `<cfg.log_dir>/log.txt` and stdout
+- Tensor shape assertions in most functions (e.g., `assert x.dim() == 3 and x.size(1) == 2`)
+- SNR/modulation filtering allows subset evaluation for fast iteration
+- Signal normalization checks in defense and attack modules
+- Not applicable (academic research tool)
+- Seed control: `util/utils.py:fix_seed()` sets numpy, torch, and random seeds
+- Config-driven: All hyperparameters in YAML files
+- Deterministic data split: Stratified by (modulation, SNR) with fixed random seed
+- Checkpoint versioning: Auto-increment directories prevent overwrites
+<!-- GSD:architecture-end -->
+
+<!-- GSD:workflow-start source:GSD defaults -->
+## GSD Workflow Enforcement
+
+Before using Edit, Write, or other file-changing tools, start work through a GSD command so planning artifacts and execution context stay in sync.
+
+Use these entry points:
+- `/gsd:quick` for small fixes, doc updates, and ad-hoc tasks
+- `/gsd:debug` for investigation and bug fixing
+- `/gsd:execute-phase` for planned phase work
+
+Do not make direct repo edits outside a GSD workflow unless the user explicitly asks to bypass it.
+<!-- GSD:workflow-end -->
+
+<!-- GSD:profile-start -->
+## Developer Profile
+
+> Profile not yet configured. Run `/gsd:profile-user` to generate your developer profile.
+> This section is managed by `generate-claude-profile` -- do not edit manually.
+<!-- GSD:profile-end -->
