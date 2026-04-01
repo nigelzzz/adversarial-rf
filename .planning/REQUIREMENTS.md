@@ -13,11 +13,11 @@
 
 ### Baseline Implementations
 
-- [ ] **BASE-01**: Kalman filter defense baseline with parameter sweep
-- [ ] **BASE-02**: Wiener filter defense baseline with parameter sweep
-- [ ] **BASE-03**: Savitzky-Golay filter defense baseline with parameter sweep
-- [ ] **BASE-04**: Gaussian filter defense baseline with parameter sweep
-- [ ] **BASE-05**: FIR low-pass filter defense baseline with parameter sweep
+- [x] **BASE-01**: Kalman filter defense baseline with parameter sweep
+- [x] **BASE-02**: Wiener filter defense baseline with parameter sweep
+- [x] **BASE-03**: Savitzky-Golay filter defense baseline with parameter sweep
+- [x] **BASE-04**: Gaussian filter defense baseline with parameter sweep
+- [x] **BASE-05**: FIR low-pass filter defense baseline with parameter sweep
 - [ ] **BASE-06**: Randomized smoothing baseline (σ=0.01, majority vote over k copies)
 - [ ] **BASE-07**: Parameter calibration sweep for each filter baseline (fair comparison)
 
@@ -73,11 +73,11 @@
 | PIPE-01 | Phase 1 | Pending |
 | PIPE-02 | Phase 1 | Pending |
 | PIPE-03 | Phase 1 | Pending |
-| BASE-01 | Phase 1 | Pending |
-| BASE-02 | Phase 1 | Pending |
-| BASE-03 | Phase 1 | Pending |
-| BASE-04 | Phase 1 | Pending |
-| BASE-05 | Phase 1 | Pending |
+| BASE-01 | Phase 1 | Complete |
+| BASE-02 | Phase 1 | Complete |
+| BASE-03 | Phase 1 | Complete |
+| BASE-04 | Phase 1 | Complete |
+| BASE-05 | Phase 1 | Complete |
 | BASE-06 | Phase 1 | Pending |
 | BASE-07 | Phase 1 | Pending |
 | EVAL-01 | Phase 2 | Pending |

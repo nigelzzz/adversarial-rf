@@ -28,11 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running the unified pipeline on clean RML2016.10a test signals produces accuracy within 2% of baseline AWN (PIPE-03 verified)
   4. Parameter calibration sweep has been run for each baseline and best parameters are recorded in a config or docstring
   5. GPU-native filters (Gaussian, FIR) show measurably lower latency than CPU-fallback filters (Kalman, Wiener) in the latency benchmark output
-**Plans:** 3 plans
+**Plans:** 2/3 plans executed
 
 Plans:
-- [ ] 01-01-PLAN.md — Classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR)
-- [ ] 01-02-PLAN.md — Defense registry, unified pipeline, randomized smoothing
+- [x] 01-01-PLAN.md — Classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR)
+- [x] 01-02-PLAN.md — Defense registry, unified pipeline, randomized smoothing
 - [ ] 01-03-PLAN.md — Parameter calibration sweep, latency benchmark, clean accuracy validation
 
 ### Phase 2: Experimental Results
@@ -64,6 +64,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Defense Implementations | 0/3 | Planning complete | - |
+| 1. Defense Implementations | 2/3 | In Progress|  |
 | 2. Experimental Results | 0/TBD | Not started | - |
 | 3. Paper | 0/TBD | Not started | - |
