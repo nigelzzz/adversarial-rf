@@ -7,8 +7,8 @@
 
 ### Defense Pipeline
 
-- [ ] **PIPE-01**: Unified detect→recover→classify inference path as single callable function
-- [ ] **PIPE-02**: Latency benchmark per pipeline component (detector, recovery, classifier) in milliseconds
+- [x] **PIPE-01**: Unified detect→recover→classify inference path as single callable function
+- [x] **PIPE-02**: Latency benchmark per pipeline component (detector, recovery, classifier) in milliseconds
 - [ ] **PIPE-03**: Clean accuracy preservation — defense degrades unperturbed accuracy by <2%
 
 ### Baseline Implementations
@@ -18,7 +18,7 @@
 - [x] **BASE-03**: Savitzky-Golay filter defense baseline with parameter sweep
 - [x] **BASE-04**: Gaussian filter defense baseline with parameter sweep
 - [x] **BASE-05**: FIR low-pass filter defense baseline with parameter sweep
-- [ ] **BASE-06**: Randomized smoothing baseline (σ=0.01, majority vote over k copies)
+- [x] **BASE-06**: Randomized smoothing baseline (σ=0.01, majority vote over k copies)
 - [ ] **BASE-07**: Parameter calibration sweep for each filter baseline (fair comparison)
 
 ### Evaluation
@@ -70,15 +70,15 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | Phase 1 | Pending |
-| PIPE-02 | Phase 1 | Pending |
+| PIPE-01 | Phase 1 | Complete |
+| PIPE-02 | Phase 1 | Complete |
 | PIPE-03 | Phase 1 | Pending |
 | BASE-01 | Phase 1 | Complete |
 | BASE-02 | Phase 1 | Complete |
 | BASE-03 | Phase 1 | Complete |
 | BASE-04 | Phase 1 | Complete |
 | BASE-05 | Phase 1 | Complete |
-| BASE-06 | Phase 1 | Pending |
+| BASE-06 | Phase 1 | Complete |
 | BASE-07 | Phase 1 | Pending |
 | EVAL-01 | Phase 2 | Pending |
 | EVAL-02 | Phase 2 | Pending |
