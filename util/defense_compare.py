@@ -24,7 +24,7 @@ Design decisions (from 02-CONTEXT.md):
 
 import os
 import logging
-from typing import List, Optional, Any
+from typing import Dict, List, Optional, Any
 from collections import defaultdict
 
 import numpy as np
@@ -32,7 +32,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 
 from util.adv_attack import (
     Model01Wrapper,
@@ -53,7 +53,15 @@ try:
 except ImportError:
     torchattacks = None
 
-__all__ = ['run_defense_compare', 'ATTACKS', 'SNR_POINTS', 'DEFENSE_CONFIGS']
+__all__ = [
+    'run_defense_compare',
+    'generate_confusion_matrices',
+    'ATTACKS',
+    'SNR_POINTS',
+    'DEFENSE_CONFIGS',
+    'CONFMAT_ATTACKS',
+    'CONFMAT_SNRS',
+]
 
 # ---------------------------------------------------------------------------
 # Module-level constants (D-01, D-02, D-03)
@@ -62,6 +70,10 @@ __all__ = ['run_defense_compare', 'ATTACKS', 'SNR_POINTS', 'DEFENSE_CONFIGS']
 ATTACKS = ['cw', 'eadl1', 'eaden', 'fgsm', 'pgd']
 
 SNR_POINTS = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+
+# Confusion matrix generation scope (D-12, D-13)
+CONFMAT_ATTACKS = ['cw', 'eadl1', 'eaden']   # 3 optimization attacks
+CONFMAT_SNRS = [0, 10, 18]                    # 3 representative SNR points
 
 DEFENSE_CONFIGS = {
     'no_defense':      {'defense': 'none'},
@@ -493,3 +505,250 @@ def run_defense_compare(
         logger.info(f"Best defense per column ({attack_name}): {best_str}")
 
     return df_full
+
+
+# ---------------------------------------------------------------------------
+# Confusion matrix generation (EVAL-03, D-12 through D-16)
+# ---------------------------------------------------------------------------
+
+def generate_confusion_matrices(
+    model: nn.Module,
+    sig_test: torch.Tensor,
+    lab_test: torch.Tensor,
+    SNRs: np.ndarray,
+    test_idx: np.ndarray,
+    cfg,
+    logger,
+    detector=None,
+    confmat_attacks: Optional[List[str]] = None,
+    confmat_snrs: Optional[List[int]] = None,
+    max_per_cell: int = 200,
+    batch_size: int = 64,
+) -> Dict[str, np.ndarray]:
+    """
+    Generate 18 confusion matrices: 3 attacks x 3 SNRs x before/after defense (D-12, D-13, D-14).
+
+    For each (attack, SNR) pair:
+      - Before defense: classify adversarial examples directly (no filtering)
+      - After defense:  apply unified FFT Top-K pipeline, then classify
+
+    Each matrix is 11x11 (D-15), row-normalized to percentages (D-16).
+
+    Saves to <cfg.result_dir>/defense_compare/confmat/:
+      {attack}_snr{snr}_before.npy        — raw integer confusion matrix
+      {attack}_snr{snr}_before_pct.csv    — row-normalized percentages with mod labels
+      {attack}_snr{snr}_after.npy         — raw integer confusion matrix
+      {attack}_snr{snr}_after_pct.csv     — row-normalized percentages with mod labels
+      confmat_summary.csv                 — diagonal accuracy for all 18 matrices
+
+    Args:
+        model:           AWN model in eval mode
+        sig_test:        Test signals tensor [N, 2, T] (raw IQ scale)
+        lab_test:        Test labels tensor [N] (int)
+        SNRs:            SNR array for all signals (full dataset, not just test_idx)
+        test_idx:        Indices into SNRs that correspond to test set rows
+        cfg:             Config object with attack/defense parameters
+        logger:          Python logger
+        detector:        RFSignalAutoEncoder or None
+        confmat_attacks: Attacks to evaluate (default: CONFMAT_ATTACKS)
+        confmat_snrs:    SNR points to evaluate (default: CONFMAT_SNRS)
+        max_per_cell:    Max samples per modulation class at each SNR (D-04: default 200)
+        batch_size:      Attack generation batch size (default: 64)
+
+    Returns:
+        Dict mapping '{attack}_snr{snr}_{before|after}' -> raw np.ndarray confusion matrix
+    """
+    if confmat_attacks is None:
+        confmat_attacks = list(CONFMAT_ATTACKS)
+    if confmat_snrs is None:
+        confmat_snrs = list(CONFMAT_SNRS)
+
+    device = getattr(cfg, 'device', torch.device('cpu'))
+    model = model.to(device)
+    model.eval()
+
+    # --- Load detector if not provided but checkpoint path is set ---
+    if detector is None and getattr(cfg, 'detector_ckpt', None) is not None:
+        try:
+            from util.detector import RFSignalAutoEncoder
+            detector = RFSignalAutoEncoder().to(device)
+            det_state = torch.load(
+                cfg.detector_ckpt, map_location=device, weights_only=True
+            )
+            detector.load_state_dict(det_state)
+            detector.eval()
+            logger.info(f"Loaded detector from {cfg.detector_ckpt}")
+        except Exception as e:
+            logger.warning(f"Could not load detector from {cfg.detector_ckpt}: {e}")
+            detector = None
+
+    # --- Build output directory: defense_compare/confmat/ ---
+    confmat_dir = os.path.join(cfg.result_dir, 'defense_compare', 'confmat')
+    os.makedirs(confmat_dir, exist_ok=True)
+
+    # --- Class label info (per D-15: 11x11 for RML2016.10a) ---
+    mod_names = [
+        k.decode() if isinstance(k, bytes) else str(k)
+        for k in cfg.classes.keys()
+    ]
+    n_classes = len(mod_names)
+    all_class_labels = list(range(n_classes))
+
+    # --- Pre-compute per-SNR test masks ---
+    test_SNRs = np.array([SNRs[i] for i in test_idx])
+    lab_test_np = lab_test.cpu().numpy() if isinstance(lab_test, torch.Tensor) else np.array(lab_test)
+
+    # --- Model01Wrapper for torchattacks (minmax normalization, D-05) ---
+    wrapped_model = Model01Wrapper(model).to(device)
+
+    results: Dict[str, np.ndarray] = {}
+    summary_rows = []
+
+    for attack_name in confmat_attacks:
+        logger.info(f"=== Confmat: starting attack {attack_name.upper()} ===")
+
+        attack_obj = create_attack(attack_name, wrapped_model, cfg)
+
+        for snr in confmat_snrs:
+            # --- Filter test data to this SNR ---
+            snr_mask = test_SNRs == snr
+            snr_indices = np.where(snr_mask)[0]
+
+            if len(snr_indices) == 0:
+                logger.warning(f"Confmat: no test samples at SNR={snr}, skipping.")
+                continue
+
+            # --- Sub-sample up to max_per_cell per modulation class (D-04) ---
+            labels_at_snr = lab_test_np[snr_indices]
+            unique_classes = np.unique(labels_at_snr)
+            selected_indices = []
+            for cls in unique_classes:
+                cls_mask = labels_at_snr == cls
+                cls_indices = snr_indices[cls_mask]
+                if len(cls_indices) > max_per_cell:
+                    cls_indices = cls_indices[:max_per_cell]
+                selected_indices.extend(cls_indices.tolist())
+            selected_indices = np.array(selected_indices)
+
+            if len(selected_indices) == 0:
+                continue
+
+            sigs_snr = sig_test[selected_indices].to(device)
+            labs_snr = lab_test[selected_indices].to(device)
+            labs_snr_np = labs_snr.cpu().numpy()
+
+            # --- Generate adversarial examples in batches ---
+            n_samples = len(selected_indices)
+            adv_batches = []
+
+            for batch_start in range(0, n_samples, batch_size):
+                batch_end = min(batch_start + batch_size, n_samples)
+                batch_sig = sigs_snr[batch_start:batch_end]
+                batch_lab = labs_snr[batch_start:batch_end]
+
+                x_01, a, b = iq_to_ta_input_minmax(batch_sig)
+                wrapped_model.set_minmax(a, b)
+
+                try:
+                    x_adv_01 = attack_obj(x_01, batch_lab)
+                    x_adv = ta_output_to_iq_minmax(x_adv_01, a, b)
+                finally:
+                    wrapped_model.clear_minmax()
+
+                adv_batches.append(x_adv.detach())
+
+            x_adv_all = torch.cat(adv_batches, dim=0)
+
+            # ------------------------------------------------------------------
+            # BEFORE defense: classify adversarial directly
+            # ------------------------------------------------------------------
+            with torch.no_grad():
+                logits, _ = model(x_adv_all)
+            preds_before = logits.argmax(dim=1).cpu().numpy()
+
+            cm_before = confusion_matrix(
+                labs_snr_np, preds_before, labels=all_class_labels
+            )
+            # Row-normalize to percentages (D-16)
+            cm_before_pct = cm_before.astype(np.float64)
+            row_sums = cm_before_pct.sum(axis=1, keepdims=True)
+            row_sums[row_sums == 0] = 1.0
+            cm_before_pct = cm_before_pct / row_sums * 100.0
+
+            before_acc = np.diag(cm_before).sum() / max(cm_before.sum(), 1)
+
+            # Save raw .npy (D-16 pattern)
+            before_npy = os.path.join(confmat_dir, f'{attack_name}_snr{snr}_before.npy')
+            np.save(before_npy, cm_before)
+
+            # Save row-normalized CSV
+            before_csv = os.path.join(confmat_dir, f'{attack_name}_snr{snr}_before_pct.csv')
+            df_before = pd.DataFrame(cm_before_pct, index=mod_names, columns=mod_names)
+            df_before.index.name = 'true\\pred'
+            df_before.to_csv(before_csv, float_format='%.2f')
+
+            key_before = f'{attack_name}_snr{snr}_before'
+            results[key_before] = cm_before
+
+            # ------------------------------------------------------------------
+            # AFTER defense: apply unified FFT Top-K pipeline (ae_fft_topk, D-14)
+            # ------------------------------------------------------------------
+            orig_defense = getattr(cfg, 'defense', 'none')
+            orig_topk = getattr(cfg, 'def_topk', 50)
+
+            cfg.defense = 'fft_topk'
+            cfg.def_topk = int(getattr(cfg, 'def_topk', 50))
+
+            try:
+                with torch.no_grad():
+                    preds_after_tensor, _ = defend(x_adv_all, model, detector, cfg)
+                preds_after = preds_after_tensor.cpu().numpy()
+            finally:
+                # Restore original cfg values
+                cfg.defense = orig_defense
+                cfg.def_topk = orig_topk
+
+            cm_after = confusion_matrix(
+                labs_snr_np, preds_after, labels=all_class_labels
+            )
+            # Row-normalize to percentages (D-16)
+            cm_after_pct = cm_after.astype(np.float64)
+            row_sums = cm_after_pct.sum(axis=1, keepdims=True)
+            row_sums[row_sums == 0] = 1.0
+            cm_after_pct = cm_after_pct / row_sums * 100.0
+
+            after_acc = np.diag(cm_after).sum() / max(cm_after.sum(), 1)
+
+            # Save raw .npy
+            after_npy = os.path.join(confmat_dir, f'{attack_name}_snr{snr}_after.npy')
+            np.save(after_npy, cm_after)
+
+            # Save row-normalized CSV
+            after_csv = os.path.join(confmat_dir, f'{attack_name}_snr{snr}_after_pct.csv')
+            df_after = pd.DataFrame(cm_after_pct, index=mod_names, columns=mod_names)
+            df_after.index.name = 'true\\pred'
+            df_after.to_csv(after_csv, float_format='%.2f')
+
+            key_after = f'{attack_name}_snr{snr}_after'
+            results[key_after] = cm_after
+
+            logger.info(
+                f"Confmat {attack_name} SNR={snr:+3d}: "
+                f"before_acc={before_acc:.4f} after_acc={after_acc:.4f} "
+                f"N={n_samples}"
+            )
+
+            summary_rows.append({'attack': attack_name, 'snr': snr, 'condition': 'before',
+                                  'accuracy': round(before_acc, 4), 'n_samples': n_samples})
+            summary_rows.append({'attack': attack_name, 'snr': snr, 'condition': 'after',
+                                  'accuracy': round(after_acc, 4), 'n_samples': n_samples})
+
+    # --- Save summary CSV listing all 18 matrices with diagonal accuracy ---
+    if summary_rows:
+        df_summary = pd.DataFrame(summary_rows, columns=['attack', 'snr', 'condition', 'accuracy', 'n_samples'])
+        summary_csv = os.path.join(confmat_dir, 'confmat_summary.csv')
+        df_summary.to_csv(summary_csv, index=False)
+        logger.info(f"Saved confmat summary to {summary_csv}")
+
+    logger.info(f"Generated {len(results)} confusion matrices in {confmat_dir}")
+    return results
