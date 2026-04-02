@@ -48,7 +48,7 @@ Plans:
 
 Plans:
 - [x] 02-01-PLAN.md — Defense comparison evaluation core (9 defenses x 5 attacks x 10 SNRs)
-- [ ] 02-02-PLAN.md — Confusion matrices (3 attacks x 3 SNRs x before/after defense)
+- [x] 02-02-PLAN.md — Confusion matrices (3 attacks x 3 SNRs x before/after defense)
 - [ ] 02-03-PLAN.md — Perturbation budget curves (Linf eps sweep + optimization c sweep)
 
 ### Phase 3: Paper
