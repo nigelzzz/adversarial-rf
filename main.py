@@ -146,6 +146,8 @@ if __name__ == "__main__":
                         help='Fraction of peak magnitude for spectral shape method (default: 0.10)')
     parser.add_argument('--max_per_cell', type=int, default=200,
                         help='Max samples per (SNR, modulation) cell for defense_compare (default: 200)')
+    parser.add_argument('--skip_confmat', action='store_true',
+                        help='Skip confusion matrix generation in defense_compare mode')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -574,3 +576,17 @@ if __name__ == "__main__":
             attacks=attack_list,
             max_per_cell=args.max_per_cell,
         )
+        # Generate confusion matrices (EVAL-03) unless skipped
+        if not args.skip_confmat:
+            from util.defense_compare import generate_confusion_matrices
+            generate_confusion_matrices(
+                model,
+                Signals_test,
+                Labels_test,
+                SNRs,
+                test_idx,
+                cfg,
+                logger,
+                detector=detector,
+                max_per_cell=args.max_per_cell,
+            )
