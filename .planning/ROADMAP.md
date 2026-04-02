@@ -12,7 +12,7 @@ Starting from an existing AWN classifier with attack infrastructure, this roadma
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Defense Implementations** - Unified pipeline and all classical/RS baselines implemented and validated
+- [x] **Phase 1: Defense Implementations** - Unified pipeline and all classical/RS baselines implemented and validated
 - [ ] **Phase 2: Experimental Results** - Full defense-vs-attack evaluation matrix producing all paper tables and figures data
 - [ ] **Phase 3: Paper** - Complete IEEE TCCN/TWC manuscript with publication-quality figures and reproducibility scripts
 
@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Running the unified pipeline on clean RML2016.10a test signals produces accuracy within 2% of baseline AWN (PIPE-03 verified)
   4. Parameter calibration sweep has been run for each baseline and best parameters are recorded in a config or docstring
   5. GPU-native filters (Gaussian, FIR) show measurably lower latency than CPU-fallback filters (Kalman, Wiener) in the latency benchmark output
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR)
@@ -44,7 +44,12 @@ Plans:
   2. Confusion matrices exist for CW and EAD attacks both before and after the unified pipeline defense
   3. Perturbation budget curves (accuracy vs epsilon) exist for each attack type showing that attack effectiveness is real (undefended accuracy drops substantially at chosen epsilon values)
   4. The unified pipeline row in the comparison table outperforms every classical filter baseline on at least the two strongest attacks (CW, EAD)
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Defense comparison evaluation core (9 defenses x 5 attacks x 10 SNRs)
+- [ ] 02-02-PLAN.md — Confusion matrices (3 attacks x 3 SNRs x before/after defense)
+- [ ] 02-03-PLAN.md — Perturbation budget curves (Linf eps sweep + optimization c sweep)
 
 ### Phase 3: Paper
 **Goal**: A submission-ready IEEE TCCN/TWC manuscript with all required sections, figures, and reproducibility support
@@ -64,6 +69,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Defense Implementations | 2/3 | In Progress|  |
-| 2. Experimental Results | 0/TBD | Not started | - |
+| 1. Defense Implementations | 3/3 | Complete | 2026-04-01 |
+| 2. Experimental Results | 0/3 | Planned | - |
 | 3. Paper | 0/TBD | Not started | - |
