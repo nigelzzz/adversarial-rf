@@ -26,7 +26,7 @@
 - [x] **EVAL-01**: Multi-attack comparison table: all defenses vs CW, EAD L1, EAD EN, FGSM, PGD
 - [x] **EVAL-02**: Per-SNR accuracy breakdown for each defense at representative SNR points
 - [x] **EVAL-03**: Confusion matrices before/after defense for CW and EAD attacks
-- [ ] **EVAL-04**: Perturbation budget curves (accuracy vs epsilon) for each attack type
+- [x] **EVAL-04**: Perturbation budget curves (accuracy vs epsilon) for each attack type
 - [x] **EVAL-05**: Defense comparison table matching paper Table format (all defenses × all attacks)
 
 ### Paper
@@ -83,7 +83,7 @@
 | EVAL-01 | Phase 2 | Complete |
 | EVAL-02 | Phase 2 | Complete |
 | EVAL-03 | Phase 2 | Complete |
-| EVAL-04 | Phase 2 | Pending |
+| EVAL-04 | Phase 2 | Complete |
 | EVAL-05 | Phase 2 | Complete |
 | PAPER-01 | Phase 3 | Pending |
 | PAPER-02 | Phase 3 | Pending |

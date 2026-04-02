@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 02-experimental-results/02-02-PLAN.md
-last_updated: "2026-04-02T10:58:47.548Z"
+status: verifying
+stopped_at: Completed 02-experimental-results/02-03-PLAN.md
+last_updated: "2026-04-02T11:02:40.574Z"
 last_activity: 2026-04-02
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-31)
 
 Phase: 02 (experimental-results) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-02
 
 Progress: [░░░░░░░░░░] 0%
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-defense-implementations P03 | 3 | 1 tasks | 1 files |
 | Phase 02-experimental-results P01 | 8 | 2 tasks | 2 files |
 | Phase 02-experimental-results P02 | 2 | 2 tasks | 2 files |
+| Phase 02-experimental-results P03 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,7 @@ Recent decisions affecting current work:
 - [Phase 02-experimental-results]: ae_fft_topk branch calls defend() pipeline with temporary cfg.defense override to reuse unified pipeline
 - [Phase 02-experimental-results]: generate_confusion_matrices() saves raw .npy for Phase 3 rendering and row-normalized CSVs for inspection
 - [Phase 02-experimental-results]: cfg override pattern (save/set/restore cfg.defense) reuses defend() pipeline for confusion matrix after-defense condition
+- [Phase 02-experimental-results]: Use cfg save/restore pattern (not copy.copy) for attack_eps/cw_c/ead_initial_const overrides to avoid Config object complexity
 
 ### Pending Todos
 
@@ -91,6 +93,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-02T10:58:47.543Z
-Stopped at: Completed 02-experimental-results/02-02-PLAN.md
+Last session: 2026-04-02T11:02:40.568Z
+Stopped at: Completed 02-experimental-results/02-03-PLAN.md
 Resume file: None
