@@ -144,6 +144,8 @@ if __name__ == "__main__":
                         help='Softmax confidence threshold for confidence sweep defense (default: 0.8)')
     parser.add_argument('--spectral_sig_pct', type=float, default=0.10,
                         help='Fraction of peak magnitude for spectral shape method (default: 0.10)')
+    parser.add_argument('--max_per_cell', type=int, default=200,
+                        help='Max samples per (SNR, modulation) cell for defense_compare (default: 200)')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -544,4 +546,31 @@ if __name__ == "__main__":
             attacks=attack_list,
             epsilons=power_eps,
             eval_limit=args.eval_limit,
+        )
+
+    elif args.mode == 'defense_compare':
+        from util.defense_compare import run_defense_compare
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        # Load detector if checkpoint provided
+        detector = None
+        if args.detector_ckpt is not None:
+            from util.detector import RFSignalAutoEncoder
+            detector = RFSignalAutoEncoder().to(cfg.device)
+            detector.load_state_dict(torch.load(args.detector_ckpt, map_location=cfg.device, weights_only=True))
+            detector.eval()
+        # Parse attack list if provided
+        attack_list = None
+        if args.attack_list is not None:
+            attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        run_defense_compare(
+            model,
+            Signals_test,
+            Labels_test,
+            SNRs,
+            test_idx,
+            cfg,
+            logger,
+            detector=detector,
+            attacks=attack_list,
+            max_per_cell=args.max_per_cell,
         )
