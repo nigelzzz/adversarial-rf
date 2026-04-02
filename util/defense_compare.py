@@ -56,11 +56,16 @@ except ImportError:
 __all__ = [
     'run_defense_compare',
     'generate_confusion_matrices',
+    'generate_budget_curves',
     'ATTACKS',
     'SNR_POINTS',
     'DEFENSE_CONFIGS',
     'CONFMAT_ATTACKS',
     'CONFMAT_SNRS',
+    'LINF_EPSILONS',
+    'OPT_C_VALUES',
+    'LINF_ATTACKS',
+    'OPT_ATTACKS',
 ]
 
 # ---------------------------------------------------------------------------
@@ -70,6 +75,12 @@ __all__ = [
 ATTACKS = ['cw', 'eadl1', 'eaden', 'fgsm', 'pgd']
 
 SNR_POINTS = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+
+# Perturbation budget curve constants (D-06, D-07, D-08)
+LINF_EPSILONS = [0.01, 0.03, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
+OPT_C_VALUES = [0.01, 0.1, 1.0, 10.0]
+LINF_ATTACKS = ['fgsm', 'pgd']
+OPT_ATTACKS = ['cw', 'eadl1', 'eaden']
 
 # Confusion matrix generation scope (D-12, D-13)
 CONFMAT_ATTACKS = ['cw', 'eadl1', 'eaden']   # 3 optimization attacks
@@ -752,3 +763,319 @@ def generate_confusion_matrices(
 
     logger.info(f"Generated {len(results)} confusion matrices in {confmat_dir}")
     return results
+
+
+# ---------------------------------------------------------------------------
+# Perturbation budget curve generation (EVAL-04, D-06, D-07, D-08)
+# ---------------------------------------------------------------------------
+
+def generate_budget_curves(
+    model: nn.Module,
+    sig_test: torch.Tensor,
+    lab_test: torch.Tensor,
+    SNRs: np.ndarray,
+    test_idx: np.ndarray,
+    cfg,
+    logger,
+    detector=None,
+    linf_epsilons: Optional[List[float]] = None,
+    opt_c_values: Optional[List[float]] = None,
+    target_snrs: Optional[List[int]] = None,
+    max_per_cell: int = 200,
+    batch_size: int = 64,
+) -> pd.DataFrame:
+    """
+    Generate perturbation budget curves for paper EVAL-04.
+
+    Sweeps:
+      - Linf epsilon for FGSM and PGD (8 points per D-06)
+      - Optimization attack confidence c for CW, EAD-L1, EAD-EN (4 points per D-07, D-08)
+
+    For each (attack, perturbation strength, SNR, defense) combination, runs the attack
+    at that strength and measures accuracy under each of the 9 defenses.
+
+    Saves to <cfg.result_dir>/defense_compare/budget_curves/:
+      budget_curves_detail.csv  — full row-level data
+      budget_curves_agg.csv     — weighted average accuracy per (attack, param_value, defense)
+      budget_{attack}.csv       — pivot table: param_value rows x defense columns
+
+    Args:
+        model:          AWN model in eval mode
+        sig_test:       Test signals tensor [N, 2, T] (raw IQ scale)
+        lab_test:       Test labels tensor [N] (int)
+        SNRs:           SNR array for all signals (full dataset length)
+        test_idx:       Indices into SNRs for test set rows
+        cfg:            Config object with attack/defense parameters
+        logger:         Python logger
+        detector:       RFSignalAutoEncoder or None
+        linf_epsilons:  Epsilon values for Linf attacks (default: LINF_EPSILONS)
+        opt_c_values:   Confidence c values for optimization attacks (default: OPT_C_VALUES)
+        target_snrs:    SNR points to average over (default: SNR_POINTS)
+        max_per_cell:   Max samples per modulation class per SNR point (D-04: default 200)
+        batch_size:     Attack generation batch size (default: 64)
+
+    Returns:
+        pd.DataFrame with columns: attack, param_name, param_value, snr, defense, accuracy, n_samples
+    """
+    if linf_epsilons is None:
+        linf_epsilons = list(LINF_EPSILONS)
+    if opt_c_values is None:
+        opt_c_values = list(OPT_C_VALUES)
+    if target_snrs is None:
+        target_snrs = list(SNR_POINTS)
+
+    device = getattr(cfg, 'device', torch.device('cpu'))
+    model = model.to(device)
+    model.eval()
+
+    # --- Load detector if not provided but checkpoint path is set ---
+    if detector is None and getattr(cfg, 'detector_ckpt', None) is not None:
+        try:
+            from util.detector import RFSignalAutoEncoder
+            detector = RFSignalAutoEncoder().to(device)
+            det_state = torch.load(
+                cfg.detector_ckpt, map_location=device, weights_only=True
+            )
+            detector.load_state_dict(det_state)
+            detector.eval()
+            logger.info(f"Loaded detector from {cfg.detector_ckpt}")
+        except Exception as e:
+            logger.warning(f"Could not load detector from {cfg.detector_ckpt}: {e}")
+            detector = None
+
+    # --- Build output directory ---
+    budget_dir = os.path.join(cfg.result_dir, 'defense_compare', 'budget_curves')
+    os.makedirs(budget_dir, exist_ok=True)
+
+    # --- Set up Model01Wrapper for torchattacks (minmax normalization, D-05) ---
+    wrapped_model = Model01Wrapper(model).to(device)
+
+    # --- Pre-compute per-SNR test masks ---
+    test_SNRs = np.array([SNRs[i] for i in test_idx])
+    lab_test_np = lab_test.cpu().numpy() if isinstance(lab_test, torch.Tensor) else np.array(lab_test)
+
+    results = []
+
+    # ------------------------------------------------------------------
+    # Helper: generate adversarial examples and evaluate all defenses
+    # ------------------------------------------------------------------
+    def _run_attack_snr(attack_name, attack_obj, snr):
+        """
+        Generate adversarial examples at the given SNR and evaluate all 9 defenses.
+        Returns list of result dicts (one per defense), or empty list if no samples.
+        """
+        # Filter test data to this SNR
+        snr_mask = test_SNRs == snr
+        snr_indices = np.where(snr_mask)[0]
+
+        if len(snr_indices) == 0:
+            return []
+
+        # Sub-sample up to max_per_cell per modulation class (D-04)
+        labels_at_snr = lab_test_np[snr_indices]
+        unique_classes = np.unique(labels_at_snr)
+        selected_indices = []
+        for cls in unique_classes:
+            cls_mask = labels_at_snr == cls
+            cls_indices = snr_indices[cls_mask]
+            if len(cls_indices) > max_per_cell:
+                cls_indices = cls_indices[:max_per_cell]
+            selected_indices.extend(cls_indices.tolist())
+        selected_indices = np.array(selected_indices)
+
+        if len(selected_indices) == 0:
+            return []
+
+        sigs_snr = sig_test[selected_indices].to(device)
+        labs_snr = lab_test[selected_indices].to(device)
+        labs_snr_np = labs_snr.cpu().numpy()
+        n_samples = len(selected_indices)
+
+        # Generate adversarial examples in batches
+        adv_batches = []
+        for batch_start in range(0, n_samples, batch_size):
+            batch_end = min(batch_start + batch_size, n_samples)
+            batch_sig = sigs_snr[batch_start:batch_end]
+            batch_lab = labs_snr[batch_start:batch_end]
+
+            x_01, a, b = iq_to_ta_input_minmax(batch_sig)
+            wrapped_model.set_minmax(a, b)
+
+            try:
+                x_adv_01 = attack_obj(x_01, batch_lab)
+                x_adv = ta_output_to_iq_minmax(x_adv_01, a, b)
+            finally:
+                wrapped_model.clear_minmax()
+
+            adv_batches.append(x_adv.detach())
+
+        x_adv_all = torch.cat(adv_batches, dim=0)
+
+        # Apply each defense and compute accuracy
+        snr_results = []
+        for defense_name in DEFENSE_CONFIGS:
+            preds = _apply_defense(
+                defense_name, x_adv_all, model, detector, cfg, logger
+            )
+            acc = accuracy_score(labs_snr_np, preds)
+            snr_results.append({
+                'attack':    attack_name,
+                'snr':       snr,
+                'defense':   defense_name,
+                'accuracy':  acc,
+                'n_samples': n_samples,
+            })
+
+        return snr_results
+
+    # ------------------------------------------------------------------
+    # Part A: Linf budget curves (D-06)
+    # ------------------------------------------------------------------
+    logger.info("=== Budget curves: Linf attacks (FGSM, PGD) ===")
+    logger.info(f"Epsilon values: {linf_epsilons}")
+
+    # Save original cfg.attack_eps
+    orig_attack_eps = getattr(cfg, 'attack_eps', 0.03)
+
+    try:
+        for eps in linf_epsilons:
+            cfg.attack_eps = eps
+            logger.info(f"  Linf eps={eps:.4f}")
+
+            for attack_name in LINF_ATTACKS:
+                attack_obj = create_attack(attack_name, wrapped_model, cfg)
+
+                for snr in target_snrs:
+                    snr_results = _run_attack_snr(attack_name, attack_obj, snr)
+                    for row in snr_results:
+                        row['param_name'] = 'eps'
+                        row['param_value'] = eps
+                        results.append(row)
+                        logger.info(
+                            f"    Attack={attack_name} eps={eps:.4f} SNR={snr:+3d} "
+                            f"Defense={row['defense']:<20s} Acc={row['accuracy']:.4f}"
+                        )
+    finally:
+        cfg.attack_eps = orig_attack_eps
+
+    # ------------------------------------------------------------------
+    # Part B: Optimization attack budget curves (D-07, D-08)
+    # ------------------------------------------------------------------
+    logger.info("=== Budget curves: Optimization attacks (CW, EAD-L1, EAD-EN) ===")
+    logger.info(f"c values: {opt_c_values}")
+
+    # Save original cfg values for CW and EAD
+    orig_cw_c = getattr(cfg, 'cw_c', 1.0)
+    orig_ead_initial_const = getattr(cfg, 'ead_initial_const', 0.001)
+
+    try:
+        for c_val in opt_c_values:
+            cfg.cw_c = c_val
+            cfg.ead_initial_const = c_val
+            logger.info(f"  Optimization c={c_val:.4f}")
+
+            for attack_name in OPT_ATTACKS:
+                attack_obj = create_attack(attack_name, wrapped_model, cfg)
+
+                for snr in target_snrs:
+                    snr_results = _run_attack_snr(attack_name, attack_obj, snr)
+                    for row in snr_results:
+                        row['param_name'] = 'c'
+                        row['param_value'] = c_val
+                        results.append(row)
+                        logger.info(
+                            f"    Attack={attack_name} c={c_val:.4f} SNR={snr:+3d} "
+                            f"Defense={row['defense']:<20s} Acc={row['accuracy']:.4f}"
+                        )
+    finally:
+        cfg.cw_c = orig_cw_c
+        cfg.ead_initial_const = orig_ead_initial_const
+
+    # ------------------------------------------------------------------
+    # Build DataFrame and save outputs
+    # ------------------------------------------------------------------
+    df = pd.DataFrame(results)
+
+    if df.empty:
+        logger.warning("generate_budget_curves: no results collected — DataFrame is empty.")
+        return df
+
+    # Reorder columns for clarity
+    col_order = ['attack', 'param_name', 'param_value', 'snr', 'defense', 'accuracy', 'n_samples']
+    df = df[col_order]
+
+    # Save full detail CSV
+    detail_csv = os.path.join(budget_dir, 'budget_curves_detail.csv')
+    df.to_csv(detail_csv, index=False)
+    logger.info(f"Saved budget curve detail to {detail_csv}")
+
+    # Compute aggregated budget curves: weighted average accuracy per (attack, param_name, param_value, defense)
+    agg_rows = []
+    for (atk, p_name, p_val, def_), grp in df.groupby(['attack', 'param_name', 'param_value', 'defense']):
+        weights = grp['n_samples'].values
+        accs = grp['accuracy'].values
+        wt_acc = float(np.average(accs, weights=weights)) if weights.sum() > 0 else 0.0
+        agg_rows.append({
+            'attack':      atk,
+            'param_name':  p_name,
+            'param_value': p_val,
+            'defense':     def_,
+            'accuracy':    wt_acc,
+        })
+    df_agg = pd.DataFrame(agg_rows, columns=['attack', 'param_name', 'param_value', 'defense', 'accuracy'])
+    agg_csv = os.path.join(budget_dir, 'budget_curves_agg.csv')
+    df_agg.to_csv(agg_csv, index=False)
+    logger.info(f"Saved aggregated budget curves to {agg_csv}")
+
+    # Save per-attack pivot tables (param_value as rows, defenses as columns)
+    all_attacks = LINF_ATTACKS + OPT_ATTACKS
+    for attack_name in all_attacks:
+        df_atk = df_agg[df_agg['attack'] == attack_name].copy()
+        if df_atk.empty:
+            continue
+
+        try:
+            pivot = df_atk.pivot_table(
+                index='param_value',
+                columns='defense',
+                values='accuracy',
+                aggfunc='first',
+            )
+            # Reorder defense columns to match DEFENSE_CONFIGS key order
+            ordered_defenses = [d for d in DEFENSE_CONFIGS if d in pivot.columns]
+            pivot = pivot[ordered_defenses]
+            pivot.index.name = 'param_value'
+
+            pivot_csv = os.path.join(budget_dir, f'budget_{attack_name}.csv')
+            pivot.to_csv(pivot_csv)
+            logger.info(f"Saved {attack_name} budget pivot table to {pivot_csv}")
+        except Exception as e:
+            logger.warning(f"Could not create pivot table for {attack_name}: {e}")
+
+    # Log summary: first vs last perturbation strength for no_defense and ae_fft_topk
+    for attack_name in all_attacks:
+        df_atk = df_agg[df_agg['attack'] == attack_name]
+        if df_atk.empty:
+            continue
+        param_values = sorted(df_atk['param_value'].unique())
+        if len(param_values) < 2:
+            continue
+        first_val, last_val = param_values[0], param_values[-1]
+        for defense_name in ['no_defense', 'ae_fft_topk']:
+            rows_first = df_atk[
+                (df_atk['param_value'] == first_val) & (df_atk['defense'] == defense_name)
+            ]
+            rows_last = df_atk[
+                (df_atk['param_value'] == last_val) & (df_atk['defense'] == defense_name)
+            ]
+            if rows_first.empty or rows_last.empty:
+                continue
+            acc_first = rows_first['accuracy'].values[0]
+            acc_last = rows_last['accuracy'].values[0]
+            logger.info(
+                f"Budget summary | {attack_name:<8s} {defense_name:<20s} "
+                f"first({first_val})={acc_first:.4f} last({last_val})={acc_last:.4f}"
+            )
+
+    logger.info(f"Budget curves complete. Results in {budget_dir}")
+    return df
