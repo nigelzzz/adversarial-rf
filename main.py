@@ -148,6 +148,8 @@ if __name__ == "__main__":
                         help='Max samples per (SNR, modulation) cell for defense_compare (default: 200)')
     parser.add_argument('--skip_confmat', action='store_true',
                         help='Skip confusion matrix generation in defense_compare mode')
+    parser.add_argument('--skip_budget', action='store_true',
+                        help='Skip perturbation budget curve generation in defense_compare mode')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -580,6 +582,20 @@ if __name__ == "__main__":
         if not args.skip_confmat:
             from util.defense_compare import generate_confusion_matrices
             generate_confusion_matrices(
+                model,
+                Signals_test,
+                Labels_test,
+                SNRs,
+                test_idx,
+                cfg,
+                logger,
+                detector=detector,
+                max_per_cell=args.max_per_cell,
+            )
+        # Generate perturbation budget curves (EVAL-04) unless skipped
+        if not args.skip_budget:
+            from util.defense_compare import generate_budget_curves
+            generate_budget_curves(
                 model,
                 Signals_test,
                 Labels_test,
