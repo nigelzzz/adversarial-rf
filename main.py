@@ -150,6 +150,9 @@ if __name__ == "__main__":
                         help='Skip confusion matrix generation in defense_compare mode')
     parser.add_argument('--skip_budget', action='store_true',
                         help='Skip perturbation budget curve generation in defense_compare mode')
+    parser.add_argument('--calibration_path', type=str, default=None,
+                        help='Path to calibration_params.json from --mode calibrate_defenses '
+                             '(auto-detected from inference/*/result/ if not set)')
     args = parser.parse_args()
 
     fix_seed(args.seed)
@@ -566,6 +569,14 @@ if __name__ == "__main__":
         attack_list = None
         if args.attack_list is not None:
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
+        # Auto-detect calibration_params.json if not explicitly provided
+        calibration_path = args.calibration_path
+        if calibration_path is None:
+            import glob
+            candidates = sorted(glob.glob('inference/*/result/calibration_params.json'))
+            if candidates:
+                calibration_path = candidates[-1]
+                logger.info("Auto-detected calibration params: %s", calibration_path)
         run_defense_compare(
             model,
             Signals_test,
@@ -577,6 +588,7 @@ if __name__ == "__main__":
             detector=detector,
             attacks=attack_list,
             max_per_cell=args.max_per_cell,
+            calibration_path=calibration_path,
         )
         # Generate confusion matrices (EVAL-03) unless skipped
         if not args.skip_confmat:
@@ -591,6 +603,7 @@ if __name__ == "__main__":
                 logger,
                 detector=detector,
                 max_per_cell=args.max_per_cell,
+                calibration_path=calibration_path,
             )
         # Generate perturbation budget curves (EVAL-04) unless skipped
         if not args.skip_budget:
@@ -605,4 +618,44 @@ if __name__ == "__main__":
                 logger,
                 detector=detector,
                 max_per_cell=args.max_per_cell,
+                calibration_path=calibration_path,
             )
+
+    elif args.mode == 'calibrate_defenses':
+        from util.defense_calibrate import run_calibration_sweep
+        from util.adv_attack import Model01Wrapper, iq_to_ta_input_minmax, ta_output_to_iq_minmax
+        import torchattacks as _torchattacks
+        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.eval()
+        # Build CW attack function using minmax normalization (consistent with D-05)
+        wrapped_model = Model01Wrapper(model).to(cfg.device)
+
+        def attack_fn(x, y):
+            x_01, a, b = iq_to_ta_input_minmax(x)
+            wrapped_model.set_minmax(a, b)
+            cw = _torchattacks.CW(
+                wrapped_model,
+                c=float(getattr(cfg, 'cw_c', 1.0)),
+                steps=int(getattr(cfg, 'cw_steps', 100)),
+                lr=float(getattr(cfg, 'cw_lr', 0.01)),
+            )
+            try:
+                x_adv_01 = cw(x_01, y)
+                x_adv = ta_output_to_iq_minmax(x_adv_01, a, b)
+            finally:
+                wrapped_model.clear_minmax()
+            return x_adv
+
+        test_snrs_tensor = torch.tensor([SNRs[i] for i in test_idx])
+        results = run_calibration_sweep(
+            model,
+            (Signals_test, Labels_test, test_snrs_tensor),
+            cfg,
+            attack_fn,
+            alpha=0.5,
+            max_samples_per_snr=args.max_per_cell,
+        )
+        logger.info(
+            "Calibration complete. Results saved to %s/calibration_params.json",
+            cfg.result_dir,
+        )
