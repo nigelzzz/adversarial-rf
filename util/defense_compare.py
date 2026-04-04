@@ -66,6 +66,9 @@ __all__ = [
     'OPT_C_VALUES',
     'LINF_ATTACKS',
     'OPT_ATTACKS',
+    '_CALIB_TO_CFG',
+    '_set_calibrated_params',
+    '_restore_cfg_params',
 ]
 
 # ---------------------------------------------------------------------------
@@ -218,6 +221,76 @@ def _get_filter_kwargs(defense_name: str, cfg) -> dict:
         return {}
 
 
+# ---------------------------------------------------------------------------
+# Calibration parameter helpers (Gap 4 fix)
+# ---------------------------------------------------------------------------
+
+# Mapping from calibration_params.json filter keys to cfg attribute names
+_CALIB_TO_CFG = {
+    'kalman':          {'process_noise': 'kalman_process_noise', 'meas_noise': 'kalman_meas_noise'},
+    'wiener':          {'noise': 'wiener_noise', 'filter_len': 'wiener_filter_len'},
+    'savitzky_golay':  {'window_length': 'sg_window_length', 'polyorder': 'sg_polyorder'},
+    'gaussian':        {'sigma': 'gaussian_sigma'},
+    'fir':             {'cutoff': 'fir_cutoff', 'numtaps': 'fir_numtaps'},
+}
+
+
+def _set_calibrated_params(cfg, calib_params: dict, defense_name: str, snr: int, logger) -> dict:
+    """
+    Set cfg attributes from calibration_params.json for a specific (defense, SNR).
+    Returns dict of original values for restoration.
+
+    If defense_name is not in calib_params or SNR not found, does nothing (falls through
+    to cfg defaults, which is the existing behavior).
+    """
+    originals: dict = {}
+    if defense_name not in calib_params:
+        return originals
+    snr_key = str(snr)  # JSON keys are strings
+    if snr_key not in calib_params[defense_name]:
+        return originals
+    mapping = _CALIB_TO_CFG.get(defense_name, {})
+    best = calib_params[defense_name][snr_key]
+    for param_name, cfg_attr in mapping.items():
+        if param_name in best:
+            originals[cfg_attr] = getattr(cfg, cfg_attr, None)
+            setattr(cfg, cfg_attr, best[param_name])
+    return originals
+
+
+def _restore_cfg_params(cfg, originals: dict):
+    """Restore cfg attributes saved by _set_calibrated_params."""
+    for attr, val in originals.items():
+        if val is None:
+            try:
+                delattr(cfg, attr)
+            except AttributeError:
+                pass
+        else:
+            setattr(cfg, attr, val)
+
+
+def _load_calib_params(calibration_path, logger) -> dict:
+    """Load calibration_params.json; return empty dict on error or if path is None."""
+    if calibration_path is None:
+        return {}
+    import json as _json
+    if not os.path.isfile(calibration_path):
+        if logger:
+            logger.warning("Calibration file not found: %s — using cfg defaults", calibration_path)
+        return {}
+    try:
+        with open(calibration_path, 'r') as f:
+            calib = _json.load(f)
+        if logger:
+            logger.info("Loaded calibration params from %s (%d filters)", calibration_path, len(calib))
+        return calib
+    except Exception as exc:
+        if logger:
+            logger.warning("Could not load calibration params from %s: %s", calibration_path, exc)
+        return {}
+
+
 def _apply_defense(
     defense_name: str,
     x_adv: torch.Tensor,
@@ -310,6 +383,7 @@ def run_defense_compare(
     snr_points: Optional[List[int]] = None,
     max_per_cell: int = 200,
     batch_size: int = 64,
+    calibration_path: Optional[str] = None,
 ) -> pd.DataFrame:
     """
     Run the defense comparison matrix: 9 defenses x 5 attacks x 10 SNR points.
@@ -366,6 +440,9 @@ def run_defense_compare(
     # --- Build output directory ---
     out_dir = os.path.join(cfg.result_dir, 'defense_compare')
     os.makedirs(out_dir, exist_ok=True)
+
+    # --- Load per-SNR calibrated filter parameters (Gap 4 fix) ---
+    calib_params = _load_calib_params(calibration_path, logger)
 
     # --- Set up Model01Wrapper for torchattacks (minmax normalization) ---
     wrapped_model = Model01Wrapper(model).to(device)
@@ -437,9 +514,14 @@ def run_defense_compare(
 
             # --- Apply each defense and compute accuracy ---
             for defense_name in DEFENSE_CONFIGS:
-                preds = _apply_defense(
-                    defense_name, x_adv_all, model, detector, cfg, logger
-                )
+                # Apply per-SNR calibrated params if available (Gap 4 fix)
+                originals = _set_calibrated_params(cfg, calib_params, defense_name, snr, logger)
+                try:
+                    preds = _apply_defense(
+                        defense_name, x_adv_all, model, detector, cfg, logger
+                    )
+                finally:
+                    _restore_cfg_params(cfg, originals)
                 acc = accuracy_score(labs_snr_np, preds)
 
                 logger.info(
@@ -535,6 +617,7 @@ def generate_confusion_matrices(
     confmat_snrs: Optional[List[int]] = None,
     max_per_cell: int = 200,
     batch_size: int = 64,
+    calibration_path: Optional[str] = None,
 ) -> Dict[str, np.ndarray]:
     """
     Generate 18 confusion matrices: 3 attacks x 3 SNRs x before/after defense (D-12, D-13, D-14).
@@ -596,6 +679,9 @@ def generate_confusion_matrices(
     # --- Build output directory: defense_compare/confmat/ ---
     confmat_dir = os.path.join(cfg.result_dir, 'defense_compare', 'confmat')
     os.makedirs(confmat_dir, exist_ok=True)
+
+    # --- Load per-SNR calibrated filter parameters (Gap 4 fix) ---
+    calib_params = _load_calib_params(calibration_path, logger)
 
     # --- Class label info (per D-15: 11x11 for RML2016.10a) ---
     mod_names = [
@@ -783,6 +869,7 @@ def generate_budget_curves(
     target_snrs: Optional[List[int]] = None,
     max_per_cell: int = 200,
     batch_size: int = 64,
+    calibration_path: Optional[str] = None,
 ) -> pd.DataFrame:
     """
     Generate perturbation budget curves for paper EVAL-04.
@@ -846,6 +933,9 @@ def generate_budget_curves(
     # --- Build output directory ---
     budget_dir = os.path.join(cfg.result_dir, 'defense_compare', 'budget_curves')
     os.makedirs(budget_dir, exist_ok=True)
+
+    # --- Load per-SNR calibrated filter parameters (Gap 4 fix) ---
+    calib_params = _load_calib_params(calibration_path, logger)
 
     # --- Set up Model01Wrapper for torchattacks (minmax normalization, D-05) ---
     wrapped_model = Model01Wrapper(model).to(device)
@@ -914,9 +1004,14 @@ def generate_budget_curves(
         # Apply each defense and compute accuracy
         snr_results = []
         for defense_name in DEFENSE_CONFIGS:
-            preds = _apply_defense(
-                defense_name, x_adv_all, model, detector, cfg, logger
-            )
+            # Apply per-SNR calibrated params if available (Gap 4 fix)
+            originals = _set_calibrated_params(cfg, calib_params, defense_name, snr, logger)
+            try:
+                preds = _apply_defense(
+                    defense_name, x_adv_all, model, detector, cfg, logger
+                )
+            finally:
+                _restore_cfg_params(cfg, originals)
             acc = accuracy_score(labs_snr_np, preds)
             snr_results.append({
                 'attack':    attack_name,
