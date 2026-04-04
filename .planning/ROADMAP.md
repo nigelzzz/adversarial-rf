@@ -44,13 +44,13 @@ Plans:
   2. Confusion matrices exist for CW and EAD attacks both before and after the unified pipeline defense
   3. Perturbation budget curves (accuracy vs epsilon) exist for each attack type showing that attack effectiveness is real (undefended accuracy drops substantially at chosen epsilon values)
   4. The unified pipeline row in the comparison table outperforms every classical filter baseline on at least the two strongest attacks (CW, EAD)
-**Plans:** 5 plans
+**Plans:** 4/5 plans executed
 
 Plans:
 - [x] 02-01-PLAN.md — Defense comparison evaluation core (9 defenses x 5 attacks x 10 SNRs)
 - [x] 02-02-PLAN.md — Confusion matrices (3 attacks x 3 SNRs x before/after defense)
 - [x] 02-03-PLAN.md — Perturbation budget curves (Linf eps sweep + optimization c sweep)
-- [ ] 02-04-PLAN.md — Gap closure: calibration param loading + --mode calibrate_defenses wiring
+- [x] 02-04-PLAN.md — Gap closure: calibration param loading + --mode calibrate_defenses wiring
 - [ ] 02-05-PLAN.md — Gap closure: run calibration sweep + full defense comparison experiments
 
 ### Phase 3: Paper
@@ -72,5 +72,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Defense Implementations | 3/3 | Complete | 2026-04-01 |
-| 2. Experimental Results | 3/5 | Gap closure | - |
+| 2. Experimental Results | 4/5 | In Progress|  |
 | 3. Paper | 0/TBD | Not started | - |
