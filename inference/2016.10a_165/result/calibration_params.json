@@ -1,0 +1,392 @@
+{
+  "kalman": {
+    "-20": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-18": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-16": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-14": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-12": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-10": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-8": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-6": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-4": {
+      "process_noise": 1e-05,
+      "meas_noise": 0.1
+    },
+    "-2": {
+      "process_noise": 0.005,
+      "meas_noise": 0.001
+    },
+    "0": {
+      "process_noise": 0.001,
+      "meas_noise": 0.001
+    },
+    "2": {
+      "process_noise": 0.005,
+      "meas_noise": 0.01
+    },
+    "4": {
+      "process_noise": 0.001,
+      "meas_noise": 0.001
+    },
+    "6": {
+      "process_noise": 0.005,
+      "meas_noise": 0.005
+    },
+    "8": {
+      "process_noise": 0.005,
+      "meas_noise": 0.01
+    },
+    "10": {
+      "process_noise": 0.005,
+      "meas_noise": 0.001
+    },
+    "12": {
+      "process_noise": 0.001,
+      "meas_noise": 0.001
+    },
+    "14": {
+      "process_noise": 0.005,
+      "meas_noise": 0.005
+    },
+    "16": {
+      "process_noise": 0.005,
+      "meas_noise": 0.001
+    },
+    "18": {
+      "process_noise": 0.001,
+      "meas_noise": 0.001
+    }
+  },
+  "wiener": {
+    "-20": {
+      "noise": 0.05,
+      "filter_len": 15
+    },
+    "-18": {
+      "noise": 0.05,
+      "filter_len": 15
+    },
+    "-16": {
+      "noise": 0.01,
+      "filter_len": 15
+    },
+    "-14": {
+      "noise": 0.005,
+      "filter_len": 15
+    },
+    "-12": {
+      "noise": 0.1,
+      "filter_len": 15
+    },
+    "-10": {
+      "noise": 0.01,
+      "filter_len": 15
+    },
+    "-8": {
+      "noise": 0.05,
+      "filter_len": 15
+    },
+    "-6": {
+      "noise": 0.005,
+      "filter_len": 7
+    },
+    "-4": {
+      "noise": 0.001,
+      "filter_len": 5
+    },
+    "-2": {
+      "noise": 0.05,
+      "filter_len": 7
+    },
+    "0": {
+      "noise": 0.005,
+      "filter_len": 3
+    },
+    "2": {
+      "noise": 0.01,
+      "filter_len": 3
+    },
+    "4": {
+      "noise": 0.001,
+      "filter_len": 3
+    },
+    "6": {
+      "noise": 0.01,
+      "filter_len": 3
+    },
+    "8": {
+      "noise": 0.005,
+      "filter_len": 3
+    },
+    "10": {
+      "noise": 0.01,
+      "filter_len": 3
+    },
+    "12": {
+      "noise": 0.01,
+      "filter_len": 3
+    },
+    "14": {
+      "noise": 0.005,
+      "filter_len": 3
+    },
+    "16": {
+      "noise": 0.01,
+      "filter_len": 3
+    },
+    "18": {
+      "noise": 0.05,
+      "filter_len": 3
+    }
+  },
+  "savitzky_golay": {
+    "-20": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-18": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-16": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-14": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-12": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-10": {
+      "window_length": 31,
+      "polyorder": 1
+    },
+    "-8": {
+      "window_length": 21,
+      "polyorder": 3
+    },
+    "-6": {
+      "window_length": 21,
+      "polyorder": 3
+    },
+    "-4": {
+      "window_length": 21,
+      "polyorder": 3
+    },
+    "-2": {
+      "window_length": 15,
+      "polyorder": 3
+    },
+    "0": {
+      "window_length": 5,
+      "polyorder": 3
+    },
+    "2": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "4": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "6": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "8": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "10": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "12": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "14": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "16": {
+      "window_length": 5,
+      "polyorder": 1
+    },
+    "18": {
+      "window_length": 5,
+      "polyorder": 1
+    }
+  },
+  "gaussian": {
+    "-20": {
+      "sigma": 5.0
+    },
+    "-18": {
+      "sigma": 5.0
+    },
+    "-16": {
+      "sigma": 5.0
+    },
+    "-14": {
+      "sigma": 5.0
+    },
+    "-12": {
+      "sigma": 5.0
+    },
+    "-10": {
+      "sigma": 5.0
+    },
+    "-8": {
+      "sigma": 5.0
+    },
+    "-6": {
+      "sigma": 2.0
+    },
+    "-4": {
+      "sigma": 1.0
+    },
+    "-2": {
+      "sigma": 0.5
+    },
+    "0": {
+      "sigma": 0.5
+    },
+    "2": {
+      "sigma": 1.0
+    },
+    "4": {
+      "sigma": 1.0
+    },
+    "6": {
+      "sigma": 1.0
+    },
+    "8": {
+      "sigma": 1.0
+    },
+    "10": {
+      "sigma": 0.5
+    },
+    "12": {
+      "sigma": 0.5
+    },
+    "14": {
+      "sigma": 0.5
+    },
+    "16": {
+      "sigma": 0.5
+    },
+    "18": {
+      "sigma": 0.5
+    }
+  },
+  "fir": {
+    "-20": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-18": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-16": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-14": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-12": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-10": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-8": {
+      "cutoff": 0.1,
+      "numtaps": 63
+    },
+    "-6": {
+      "cutoff": 0.05,
+      "numtaps": 63
+    },
+    "-4": {
+      "cutoff": 0.15,
+      "numtaps": 63
+    },
+    "-2": {
+      "cutoff": 0.2,
+      "numtaps": 31
+    },
+    "0": {
+      "cutoff": 0.15,
+      "numtaps": 63
+    },
+    "2": {
+      "cutoff": 0.2,
+      "numtaps": 63
+    },
+    "4": {
+      "cutoff": 0.2,
+      "numtaps": 31
+    },
+    "6": {
+      "cutoff": 0.2,
+      "numtaps": 15
+    },
+    "8": {
+      "cutoff": 0.2,
+      "numtaps": 31
+    },
+    "10": {
+      "cutoff": 0.15,
+      "numtaps": 63
+    },
+    "12": {
+      "cutoff": 0.2,
+      "numtaps": 15
+    },
+    "14": {
+      "cutoff": 0.2,
+      "numtaps": 31
+    },
+    "16": {
+      "cutoff": 0.15,
+      "numtaps": 63
+    },
+    "18": {
+      "cutoff": 0.15,
+      "numtaps": 63
+    }
+  }
+}

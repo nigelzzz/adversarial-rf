@@ -1,4 +1,4 @@
 # Ignore everything in this directory
-*
+./2016*
 # Except this file
 !.gitignore
