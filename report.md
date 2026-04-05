@@ -35,3 +35,12 @@ The standard AWN model achieves high clean accuracy (90--100% for most modulatio
 ## Conclusion
 
 Adversarial training is broadly effective, recovering 10 of 11 modulations. The QAM64 regression and residual QAM16 weakness indicate that higher-order constellation modulations need either stronger adversarial training schedules or complementary defenses (e.g., FFT Top-K recovery) to close the gap.
+
+ EADL1 — Per-SNR Accuracy (all defenses)
+  ┌────────────────┬───────┬───────┬───────┬───────┬───────┬────────┬────────┬────────┐
+  │    Defense     │ SNR=0 │ SNR=2 │ SNR=4 │ SNR=6 │ SNR=8 │ SNR=10 │ SNR=12 │ SNR=14 │
+  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
+  │ no_defense     │ 0.13  │ 0.11  │ 0.11  │ 0.11  │ 0.11  │ 0.11   │ 0.10   │ 0.11   │
+  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
+  │ adaptive_k     │ 0.15  │ 0.14  │ 0.14  │ 0.14  │ 0.14  │ 0.14   │ 0.13   │ 0.15   │
+  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
