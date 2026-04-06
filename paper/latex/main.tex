@@ -38,17 +38,32 @@
 
 % ---- Abstract ----
 \begin{abstract}
-Deep-learning-based automatic modulation classifiers (AMC) achieve
-high accuracy under benign channel conditions but are vulnerable to
-adversarial perturbations crafted by optimization-based attacks.
-We propose an adaptive spectral defense pipeline that first detects
-adversarial inputs using an autoencoder anomaly score and then
-applies an FFT Top-K recovery operator gated by that score.
-Evaluated on RML2016.10a against five attacks (CW, EAD-L1, EAD-EN,
-FGSM, PGD), the unified pipeline recovers up to 79.8\% accuracy
-compared with 75.6\% for the undefended model, while incurring only
-sub-millisecond latency overhead.
-% TODO: finalize abstract with exact numbers after Plan 02
+Deep-learning-based automatic modulation classifiers (AMC) achieve high
+accuracy under benign channel conditions but collapse under adversarial
+perturbations crafted by optimization-based attacks such as Carlini--Wagner
+(CW) and Elastic-net Attack (EAD).  Existing defenses require model
+retraining or provide insufficient accuracy recovery in the signal domain.
+We propose adaptive spectral defense methods that filter adversarial
+perturbations in the frequency domain without retraining the classifier.
+Our Adaptive-K method automatically selects per-sample filtering intensity
+using a cumulative-energy knee-point criterion ($\eta = 0.95$), while a
+Spectral-Gated variant routes wideband signals around the filter to avoid
+distorting analog modulations.
+We evaluate against five attacks (CW, EAD-L1, EAD-EN, FGSM, PGD) on
+RML2016.10a using the pretrained Adaptive Wavelet Network (AWN) classifier
+and compare against five calibrated classical filters (Kalman, Wiener,
+Savitzky-Golay, Gaussian, FIR) and Randomized Smoothing.
+Adaptive-K achieves the highest recovery accuracy across all five attacks:
+77.4\% weighted-average accuracy against CW vs.\ 75.3\% undefended and
+72.7\% for the best classical filter (Kalman)---a 4.7~pp improvement.
+On EAD-L1 the gain grows to 7.3~pp (79.8\% vs.\ 72.5\%), reflecting
+the sparser spectral structure of $\ell_1$-minimizing perturbations.
+Notably, all classical filters perform at or below the undefended baseline
+on optimization-based attacks despite per-SNR calibration, demonstrating
+that adaptive frequency-domain methods are superior to conventional
+signal processing for defending AMC classifiers against adversarial inputs.
+The defense adds less than 0.1~ms latency overhead per batch and degrades
+clean accuracy by $<$0.5~pp from the 92.6\% baseline.
 \end{abstract}
 
 % ---- Keywords ----
