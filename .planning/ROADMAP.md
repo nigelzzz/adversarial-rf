@@ -61,10 +61,10 @@ Plans:
   1. A complete IEEEtran journal LaTeX manuscript compiles without errors and covers all required sections (introduction, related work, system model and threat model, proposed method, experimental setup, results and analysis, conclusion)
   2. All figures (accuracy-vs-SNR curves, confusion matrices, defense comparison bar charts, frequency-domain spectra) render as PDF at 300 dpi with IEEE-matching fonts and are referenced from the manuscript
   3. A single shell script re-runs all experiments from raw data and regenerates all result CSVs and figures referenced in the paper
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 
 Plans:
-- [ ] 03-01-PLAN.md — LaTeX document setup, IEEE figure generation pipeline, expanded bibliography
+- [x] 03-01-PLAN.md — LaTeX document setup, IEEE figure generation pipeline, expanded bibliography
 - [ ] 03-02-PLAN.md — Paper sections I-IV (Introduction, Related Work, System Model, Proposed Method)
 - [ ] 03-03-PLAN.md — Paper sections V-VII (Experimental Setup, Results, Conclusion), abstract, reproduce.sh
 
@@ -77,4 +77,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Defense Implementations | 3/3 | Complete | 2026-04-01 |
 | 2. Experimental Results | 5/5 | Complete | 2026-04-06 |
-| 3. Paper | 0/3 | Not started | - |
+| 3. Paper | 1/3 | In Progress|  |

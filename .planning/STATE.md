@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-experimental-results/02-04-PLAN.md
-last_updated: "2026-04-04T15:45:49.405Z"
-last_activity: 2026-04-04
+stopped_at: Completed 03-paper/03-01-PLAN.md
+last_updated: "2026-04-06T12:50:31.470Z"
+last_activity: 2026-04-06
 progress:
   total_phases: 3
-  completed_phases: 1
-  total_plans: 8
-  completed_plans: 7
-  percent: 0
+  completed_phases: 2
+  total_plans: 11
+  completed_plans: 9
+  percent: 66
 ---
 
 # Project State
@@ -21,16 +21,17 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-31)
 
 **Core value:** Demonstrate that a unified detect→recover→classify pipeline outperforms classical filtering defenses against optimization-based adversarial attacks on RF signals, while maintaining real-time feasibility
-**Current focus:** Phase 02 — experimental-results
+**Current focus:** Phase 03 — paper
+**Previous:** Phase 02 (experimental-results) completed 2026-04-06
 
 ## Current Position
 
-Phase: 02 (experimental-results) — EXECUTING
-Plan: 2 of 5
+Phase: 03 (paper) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-04-04
+Last activity: 2026-04-06
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████░░░░] 66%
 
 ## Performance Metrics
 
@@ -59,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-experimental-results P02 | 2 | 2 tasks | 2 files |
 | Phase 02-experimental-results P03 | 5 | 2 tasks | 2 files |
 | Phase 02-experimental-results P04 | 8 | 2 tasks | 2 files |
+| Phase 03-paper P01 | 6 | 2 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -83,6 +85,9 @@ Recent decisions affecting current work:
 - [Phase 02-experimental-results]: Use cfg save/restore pattern (not copy.copy) for attack_eps/cw_c/ead_initial_const overrides to avoid Config object complexity
 - [Phase 02-experimental-results]: calibration_path=None falls through to cfg defaults — backward-compatible, no regressions when calibration JSON absent
 - [Phase 02-experimental-results]: _CALIB_TO_CFG module-level constant for 5 classical filters with cfg attribute names — covers kalman, wiener, savitzky_golay, gaussian, fir
+- [Phase 03-paper]: text.usetex=False in IEEE_STYLE to avoid pdflatex-in-Python dependency; findfont warnings are cosmetic
+- [Phase 03-paper]: \nocite{*} in main.tex during stub phase so all 41 refs compile; replaced by explicit cites in Plan 02
+- [Phase 03-paper]: freq_spectra_cw uses placeholder synthetic spectra when model/dataset unavailable in system python
 
 ### Pending Todos
 
@@ -96,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-04T15:45:49.399Z
-Stopped at: Completed 02-experimental-results/02-04-PLAN.md
+Last session: 2026-04-06T12:50:31.466Z
+Stopped at: Completed 03-paper/03-01-PLAN.md
 Resume file: None
