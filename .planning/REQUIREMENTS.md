@@ -36,11 +36,11 @@
 - [x] **PAPER-03**: IEEE TCCN/TWC LaTeX manuscript — System Model & Threat Model section
 - [x] **PAPER-04**: IEEE TCCN/TWC LaTeX manuscript — Proposed Defense Method section
 - [x] **PAPER-05**: IEEE TCCN/TWC LaTeX manuscript — Experimental Setup section
-- [ ] **PAPER-06**: IEEE TCCN/TWC LaTeX manuscript — Results & Analysis section
-- [ ] **PAPER-07**: IEEE TCCN/TWC LaTeX manuscript — Conclusion section
+- [x] **PAPER-06**: IEEE TCCN/TWC LaTeX manuscript — Results & Analysis section
+- [x] **PAPER-07**: IEEE TCCN/TWC LaTeX manuscript — Conclusion section
 - [x] **PAPER-08**: Publication-quality figures (accuracy curves, confusion matrices, spectral plots)
 - [x] **PAPER-09**: Frequency-domain visualization plots (clean→attacked→recovered spectra)
-- [ ] **PAPER-10**: Reproducibility scripts to regenerate all experimental results
+- [x] **PAPER-10**: Reproducibility scripts to regenerate all experimental results
 
 ## v2 Requirements
 
@@ -90,11 +90,11 @@
 | PAPER-03 | Phase 3 | Complete |
 | PAPER-04 | Phase 3 | Complete |
 | PAPER-05 | Phase 3 | Complete |
-| PAPER-06 | Phase 3 | Pending |
-| PAPER-07 | Phase 3 | Pending |
+| PAPER-06 | Phase 3 | Complete |
+| PAPER-07 | Phase 3 | Complete |
 | PAPER-08 | Phase 3 | Complete |
 | PAPER-09 | Phase 3 | Complete |
-| PAPER-10 | Phase 3 | Pending |
+| PAPER-10 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 25 total

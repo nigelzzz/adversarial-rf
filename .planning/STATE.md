@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: executing
-stopped_at: Completed 03-paper/03-02-PLAN.md
-last_updated: "2026-04-06T12:58:46.655Z"
+status: verifying
+stopped_at: Completed 03-paper/03-03-PLAN.md
+last_updated: "2026-04-06T13:07:03.602Z"
 last_activity: 2026-04-06
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 11
-  completed_plans: 10
+  completed_plans: 11
   percent: 66
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-31)
 
 Phase: 03 (paper) — EXECUTING
 Plan: 3 of 3
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-06
 
 Progress: [██████░░░░] 66%
@@ -62,6 +62,7 @@ Progress: [██████░░░░] 66%
 | Phase 02-experimental-results P04 | 8 | 2 tasks | 2 files |
 | Phase 03-paper P01 | 6 | 2 tasks | 22 files |
 | Phase 03-paper P02 | 4 | 2 tasks | 4 files |
+| Phase 03-paper P03 | 8 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,8 @@ Recent decisions affecting current work:
 - [Phase 03-paper]: freq_spectra_cw uses placeholder synthetic spectra when model/dataset unavailable in system python
 - [Phase 03-paper]: proposed_method.tex includes CRC table inline to motivate control-plane insight
 - [Phase 03-paper]: Adaptive-K Algorithm 2 uses cumulative energy threshold eta=0.95 matching actual implementation
+- [Phase 03-paper]: Table I uses table* (full-width) for 9x5 comparison matrix; SNR curves use figure* subfigure pairs to fit two line plots
+- [Phase 03-paper]: reproduce.sh --figures flag skips multi-hour evaluation for figure-only regeneration
 
 ### Pending Todos
 
@@ -104,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-06T12:58:46.651Z
-Stopped at: Completed 03-paper/03-02-PLAN.md
+Last session: 2026-04-06T13:07:03.598Z
+Stopped at: Completed 03-paper/03-03-PLAN.md
 Resume file: None
