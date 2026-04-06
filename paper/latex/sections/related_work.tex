@@ -1,16 +1,124 @@
 \section{Related Work}
 \label{sec:related}
 
-% TODO: content in Plan 02
-
-\subsection{Deep Learning for Automatic Modulation Classification}
-% TODO: AMC classifiers — O'Shea CNN, CLDNN, ResNet-AMC, AWN, LSTM-based
-
 \subsection{Adversarial Attacks on AMC Systems}
-% TODO: gradient-based attacks on AMC — Lin threats, Flowers SigGuard, Silvaco survey, stealthy attacks
 
-\subsection{Input-Transformation Defenses}
-% TODO: Guo input transformations, FFT-based defenses, randomized smoothing (Cohen), feature squeezing (Xu)
+The vulnerability of deep learning AMC classifiers to adversarial perturbations was
+first systematically examined by Lin et al.~\cite{lin2020tactics}, who applied FGSM
+and PGD to DNN-based modulation recognition, demonstrating that single-step and
+iterative gradient attacks can degrade accuracy from above 90\% to below 10\%.
+Flowers et al.~\cite{flowers2019sigguard} provided a comprehensive evaluation of
+adversarial evasion attacks in the wireless context, comparing multiple attack
+strengths and showing that the threat is practical under realistic signal
+conditions. Yang et al.~\cite{yang2018characterizing} characterized the geometry
+of adversarial examples for wireless DNN classifiers, finding that the decision
+boundary is significantly closer to clean samples in the IQ domain than in
+equivalent image classification tasks.
 
-\subsection{Classical Signal Processing Filters as Defenses}
-% TODO: Kalman, Wiener, Savitzky-Golay, Gaussian, FIR in the context of adversarial robustness
+Bahramali et al.~\cite{bahramali2021robust} introduced over-the-air adversarial
+attacks that survive the physical channel, revealing a more stringent threat
+model where perturbations must remain effective after transmission, fading, and
+noise. Silvaco et al.~\cite{silvaco2023adversarial_rf} provided a comprehensive
+survey of adversarial attacks against AMC, categorizing them by perturbation norm
+($L_\infty$, $L_2$, $L_1$), attack objective (untargeted vs.\ targeted), and
+knowledge assumption (white-box vs.\ black-box). Zhang et al.~\cite{zhang2024stealthy}
+introduced stealthy adversarial attacks that minimize spectral anomaly while
+maintaining high misclassification rates, posing challenges for energy-based
+detectors. Kim et al.~\cite{kim2024frequency} explored frequency-domain
+adversarial attacks that concentrate perturbation energy in specific spectral
+bands, making conventional band-limited filtering less effective.
+
+Among attack methods, optimization-based attacks (CW~\cite{carlini2017towards},
+EAD~\cite{chen2020ead}) consistently outperform gradient-based approaches
+(FGSM~\cite{goodfellow2015fgsm}, PGD~\cite{madry2018pgd}) on IQ signals,
+achieving near-zero accuracy against the AWN classifier at high SNR with minimal
+perturbation norm. This is because IQ signals have low signal amplitude ($\sim$0.02)
+relative to their dynamic range, allowing optimization-based methods to find
+highly effective perturbations near the classifier decision boundary. In contrast
+to prior work that focuses solely on attacks, we use these attacks as benchmarks
+to evaluate defense recovery.
+
+\subsection{Defense Methods for AMC}
+
+Defense strategies for AMC can be broadly divided into model-level and
+input-level approaches. \emph{Model-level} defenses modify the classifier
+through adversarial training~\cite{madry2018towards}, incorporating adversarial
+examples during training to improve robustness. Tram\`{e}r et
+al.~\cite{tramer2017ensemble} extended this with ensemble adversarial training
+using transfers from multiple surrogate models. These methods are effective
+against specific attacks but require retraining for each new threat, limiting
+deployability in operational systems where the classifier is a fixed checkpoint.
+Papernot et al.~\cite{papernot2016distillation} proposed defensive distillation
+to smooth classifier gradients, reducing attack effectiveness, but this approach
+has been shown to be bypassable by adaptive attacks.
+
+\emph{Input-level} (input-transformation) defenses preprocess the input before
+classification and require no model modification. Guo et al.~\cite{guo2018input}
+systematically evaluated input transformations for image adversarial defense,
+including JPEG compression, total variation minimization, and image
+quilting, finding that FFT-based filtering is among the most effective.
+Xu et al.~\cite{xu2018feature} proposed feature squeezing, which reduces
+the feature space via color depth reduction and spatial smoothing, then
+uses disagreement between original and squeezed predictions as a detection
+signal. Dziugaite et al.~\cite{dziugaite2016compression} studied JPEG
+compression as a defense, showing that lossy compression removes adversarial
+high-frequency components while preserving semantic content. These image-domain
+insights motivate frequency-domain filtering for IQ signals.
+
+Cohen et al.~\cite{cohen2019certified} introduced randomized smoothing for
+certified robustness: by averaging classifier predictions over Gaussian-noised
+copies of the input, the classifier obtains a certified $L_2$ robustness
+guarantee. While randomized smoothing provides formal robustness certificates,
+its computational cost (many forward passes per sample) makes real-time
+deployment challenging. We include randomized smoothing as a certified baseline
+for comparison with our deterministic filtering approach.
+
+Recent work has applied frequency-domain ideas specifically to RF defense.
+Kim et al.~\cite{kim2024frequency} proposed band-selective suppression
+based on detecting spectral anomalies introduced by adversarial perturbations.
+Our adaptive-$K$ method differs by operating on the full spectrum without
+prior knowledge of which band the attack targets, making it attack-agnostic.
+No prior work has performed a systematic side-by-side comparison of
+frequency-domain adaptive methods and classical communications signal processing
+filters as adversarial defenses.
+
+\subsection{Classical Signal Processing Filters}
+
+Classical signal processing offers a rich toolkit of denoising filters developed
+for communications and estimation problems. The Wiener filter~\cite{wiener1949extrapolation}
+is the minimum mean square error (MMSE) estimator under the assumption of
+stationary signal and additive noise, operating in the frequency domain by
+applying a magnitude-squared SNR weighting to each spectral component. Kalman
+filtering~\cite{kalman1960new} extends Wiener estimation to non-stationary
+signals via a state-space model, recursively tracking signal evolution with
+prediction and update steps. Both filters are well-suited to thermal noise but
+were not designed for adversarial perturbations, which are structured rather
+than random.
+
+Savitzky-Golay smoothing~\cite{savitzky1964smoothing} fits a polynomial of
+specified degree to a sliding window of samples using local least-squares, producing
+a smoothing filter that preserves the shape of peaks and pulse signals. Unlike
+frequency-domain filters, Savitzky-Golay operates in the time domain and is
+particularly effective at preserving high-frequency signal features while
+suppressing narrow noise spikes. Gaussian and FIR lowpass filters are standard
+tools in digital communications for pulse shaping and anti-aliasing;
+their regularization effect on IQ signals has been studied in the context of
+matched filtering~\cite{proakis2008digital} and channel estimation~\cite{haykin2002adaptive},
+though their use as adversarial defenses has not been examined in the AMC context.
+
+The application of classical filters as adversarial defenses rests on the
+hypothesis that adversarial perturbations behave like structured noise that
+can be attenuated by denoising. However, this hypothesis is non-trivial: unlike
+AWGN, adversarial perturbations are deliberately crafted to align with the
+classifier gradient and may therefore concentrate energy in exactly the spectral
+regions where the modulation signal is strongest. Our experiments test this
+hypothesis directly by evaluating calibrated classical filters against
+optimization-based attacks (CW, EAD) on the RML2016.10a dataset.
+
+In contrast to the above works, we propose an adaptive spectral defense that
+combines FFT Top-$K$ filtering with per-sample spectral flatness routing, and
+provide the first systematic comparison of frequency-domain adaptive methods
+against five calibrated classical filters and randomized smoothing as adversarial
+defenses for AMC. Our approach achieves the best accuracy--latency trade-off
+among all evaluated methods while remaining model-agnostic and suitable for
+real-time deployment.

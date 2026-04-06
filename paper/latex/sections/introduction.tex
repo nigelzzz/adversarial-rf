@@ -1,11 +1,97 @@
 \section{Introduction}
 \label{sec:intro}
 
-% TODO: content in Plan 02
-% Key points to cover:
-% - AMC importance in cognitive radio and spectrum monitoring
-% - DNN-based classifiers (AWN) achieve state-of-the-art accuracy
-% - Adversarial attacks (CW, EAD, FGSM, PGD) severely degrade performance
-% - Existing defenses (adversarial training, feature squeezing) are either slow or require retraining
-% - Our contribution: detect-recover-classify pipeline with FFT Top-K recovery
-% - Summary of results and paper organization
+Automatic modulation classification (AMC) is a fundamental capability in
+software-defined radio, cognitive radio networks, and spectrum monitoring
+systems~\cite{dobre2007survey,hazza2013overview}. By identifying the
+modulation format of received signals without prior coordination with the
+transmitter, AMC enables dynamic spectrum access, interference management,
+and electronic surveillance. Recent deep learning approaches---including
+convolutional networks~\cite{otoole2016rml}, CLDNN architectures~\cite{zhang2023cldnn},
+and the Adaptive Wavelet Network (AWN)~\cite{li2023awn}---achieve classification
+accuracy above 91\% on the standard RML2016.10a benchmark across 11 modulation
+classes. However, the same properties that make deep neural network (DNN)
+classifiers effective render them vulnerable to adversarial perturbations:
+small, carefully crafted modifications to IQ signals can collapse accuracy
+to near 0\%~\cite{szegedy2014intriguing,silvaco2023adversarial_rf,lin2020tactics}.
+
+The adversarial threat to AMC systems is qualitatively different from the
+image classification setting that spawned most adversarial ML
+research~\cite{goodfellow2015fgsm,madry2018pgd}. RF IQ signals have amplitudes
+of approximately $\pm$0.02, so even small $L_\infty$ perturbations can constitute
+a large fraction of the signal dynamic range. Optimization-based attacks such
+as the Carlini--Wagner $L_2$ attack (CW)~\cite{carlini2017towards} and the
+Elastic-Net Attack on Deep Neural Networks
+(EAD)~\cite{chen2020ead} are particularly effective: they reduce AWN accuracy
+from above 90\% to effectively 0\% at SNR 18~dB. Existing defenses for AMC
+fall into two categories: adversarial training, which requires retraining the
+classifier on attack-generated examples and must be repeated for each new
+attack~\cite{madry2018towards,tramer2017ensemble}; and input-transformation
+defenses, which preprocess signals before classification and require no model
+modification~\cite{guo2018input,xu2018feature}. However, no systematic
+comparison has been made between frequency-domain adaptive methods and the
+classical signal processing filters---Kalman, Wiener, Savitzky-Golay, Gaussian,
+and FIR---that communications engineers would naturally apply as
+baselines~\cite{haykin2002adaptive,proakis2006digital}.
+
+We propose an adaptive spectral defense pipeline that operates entirely in the
+frequency domain. Our key insight is that adversarial perturbations on IQ signals
+tend to occupy the high-frequency spectral components of the signal rather than
+the low-frequency components that carry modulation information. By applying a
+fast Fourier transform (FFT) and retaining only the $K$ largest magnitude bins,
+we filter out adversarial energy while preserving the underlying modulation
+signature. We augment this with a spectral flatness routing criterion that
+detects wideband modulations (AM-SSB) where Top-$K$ filtering would destroy
+signal content, and an adaptive-$K$ mechanism that automatically selects
+per-sample filtering intensity based on the spectral magnitude knee-point.
+We benchmark all proposed methods against five calibrated classical signal
+processing filters and randomized smoothing~\cite{cohen2019certified}, providing
+the first systematic evaluation of this design space for AMC defense.
+
+This paper makes four contributions:
+
+\begin{enumerate}
+\item \textbf{Control-plane attack characterization:} We experimentally
+  confirm that adversarial attacks on AMC are \emph{control-plane attacks}---
+  they cause the classifier to select the wrong demodulator without corrupting
+  the underlying signal. Across five attack algorithms (CW, EADL1, EADEN,
+  FGSM, PGD) and eight digital modulations, CRC integrity remains above 71\%
+  under oracle demodulation at SNR 18~dB, demonstrating that the adversarial
+  perturbation leaves the data waveform intact. This motivates frequency-domain
+  defense: if the perturbation is a spectral artifact, filtering can remove it.
+
+\item \textbf{Adaptive-$K$ FFT defense:} We propose automatic per-sample
+  spectral filtering intensity selection via a magnitude knee-point detection
+  algorithm. Rather than using a fixed $K$ for all signals, the adaptive-$K$
+  method sorts FFT magnitudes in descending order and finds the elbow where
+  cumulative energy exceeds a threshold, setting $K$ equal to the corresponding
+  index. This adapts filtering to signal bandwidth, preserving narrow-band
+  modulations (BPSK: small $K$) while allowing wider-band signals the
+  frequency support they require.
+
+\item \textbf{Systematic classical filter comparison:} We provide the first
+  evaluation of five calibrated classical signal processing filters---Kalman,
+  Wiener, Savitzky-Golay, Gaussian, and FIR---as adversarial defenses for AMC.
+  Filter parameters are calibrated per-SNR via grid search on validation
+  accuracy. Our adaptive spectral methods outperform all classical baselines
+  by 4--8\% on optimization-based attacks (CW, EAD) at high SNR, while classical
+  filters show competitive performance at low SNR where adversarial attacks are
+  less effective than channel noise.
+
+\item \textbf{Spectral-gated routing:} We propose a flatness-based bypass
+  criterion that routes wideband modulations (AM-SSB, spectral flatness
+  $\sim$0.55) to input quantization while routing narrowband modulations
+  (spectral flatness $<$0.04) to FFT Top-$K$ filtering. The routing requires
+  only one shared FFT computation, adding negligible latency. The gated
+  defense recovers AM-SSB from 0\% to 20--65\% accuracy under CW and EAD
+  attacks, where Top-$K$ alone achieves 0\%.
+\end{enumerate}
+
+The remainder of this paper is organized as follows. Section~\ref{sec:related}
+reviews related work on adversarial AMC attacks, defense methods, and classical
+signal processing filters. Section~\ref{sec:system} presents the system model,
+attack formulations, and threat model. Section~\ref{sec:method} describes the
+proposed defense methods including the adaptive-$K$ algorithm, spectral-gated
+routing, and classical filter baselines. Section~\ref{sec:setup} details the
+experimental setup. Section~\ref{sec:results} presents results and analysis.
+Section~\ref{sec:conclusion} concludes the paper.
