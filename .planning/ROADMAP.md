@@ -13,7 +13,7 @@ Starting from an existing AWN classifier with attack infrastructure, this roadma
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Defense Implementations** - Unified pipeline and all classical/RS baselines implemented and validated
-- [ ] **Phase 2: Experimental Results** - Full defense-vs-attack evaluation matrix producing all paper tables and figures data
+- [x] **Phase 2: Experimental Results** - Full defense-vs-attack evaluation matrix producing all paper tables and figures data
 - [ ] **Phase 3: Paper** - Complete IEEE TCCN/TWC manuscript with publication-quality figures and reproducibility scripts
 
 ## Phase Details
@@ -44,14 +44,14 @@ Plans:
   2. Confusion matrices exist for CW and EAD attacks both before and after the unified pipeline defense
   3. Perturbation budget curves (accuracy vs epsilon) exist for each attack type showing that attack effectiveness is real (undefended accuracy drops substantially at chosen epsilon values)
   4. The unified pipeline row in the comparison table outperforms every classical filter baseline on at least the two strongest attacks (CW, EAD)
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [x] 02-01-PLAN.md — Defense comparison evaluation core (9 defenses x 5 attacks x 10 SNRs)
 - [x] 02-02-PLAN.md — Confusion matrices (3 attacks x 3 SNRs x before/after defense)
 - [x] 02-03-PLAN.md — Perturbation budget curves (Linf eps sweep + optimization c sweep)
 - [x] 02-04-PLAN.md — Gap closure: calibration param loading + --mode calibrate_defenses wiring
-- [ ] 02-05-PLAN.md — Gap closure: run calibration sweep + full defense comparison experiments
+- [x] 02-05-PLAN.md — Gap closure: run calibration sweep + full defense comparison experiments
 
 ### Phase 3: Paper
 **Goal**: A submission-ready IEEE TCCN/TWC manuscript with all required sections, figures, and reproducibility support
@@ -61,8 +61,12 @@ Plans:
   1. A complete IEEEtran journal LaTeX manuscript compiles without errors and covers all required sections (introduction, related work, system model and threat model, proposed method, experimental setup, results and analysis, conclusion)
   2. All figures (accuracy-vs-SNR curves, confusion matrices, defense comparison bar charts, frequency-domain spectra) render as PDF at 300 dpi with IEEE-matching fonts and are referenced from the manuscript
   3. A single shell script re-runs all experiments from raw data and regenerates all result CSVs and figures referenced in the paper
-**Plans**: TBD
-**UI hint**: yes
+**Plans:** 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — LaTeX document setup, IEEE figure generation pipeline, expanded bibliography
+- [ ] 03-02-PLAN.md — Paper sections I-IV (Introduction, Related Work, System Model, Proposed Method)
+- [ ] 03-03-PLAN.md — Paper sections V-VII (Experimental Setup, Results, Conclusion), abstract, reproduce.sh
 
 ## Progress
 
@@ -72,5 +76,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Defense Implementations | 3/3 | Complete | 2026-04-01 |
-| 2. Experimental Results | 4/5 | In Progress|  |
-| 3. Paper | 0/TBD | Not started | - |
+| 2. Experimental Results | 5/5 | Complete | 2026-04-06 |
+| 3. Paper | 0/3 | Not started | - |
