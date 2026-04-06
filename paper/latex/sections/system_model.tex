@@ -1,16 +1,148 @@
 \section{System Model and Threat Model}
 \label{sec:system}
 
-% TODO: content in Plan 02
+\subsection{Signal Representation and Dataset}
 
-\subsection{Signal Representation}
-% TODO: IQ notation, RML2016.10a, 11 modulation classes, SNR range
+We consider complex baseband IQ signals represented as real-valued tensors
+$\mathbf{x} \in \mathbb{R}^{2 \times T}$, where the first dimension indexes
+the in-phase (I) and quadrature (Q) channels and $T$ is the number of time
+samples. Each channel captures a different aspect of the baseband signal; their
+joint representation encodes the amplitude and phase of the modulated carrier.
+Following the RML2016.10a dataset convention~\cite{otoole2016rml}, we use
+$T = 128$ samples, corresponding to 16 symbols at 8 samples-per-symbol with
+a root-raised-cosine pulse shape.
 
-\subsection{Classifier Architecture}
-% TODO: AWN architecture — lifting scheme, SE attention, conv layers, 91%+ accuracy at high SNR
+The RML2016.10a dataset contains 220,000 IQ bursts drawn from 11 modulation
+classes: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4, AM-DSB, AM-SSB, WBFM, GFSK,
+and CPFSK. Each burst is labeled with the modulation type and the signal-to-noise
+ratio (SNR) at which it was recorded, spanning $-20$ to $+18$~dB in 2~dB steps.
+At high SNR ($\geq 0$~dB), the AWN classifier~\cite{li2023awn} achieves above
+91\% overall accuracy across all 11 classes.
 
-\subsection{Attack Model}
-% TODO: white-box threat model, Lp-norm constraints, CW L2, EAD L1/EN, FGSM, PGD attacks
+\subsection{AWN Classifier Architecture}
 
-\subsection{Defense Pipeline Overview}
-% TODO: detect-recover-classify pipeline block diagram reference
+The Adaptive Wavelet Network (AWN)~\cite{li2023awn} takes batched IQ tensors of
+shape $[N, 2, T]$ and predicts one of $C = 11$ modulation classes. The forward
+pass has three stages:
+
+\textbf{Convolutional feature extraction.} A 2D convolution with kernel size
+$[2, 7]$ integrates the I and Q channels, yielding a feature map of shape
+$[N, 64, 1, T]$, which is then squeezed to $[N, 64, T]$. A second 1D
+convolution with batch normalization~\cite{ioffe2015batch} and LeakyReLU
+extracts temporal features, producing $[N, 64, T]$ feature maps.
+
+\textbf{Adaptive wavelet decomposition.} The core module applies a
+learnable lifting scheme~\cite{li2023awn} that recursively splits the
+feature map into even and odd subsequences, applies learnable Predictor ($P$)
+and Updator ($U$) operators to produce approximation coefficients $\mathbf{c}$
+and detail coefficients $\mathbf{d}$, and repeats for \texttt{num\_levels}
+levels. The detail regularization loss is:
+\begin{equation}
+  \mathcal{R}_d = \sum_{\ell=1}^{L} \lambda_d \,\|\mathbf{d}_\ell\|_2^2,
+  \quad
+  \mathcal{R}_c = \lambda_c \,|\bar{\mathbf{c}}|,
+\end{equation}
+where $\bar{\mathbf{c}}$ is the mean of the final approximation. The total
+training loss is:
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{\mathrm{CE}} + \mathcal{R}_d + \mathcal{R}_c,
+\end{equation}
+where $\mathcal{L}_{\mathrm{CE}}$ is the cross-entropy classification loss.
+
+\textbf{Attention and classification.} Squeeze-excitation (SE)
+attention~\cite{hu2018squeeze} computes per-level weights for the multi-scale
+approximation and detail coefficient tensors. The attention-weighted features
+are pooled and passed through two fully-connected layers with dropout and
+LeakyReLU activations to produce the final class logits. The model is trained
+using the Adam optimizer~\cite{kingma2015adam} with early stopping.
+
+\subsection{Attack Models}
+
+We evaluate four attacks that span the gradient-based and optimization-based
+attack families. All attacks use \texttt{torchattacks}~\cite{kim2020torchattacks}
+with per-sample minmax normalization: each IQ sample is mapped to $[0, 1]$ using
+$\tilde{x} = (x - x_{\min}) / (x_{\max} - x_{\min})$ before attack generation
+and mapped back afterward. This makes epsilon values interpretable relative to
+the signal range.
+
+\textbf{FGSM.} The Fast Gradient Sign Method~\cite{goodfellow2015fgsm}
+computes a single gradient step:
+\begin{equation}
+  \mathbf{x}_{\mathrm{adv}} = \mathbf{x} + \varepsilon \cdot
+    \mathrm{sign}\bigl(\nabla_{\mathbf{x}}\,\mathcal{L}_{\mathrm{CE}}
+    (\mathbf{x}, y)\bigr),
+\end{equation}
+where $\varepsilon$ bounds the $L_\infty$ perturbation magnitude. FGSM
+is computationally efficient but produces suboptimal adversarial examples.
+
+\textbf{PGD.} Projected Gradient Descent~\cite{madry2018pgd} iterates
+multiple gradient steps with projection onto the $\varepsilon$-ball:
+\begin{equation}
+  \mathbf{x}^{(t+1)} = \Pi_{\mathcal{B}_\varepsilon(\mathbf{x})}
+    \!\left(\mathbf{x}^{(t)} + \alpha\,\mathrm{sign}\bigl(
+    \nabla_{\mathbf{x}}\,\mathcal{L}_{\mathrm{CE}}(\mathbf{x}^{(t)}, y)
+    \bigr)\right),
+\end{equation}
+where $\Pi$ denotes projection and $\alpha$ is the step size. PGD with a
+random start is regarded as a strong first-order attack~\cite{croce2020reliable}.
+
+\textbf{CW ($L_2$).} The Carlini--Wagner attack~\cite{carlini2017towards}
+solves the constrained optimization:
+\begin{equation}
+  \min_{\boldsymbol{\delta}}\; \|\boldsymbol{\delta}\|_2 + c\, f(\mathbf{x} + \boldsymbol{\delta}),
+\end{equation}
+where $f(\cdot)$ is a surrogate misclassification objective and $c$ balances
+perturbation norm against attack success. CW distributes adversarial energy
+broadly across spectral frequencies, making it resistant to simple band-limited
+filtering. We use $c = 10$, 200 optimization steps.
+
+\textbf{EAD ($L_1$ and EN).} The Elastic-Net Attack on Deep Neural
+Networks~\cite{chen2020ead} adds an $L_1$ regularization term to the CW
+objective:
+\begin{equation}
+  \min_{\boldsymbol{\delta}}\; \beta\|\boldsymbol{\delta}\|_1 +
+    \|\boldsymbol{\delta}\|_2 + c\, f(\mathbf{x} + \boldsymbol{\delta}),
+\end{equation}
+where $\beta$ controls the sparsity of the perturbation. We evaluate both the
+$L_1$ variant (EADL1, $\beta$ large) and the elastic-net variant (EADEN,
+$\beta$ moderate). EADL1 produces sparse perturbations concentrated in few
+spectral components, while EADEN produces a mixture of sparse and distributed
+perturbations.
+
+\subsection{Threat Model}
+
+\textbf{Attacker capabilities.} We consider a white-box adversary with full
+knowledge of the AWN classifier architecture, trained weights, and input
+normalization procedure. The attacker can query the classifier and compute
+exact gradients. This is the strongest adversary assumption and establishes
+a worst-case defense baseline.
+
+\textbf{Attacker goal.} The adversary seeks untargeted misclassification: any
+prediction other than the true modulation class is considered a success. The
+attacker does not attempt to cause the classifier to predict any specific wrong
+class.
+
+\textbf{Attacker constraint.} Perturbations are bounded by the chosen
+attack norm: $\|\boldsymbol{\delta}\|_\infty \leq \varepsilon$ for FGSM/PGD,
+$\|\boldsymbol{\delta}\|_2 \leq$ (implicitly, via CW minimization) for CW, and
+elastic-net bounded for EAD. We evaluate $\varepsilon \in \{0.05, 0.1\}$ in
+the per-sample minmax-normalized space (equivalent to 5--10\% of the
+per-sample signal range).
+
+\textbf{Defense-unaware model.} We assume the attacker does not adapt to the
+defense mechanism: adversarial examples are generated against the undefended
+AWN classifier. This models the realistic deployment scenario where the defense
+is applied transparently at the receiver and is not publicly disclosed. Adaptive
+attacks against the defense are left for future work.
+
+\textbf{Defender capabilities.} The defender can preprocess each IQ burst
+before classification, with access only to the received signal. The defender
+does not know the true modulation class, the attack type, or the attack
+parameters. The defense must operate in real time: latency must be sub-millisecond
+per sample to meet the requirements of practical AMC deployment contexts,
+including ITU/FCC spectrum monitoring stations, CBRS Environmental Sensing
+Capability (ESC) nodes, and military electronic support measures (ESM)
+systems~\cite{proakis2008digital}. In each of these contexts, AMC drives
+downstream decisions (spectrum allocation, threat identification) that require
+near-real-time throughput, typically at 25--100~Msps IQ digitization rates with
+burst processing latency budgets of 1--10~ms per channel.

@@ -1,24 +1,279 @@
 \section{Proposed Defense Methods}
 \label{sec:method}
 
-% TODO: content in Plan 02
+\subsection{Control-Plane Attack Insight}
 
-\subsection{Autoencoder-Based Anomaly Detection}
-% TODO: 1D conv autoencoder architecture, KL divergence score, threshold calibration
+Before describing our defenses, we motivate the frequency-domain approach by
+establishing the nature of adversarial attacks on AMC. We conduct a two-track
+experiment to separate \emph{classification failure} from \emph{waveform
+corruption}. In Track~A, we apply CW and EAD attacks to real RML2016.10a
+signals and record classification accuracy. In Track~B, we generate synthetic
+bursts with known payload bits and CRC-8 checksums using a full TX/RX chain
+(pulse shaping, AWGN channel, matched filtering, pilot-based equalization),
+transfer the adversarial perturbation vectors from Track~A, and evaluate CRC
+pass rate under four demodulation conditions:
 
-\subsection{FFT Top-K Spectral Recovery}
-% TODO: normalize -> rFFT -> keep top-K bins -> iRFFT -> denormalize
-% K selection, why it works for adversarial perturbations
+\begin{enumerate}
+  \item Clean+Oracle: clean signal with true modulation known;
+  \item Clean+AMC: clean signal, modulation predicted by AWN;
+  \item Adv+Oracle: adversarial signal with true modulation known;
+  \item Adv+AMC: adversarial signal, modulation predicted by AWN.
+\end{enumerate}
 
-\subsection{Spectral-Gated Defense (Detector + FFT Top-K)}
-% TODO: pipeline: detect -> gate -> recover; reduces false-positive denoising on clean signals
+Table~\ref{tab:crc} shows CRC pass rates at SNR~18~dB under CW attack for
+eight digital modulations. The Adv+Oracle column reveals that the underlying
+signal remains largely intact under adversarial perturbation: CRC pass rates
+stay above 71\% when the correct demodulator is applied. The catastrophic
+failure manifests only in the Adv+AMC column (0--39\%), where the classifier
+selects the wrong demodulator.
 
-\subsection{Adaptive-K Selection}
-% TODO: K chosen via calibration sweep; adaptive_k in results
+\begin{table}[t]
+\caption{CRC Pass Rate (\%) at SNR 18~dB --- CW Attack. Adversarial
+  perturbation drops AMC accuracy to near 0\% (Adv+AMC) but CRC integrity
+  under oracle demodulation (Adv+Oracle) remains above 71\%, confirming
+  that attacks target the classification decision, not the physical signal.}
+\label{tab:crc}
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Mod & Clean+Orc & Clean+AMC & Adv+Orc & Adv+AMC \\
+\midrule
+BPSK  & 100.0 & 97.0 & 100.0 & 39.0 \\
+QPSK  & 100.0 & 98.5 & 100.0 &  1.5 \\
+8PSK  & 100.0 & 98.0 & 100.0 &  0.5 \\
+QAM16 & 100.0 & 94.5 &  99.5 &  0.5 \\
+QAM64 &  96.0 & 94.0 &  76.0 &  0.5 \\
+PAM4  & 100.0 & 98.5 &  71.0 &  2.0 \\
+CPFSK & 100.0 & 100.0 & 100.0 & 18.5 \\
+GFSK  &  99.5 & 99.0 &  99.5 &  0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+This \emph{control-plane attack} insight motivates our frequency-domain
+approach: adversarial perturbations are spectral artifacts that can in principle
+be attenuated by frequency-domain filtering without destroying the underlying
+modulation waveform.
+
+\subsection{FFT Top-\texorpdfstring{$K$}{K} Filtering}
+
+The fundamental building block of our defense is FFT Top-$K$ filtering,
+which retains the $K$ largest-magnitude spectral components and zeros all
+others. Formally, for a single IQ sample $\mathbf{x} \in \mathbb{R}^{2 \times T}$:
+
+\begin{enumerate}
+  \item \textbf{Normalize:} $\tilde{\mathbf{x}} = (\mathbf{x} + x_{\mathrm{off}})
+    / x_{\mathrm{scale}}$, mapping amplitudes to $[0, 1]$.
+  \item \textbf{FFT:} $\mathbf{X} = \text{rFFT}(\tilde{\mathbf{x}})$, producing
+    a complex spectrum $\mathbf{X} \in \mathbb{C}^{2 \times (T/2+1)}$.
+  \item \textbf{Top-$K$ mask:} For each channel $c \in \{I, Q\}$, compute
+    magnitudes $|\mathbf{X}_c|$ and construct binary mask $\mathbf{m}_c$
+    that retains the $K$ largest entries and zeros the rest.
+  \item \textbf{Inverse FFT:} $\hat{\tilde{\mathbf{x}}} =
+    \text{irFFT}(\mathbf{X} \odot \mathbf{m})$.
+  \item \textbf{Denormalize:} $\hat{\mathbf{x}} = \hat{\tilde{\mathbf{x}}}
+    \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$.
+\end{enumerate}
+
+In compact notation:
+\begin{equation}
+  \hat{\mathbf{x}} = \text{irFFT}\!\bigl(\mathrm{TopK}\bigl(\text{rFFT}(\tilde{\mathbf{x}}),\, K\bigr)\bigr),
+  \label{eq:topk}
+\end{equation}
+where the normalization and denormalization are implicit. The rationale is that
+adversarial perturbations, which are added in the amplitude domain, tend to
+distribute energy across the full spectrum; retaining only the dominant $K$
+components removes much of this diffuse adversarial energy while preserving the
+modulation-carrying low-frequency components.
+
+\subsection{Spectral-Gated Defense}
+\label{sec:sg}
+
+FFT Top-$K$ filtering is effective for narrowband modulations (BPSK, QPSK,
+QAM, etc.) but completely fails for wideband modulations such as AM-SSB,
+whose spectral energy is spread uniformly across frequencies. Top-$K$ filtering
+of AM-SSB destroys the signal itself, reducing recovery accuracy to 0\% even
+when $K$ is generous.
+
+We exploit a robust spectral feature, \emph{spectral flatness}, to detect
+wideband signals without a separate classifier. Spectral flatness is defined as
+the ratio of the geometric mean to the arithmetic mean of the power spectrum:
+\begin{equation}
+  \text{SF}(\mathbf{x}) = \frac{\exp\!\bigl(\tfrac{1}{N}\sum_{k}\ln |X_k|^2\bigr)}
+                               {\tfrac{1}{N}\sum_{k}|X_k|^2},
+  \label{eq:flatness}
+\end{equation}
+where $X_k$ are the rFFT coefficients and $N = T/2 + 1$ is the number of
+positive-frequency bins. For narrowband modulations at SNR~18~dB, spectral
+flatness is below 0.04 (all energy concentrated in few bins). For AM-SSB,
+flatness is approximately 0.55 (energy spread uniformly across frequencies).
+This gap of more than $18\times$ provides a robust routing threshold with
+negligible misclassification between the two routes.
+
+Algorithm~\ref{alg:gated} presents the spectral-gated defense. The key
+efficiency insight is that the FFT computation is \emph{shared}: the same
+FFT coefficients are used for both the flatness check and the Top-$K$
+operation, requiring no additional computation.
+
+\begin{algorithm}[t]
+\caption{Spectral-Gated Defense}
+\label{alg:gated}
+\begin{algorithmic}[1]
+\Require Input $\mathbf{x} \in \mathbb{R}^{N \times 2 \times T}$,
+  Top-$K$ parameter $K$, quantization levels $L$, flatness threshold $\tau$
+\Ensure Defended signal $\hat{\mathbf{x}}$
+\State Normalize: $\tilde{\mathbf{x}} \leftarrow (\mathbf{x} + x_{\mathrm{off}}) / x_{\mathrm{scale}}$
+\State $\mathbf{X} \leftarrow \text{rFFT}(\tilde{\mathbf{x}})$
+  \hfill \textit{// shared FFT for all samples}
+\For{each sample $i = 1, \ldots, N$}
+  \State $\text{SF}_i \leftarrow \text{SpectralFlatness}(\mathbf{X}_i)$
+    \hfill \textit{// Eq.~\eqref{eq:flatness}}
+  \If{$\text{SF}_i > \tau$}
+    \hfill \textit{// wideband (AM-SSB)}
+    \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{Quantize}(\tilde{\mathbf{x}}_i, L)$
+  \Else
+    \hfill \textit{// narrowband (all others)}
+    \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{irFFT}(\mathrm{TopK}(\mathbf{X}_i, K))$
+      \hfill \textit{// reuse FFT}
+  \EndIf
+\EndFor
+\State Denormalize: $\hat{\mathbf{x}} \leftarrow \hat{\tilde{\mathbf{x}}} \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$
+\State \Return $\hat{\mathbf{x}}$
+\end{algorithmic}
+\end{algorithm}
+
+Default parameters are $K = 20$, $L = 32$, and $\tau = 0.4$.
+The quantization routing recovers AM-SSB from 0\% to 20--65\% accuracy under
+CW and EAD attacks, a modulation where Top-$K$ alone achieves 0\% recovery.
+
+\subsection{Adaptive-\texorpdfstring{$K$}{K} Defense}
+\label{sec:adaptivek}
+
+Fixed-$K$ filtering applies the same spectral truncation to all signals
+regardless of their inherent bandwidth, which can over-filter wideband
+digital modulations or under-filter narrowband signals under low-SNR attacks.
+The Adaptive-$K$ defense selects the number of retained spectral components
+per sample based on the spectral magnitude distribution.
+
+Algorithm~\ref{alg:adaptivek} describes the per-sample $K$ selection procedure.
+The key idea is that the spectral magnitude profile of a clean modulated signal
+has a characteristic shape: a few dominant components carry most of the energy,
+followed by a rapid decay toward noise floor. The \emph{knee point} of this
+profile---where the cumulative energy first exceeds a threshold $\eta$---defines
+the natural $K$ for that signal. Adversarial perturbations, by distributing
+energy across many bins, push the knee point to larger $K$ values; the adaptive
+method corrects for this by anchoring $K$ to the cumulative energy threshold
+rather than a fixed count.
+
+\begin{algorithm}[t]
+\caption{Adaptive-$K$ Spectral Defense}
+\label{alg:adaptivek}
+\begin{algorithmic}[1]
+\Require Input $\mathbf{x} \in \mathbb{R}^{N \times 2 \times T}$,
+  energy threshold $\eta \in (0, 1)$, $K_{\min}$, $K_{\max}$
+\Ensure Defended signal $\hat{\mathbf{x}}$
+\State Normalize: $\tilde{\mathbf{x}} \leftarrow (\mathbf{x} + x_{\mathrm{off}}) / x_{\mathrm{scale}}$
+\State $\mathbf{X} \leftarrow \text{rFFT}(\tilde{\mathbf{x}})$
+\For{each sample $i = 1, \ldots, N$}
+  \State $\mathbf{m}_i \leftarrow |\mathbf{X}_i|$ \hfill \textit{// per-channel magnitudes, flattened}
+  \State Sort $\mathbf{m}_i$ descending: $\mathbf{m}_i^{\downarrow}$
+  \State $E_{\mathrm{total}} \leftarrow \sum_k (\mathbf{m}_i^{\downarrow}[k])^2$
+  \State $K_i \leftarrow \min\{k : \sum_{j=1}^{k}(\mathbf{m}_i^{\downarrow}[j])^2
+    \geq \eta \cdot E_{\mathrm{total}}\}$
+  \State $K_i \leftarrow \mathrm{clip}(K_i,\; K_{\min},\; K_{\max})$
+  \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{irFFT}(\mathrm{TopK}(\mathbf{X}_i, K_i))$
+\EndFor
+\State Denormalize: $\hat{\mathbf{x}} \leftarrow \hat{\tilde{\mathbf{x}}} \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$
+\State \Return $\hat{\mathbf{x}}$
+\end{algorithmic}
+\end{algorithm}
+
+Default parameters are $\eta = 0.95$, $K_{\min} = 10$, $K_{\max} = 40$.
+For narrowband modulations (BPSK) at high SNR, the selected $K$ is typically
+10--15; for wideband digital modulations (QAM64, GFSK), it is 20--35.
+On the RML2016.10a dataset, adaptive-$K$ achieves the highest overall
+accuracy among all evaluated defenses, outperforming fixed Top-$K$ by 1--3\%
+on CW attacks and 3--5\% on EAD attacks across SNR 0--18~dB.
 
 \subsection{Classical Filter Baselines}
-% TODO: Kalman, Wiener, Savitzky-Golay, Gaussian, FIR implementations
-% Parameter calibration procedure
+\label{sec:classical}
 
-\subsection{Randomized Smoothing Baseline}
-% TODO: Cohen et al. approach adapted to IQ signals; sigma and k parameters
+To contextualize the performance of our frequency-domain adaptive methods,
+we evaluate five classical signal processing filters as adversarial defense
+baselines. These represent the standard signal processing toolkit that a
+communications engineer would apply before considering ML-specific defenses.
+All filters are calibrated per-SNR via grid search over their hyperparameters
+on a held-out validation subset of RML2016.10a, maximizing post-filter
+classification accuracy on the undefended model.
+
+\textbf{Kalman filter.} The Kalman filter~\cite{kalman1960new} models each IQ
+channel as a first-order random walk corrupted by observation noise, with
+process noise covariance $Q$ and observation noise covariance $R$ as tunable
+parameters. The scalar filter recursively estimates the signal state using
+prediction and update steps. For AMC defense, $R$ is calibrated to the noise
+floor of adversarial perturbations. Kalman filtering is optimal for linear
+Gaussian noise but was not designed for structured adversarial perturbations;
+our experiments test whether its denoising properties generalize.
+
+\textbf{Wiener filter.} The Wiener filter~\cite{wiener1949extrapolation}
+computes the MMSE estimate in the frequency domain by applying a
+signal-to-noise weighting $H_k = S_{ss,k} / (S_{ss,k} + S_{nn,k})$ to each
+spectral bin, where $S_{ss,k}$ and $S_{nn,k}$ are the signal and noise power
+spectral densities at frequency $k$, estimated from calibration data.
+The Wiener filter assumes stationary signal and noise statistics; adversarial
+perturbations violate the stationarity assumption.
+
+\textbf{Savitzky-Golay filter.} The Savitzky-Golay filter~\cite{savitzky1964smoothing}
+smooths each IQ channel by fitting a polynomial of degree $d$ to a sliding
+window of $w$ samples using local least squares. The filter preserves the
+shape of peaks and pulses better than standard lowpass filters, making it
+suitable for preserving QAM constellation transitions. Parameters $d$ and
+$w$ are calibrated via grid search.
+
+\textbf{Gaussian filter.} A Gaussian kernel $h[n] = \exp(-n^2 / 2\sigma^2)$
+is convolved with each IQ channel, implementing a smooth lowpass response with
+cutoff determined by the standard deviation $\sigma$. The filter is implemented
+as a GPU-native \texttt{F.conv1d} operation for efficient batch processing,
+avoiding CPU roundtrip latency.
+
+\textbf{FIR lowpass filter.} A finite impulse response (FIR) lowpass filter
+with normalized cutoff frequency $f_c$ and filter order $M$ is applied to
+each IQ channel~\cite{proakis2006digital}. The filter coefficients are computed
+via windowed-sinc design (Hamming window). Like the Gaussian filter, the FIR
+filter is implemented as a depthwise \texttt{F.conv1d} convolution for GPU
+efficiency.
+
+We also evaluate \textbf{randomized smoothing}~\cite{cohen2019certified} as a
+certified robustness baseline. Randomized smoothing adds isotropic Gaussian
+noise $\mathcal{N}(0, \sigma^2 I)$ to the input and takes the majority vote
+over $k$ noisy copies. The certified radius is $\sigma \Phi^{-1}(p_A)$, where
+$p_A$ is the probability of the top class under smoothing. We use $\sigma = 0.1$
+and $k = 100$ copies, which is the lowest latency configuration that provides
+non-trivial certificates. All five classical filters and randomized smoothing
+are calibrated and evaluated under identical experimental conditions.
+
+\subsection{Computational Complexity}
+\label{sec:complexity}
+
+The computational cost of each defense is dominated by its core operation.
+FFT Top-$K$ (and adaptive-$K$) requires $\mathcal{O}(T \log T)$ for the real
+FFT, $\mathcal{O}(T)$ for magnitude computation, $\mathcal{O}(T \log K)$ for
+top-$K$ selection via partial sort, and $\mathcal{O}(T \log T)$ for the inverse
+FFT. The spectral flatness computation adds $\mathcal{O}(T)$. Total per-sample
+cost is $\mathcal{O}(T \log T)$, dominated by the FFT.
+
+Among the classical filters, Gaussian and FIR convolutions cost
+$\mathcal{O}(T \cdot M)$ per channel, where $M$ is the filter length (typically
+17--33 taps); both are implemented as GPU-native depthwise convolutions with
+negligible latency. Savitzky-Golay uses a precomputed coefficient vector and has
+the same $\mathcal{O}(T \cdot w)$ complexity as a FIR filter. Kalman filtering
+requires a sequential state update loop, with $\mathcal{O}(T)$ operations per
+sample but poor parallelism (the state update at time $t$ depends on time $t-1$),
+necessitating a CPU fallback and incurring higher per-batch latency despite lower
+asymptotic complexity. Wiener filtering applies per-bin frequency-domain
+weighting in $\mathcal{O}(T \log T + T)$ using a precomputed gain vector.
+Randomized smoothing requires $k$ forward passes through the classifier ($k=100$
+by default), making it $100\times$ more expensive than a single inference.
+Detailed latency measurements and throughput comparisons are reported in
+Section~\ref{sec:results}.
