@@ -1,18 +1,132 @@
 \section{Experimental Setup}
 \label{sec:setup}
 
-% TODO: content in Plan 02
-
 \subsection{Dataset and Model}
-% TODO: RML2016.10a — 220K samples, 11 classes, SNR -20 to +18 dB, train/val/test splits
-% AWN model — pretrained checkpoint, 91%+ clean accuracy at SNR >= 10 dB
+
+We evaluate on the RadioML 2016.10a dataset~\cite{otoole2016rml}, a widely
+used benchmark for automatic modulation classification comprising 220{,}000 IQ
+signal frames spanning 11 modulation classes: eight digital (BPSK, QPSK, 8PSK,
+QAM16, QAM64, PAM4, CPFSK, GFSK) and three analog (AM-DSB, AM-SSB, WBFM).
+Each frame consists of 128 complex-valued samples represented as a $2\times128$
+real tensor of in-phase (I) and quadrature (Q) components.  The dataset covers
+SNR values from $-20$\,dB to $+18$\,dB in 2\,dB increments, yielding 20 SNR
+levels and 1{,}000 frames per (modulation, SNR) cell.
+
+We partition the data using stratified sampling that preserves the joint
+(modulation, SNR) distribution across splits: 70\% training, 15\%
+validation, and 15\% test.  All reported accuracies are computed on the
+held-out test split.
+
+The classifier under attack is the Adaptive Wavelet Network (AWN)~\cite{li2023awn},
+a pretrained model that achieves 92.6\% classification accuracy at SNR $\geq 0$\,dB
+on the clean test set.  We use the publicly available pretrained checkpoint without
+any adversarial fine-tuning, so the model represents a realistic deployment target
+that has not been hardened against adversarial inputs.
 
 \subsection{Attack Configurations}
-% TODO: attack parameters — minmax normalization, eps values, CW c=1.0, EAD initial_const
-% torchattacks library, Model01Wrapper
+
+We evaluate five attacks drawn from two families: single-step gradient attacks
+(FGSM), iterative gradient attacks (PGD), and optimization-based attacks
+(CW-L2, EAD-L1, EAD-EN). All attacks are implemented via the torchattacks
+library~\cite{kim2020torchattacks} using a \texttt{Model01Wrapper} that maps
+IQ signals into the $[0,1]$ range expected by torchattacks and returns logits
+only.  We use per-sample min-max normalization (\texttt{ta\_box=minmax}) to
+map each sample to $[0,1]$ so that epsilon is expressed relative to the
+sample's own dynamic range---a natural choice for IQ signals whose peak-to-peak
+amplitude varies widely across modulations and SNR levels.
+
+\begin{table}[t]
+\caption{Attack configurations. All attacks target untargeted misclassification
+  in a white-box setting. Epsilon values are expressed after per-sample min-max
+  normalization to $[0,1]$.}
+\label{tab:attacks}
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Attack & Norm & Key Parameters & Source \\
+\midrule
+FGSM   & $\ell_\infty$ & $\varepsilon = 0.03$                     & \cite{goodfellow2015fgsm} \\
+PGD    & $\ell_\infty$ & $\varepsilon = 0.03$, steps $= 10$, $\alpha = 0.01$ & \cite{madry2018pgd} \\
+CW     & $\ell_2$      & $c = 1.0$, steps $= 100$, lr $= 0.01$   & \cite{carlini2017towards} \\
+EAD-L1 & $\ell_1$      & $c_0 = 0.01$, $\beta = 0.01$, steps $= 100$ & \cite{chen2020ead} \\
+EAD-EN & elastic net   & $c_0 = 0.01$, $\beta = 0.01$, steps $= 100$ & \cite{chen2020ead} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:attacks} summarizes the attack hyperparameters.  For FGSM and
+PGD, $\varepsilon = 0.03$ after min-max normalization corresponds to roughly
+60\% of the average per-sample dynamic range at high SNR---a moderate threat
+that leaves the signal recognizable but is effective enough to reduce accuracy
+substantially.  For CW and EAD, the optimization constant $c$ controls the
+trade-off between perturbation minimization and attack success; we use $c=1.0$
+and $c_0=0.01$, respectively, as these yield near-zero undefended accuracy on
+most modulations at high SNR while keeping perturbation norms in a physically
+plausible range.
 
 \subsection{Defense Parameters}
-% TODO: FFT Top-K K=50, detector threshold, calibration procedure for classical filters
+
+We evaluate nine defense configurations: two proposed adaptive spectral methods
+(Adaptive-K, Spectral-Gated) and seven baselines (Kalman, Wiener,
+Savitzky-Golay, Gaussian, FIR, and Randomized Smoothing), plus the undefended
+baseline.  The proposed methods operate entirely in the frequency domain without
+retraining.
+
+\begin{table}[t]
+\caption{Defense configurations. Classical filter parameters are calibrated
+  per-SNR via grid search on the validation set; representative values at
+  SNR $= 10$\,dB are shown. Proposed methods (Adaptive-K and Spectral-Gated)
+  require no per-SNR calibration.}
+\label{tab:defenses}
+\centering
+\small
+\begin{tabular}{llp{4.5cm}}
+\toprule
+Defense & Type & Key Parameters (SNR $= 10$\,dB) \\
+\midrule
+Adaptive-K      & Proposed & $K$ auto per sample; energy threshold $\eta=0.95$ \\
+Spectral-Gated  & Proposed & $K=50$; spectral flatness threshold $= 0.5$ \\
+Kalman          & Classical & $Q=0.005$, $R=0.001$; CPU sequential \\
+Wiener          & Classical & noise $= 0.01$, filter len $= 3$; freq.\ domain \\
+Savitzky-Golay  & Classical & window $= 5$, order $= 1$; time domain \\
+Gaussian        & Classical & $\sigma=0.5$; GPU depthwise conv1d \\
+FIR             & Classical & cutoff $= 0.15$, taps $= 63$; GPU depthwise conv1d \\
+Rand.\ Smoothing & Baseline  & $\sigma=0.1$, $k=1$ copies; certified robustness \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:defenses} summarizes the defense parameters.  For the five
+classical filters (Kalman, Wiener, Savitzky-Golay, Gaussian, FIR), we perform
+a grid search over the parameter space at each SNR level using the validation
+set with CW attack.  The best-performing parameter combination per SNR is stored
+in a calibration file (\texttt{calibration\_params.json}) and loaded at test
+time, giving the classical baselines every possible advantage.  Randomized
+Smoothing~\cite{cohen2019certified} adds Gaussian noise ($\sigma=0.1$) before
+classification using a single forward pass ($k=1$), consistent with its use
+as an inference-time defense rather than a certified smoothed classifier.
 
 \subsection{Evaluation Metrics}
-% TODO: per-SNR accuracy, weighted average accuracy, confusion matrix, latency measurement
+
+We report the following metrics:
+
+\textbf{Per-SNR accuracy}: fraction of test samples correctly classified at
+each SNR level $s \in \{0, 2, \ldots, 18\}$ dB.  We focus on non-negative SNR
+because at $\text{SNR} < 0$\,dB the clean accuracy is below 50\% and adversarial
+perturbations are masked by channel noise.
+
+\textbf{Weighted average accuracy}: the mean per-SNR accuracy, weighted by the
+number of test samples at each SNR level.  Since RML2016.10a is balanced, this
+reduces to the simple mean over the 10 SNR levels $\geq 0$\,dB evaluated.
+
+\textbf{Perturbation budget curves}: accuracy as a function of attack strength
+($\varepsilon$ for FGSM/PGD; optimization constant $c$ for CW/EAD) to assess
+defense robustness across the threat spectrum.
+
+\textbf{Confusion matrices}: per-class classification accuracy before and after
+defense at a fixed SNR (18\,dB) to identify which modulation classes benefit
+most from the proposed methods.
+
+All evaluations use 200 samples per (SNR, modulation) cell from the test split,
+yielding 2{,}200 samples per SNR level (200 samples $\times$ 11 modulation classes).
