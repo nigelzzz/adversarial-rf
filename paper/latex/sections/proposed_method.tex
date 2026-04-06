@@ -1,0 +1,24 @@
+\section{Proposed Defense Methods}
+\label{sec:method}
+
+% TODO: content in Plan 02
+
+\subsection{Autoencoder-Based Anomaly Detection}
+% TODO: 1D conv autoencoder architecture, KL divergence score, threshold calibration
+
+\subsection{FFT Top-K Spectral Recovery}
+% TODO: normalize -> rFFT -> keep top-K bins -> iRFFT -> denormalize
+% K selection, why it works for adversarial perturbations
+
+\subsection{Spectral-Gated Defense (Detector + FFT Top-K)}
+% TODO: pipeline: detect -> gate -> recover; reduces false-positive denoising on clean signals
+
+\subsection{Adaptive-K Selection}
+% TODO: K chosen via calibration sweep; adaptive_k in results
+
+\subsection{Classical Filter Baselines}
+% TODO: Kalman, Wiener, Savitzky-Golay, Gaussian, FIR implementations
+% Parameter calibration procedure
+
+\subsection{Randomized Smoothing Baseline}
+% TODO: Cohen et al. approach adapted to IQ signals; sigma and k parameters

@@ -1,0 +1,74 @@
+\documentclass[journal]{IEEEtran}
+
+% ---- Packages ----
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref}   % Must be loaded LAST among these packages
+
+\graphicspath{{figures/}}
+
+% ---- Title ----
+\title{Adaptive Spectral Defense for Real-Time Recovery of\\
+  Deep-Learning-Based Modulation Classifiers\\
+  Under Adversarial Attack}
+
+% ---- Authors ----
+\author{%
+  Author~One,~\IEEEmembership{Member,~IEEE,}
+  Author~Two,~\IEEEmembership{Member,~IEEE,}
+  and~Author~Three%
+  \thanks{Manuscript received \today.}%
+}
+
+\markboth{IEEE Trans.\ on Cognitive Commun.\ and Netw.}%
+{Author \MakeLowercase{\textit{et al.}}: Adaptive Spectral Defense}
+
+\begin{document}
+
+\maketitle
+
+% ---- Abstract ----
+\begin{abstract}
+Deep-learning-based automatic modulation classifiers (AMC) achieve
+high accuracy under benign channel conditions but are vulnerable to
+adversarial perturbations crafted by optimization-based attacks.
+We propose an adaptive spectral defense pipeline that first detects
+adversarial inputs using an autoencoder anomaly score and then
+applies an FFT Top-K recovery operator gated by that score.
+Evaluated on RML2016.10a against five attacks (CW, EAD-L1, EAD-EN,
+FGSM, PGD), the unified pipeline recovers up to 79.8\% accuracy
+compared with 75.6\% for the undefended model, while incurring only
+sub-millisecond latency overhead.
+% TODO: finalize abstract with exact numbers after Plan 02
+\end{abstract}
+
+% ---- Keywords ----
+\begin{IEEEkeywords}
+adversarial machine learning, automatic modulation classification,
+input transformation defense, spectral filtering, RF security
+\end{IEEEkeywords}
+
+% ---- Sections ----
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/system_model}
+\input{sections/proposed_method}
+\input{sections/experimental_setup}
+\input{sections/results}
+\input{sections/conclusion}
+
+% ---- Bibliography ----
+\nocite{*}  % Include all references even without explicit \cite{} in stubs
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}
