@@ -317,7 +317,7 @@ def plot_freq_spectra_cw():
 
         from util.config import Config, merge_args2cfg
         from models.model import AWN
-        from util.defense import defend
+        from util.defense import fft_adaptive_topk_denoise_normalized
 
         # Load dataset and model
         data_path = os.path.join(repo_root, 'data', 'RML2016.10a_dict.pkl')
@@ -344,9 +344,12 @@ def plot_freq_spectra_cw():
         cfg = Config('2016.10a', train=False)
         model = AWN(
             num_classes=cfg.num_classes,
-            num_levels=cfg.num_levels,
+            num_levels=cfg.num_level,
             in_channels=cfg.in_channels,
-            signal_len=cfg.signal_len,
+            kernel_size=cfg.kernel_size,
+            latent_dim=cfg.latent_dim,
+            regu_details=cfg.regu_details,
+            regu_approx=cfg.regu_approx,
         ).to(device)
         state = torch.load(ckpt_path, map_location=device, weights_only=True)
         model.load_state_dict(state)
@@ -356,27 +359,19 @@ def plot_freq_spectra_cw():
         from util.adv_attack import Model01Wrapper, iq_to_ta_input_minmax, ta_output_to_iq_minmax
         import torchattacks
 
-        wrapper = Model01Wrapper(model, box='minmax', x_ref=x_clean)
-        x_ta = iq_to_ta_input_minmax(x_clean)
-        labels = torch.zeros(1, dtype=torch.long).to(device)  # dummy label
+        wrapper = Model01Wrapper(model)
+        x_ta, a, b = iq_to_ta_input_minmax(x_clean)
+        # Get true label from model prediction on clean signal
+        with torch.no_grad():
+            logit, _ = model(x_clean)
+            labels = logit.argmax(dim=1)
 
         attack = torchattacks.CW(wrapper, c=1.0, steps=100)
         x_adv_ta = attack(x_ta, labels)
-        x_adv = ta_output_to_iq_minmax(x_adv_ta, x_clean)
+        x_adv = ta_output_to_iq_minmax(x_adv_ta, a, b)
 
         # Apply Adaptive-K defense
-        class _CfgProxy:
-            def __init__(self):
-                self.defense = 'adaptive_k'
-                self.def_topk = 50
-                self.detector_ckpt = None
-                self.detector_threshold = 0.004468
-                self.rand_smooth_sigma = 0.01
-                self.rand_smooth_k = 1
-                self.device = device
-
-        cfg_proxy = _CfgProxy()
-        x_rec = defend(x_adv, cfg_proxy)
+        x_rec, _ = fft_adaptive_topk_denoise_normalized(x_adv)
 
         # Compute FFT magnitude spectra (I channel, dB)
         def _fft_db(x_tensor):

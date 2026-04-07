@@ -267,6 +267,32 @@ These results confirm that Adaptive-K and Spectral-Gated are suitable for
 always-on deployment: the clean accuracy penalty is negligible, and no
 threshold-based gating on attack detection is required.
 
+\subsection{Frequency-Domain Visualization}
+
+Figure~\ref{fig:freq_spectra} illustrates the mechanism underlying Adaptive-K
+defense by showing the frequency-domain magnitude spectrum of a representative
+QPSK signal at SNR~$= 18$\,dB.  The clean signal (left) exhibits a
+concentrated spectral profile with energy in a small number of dominant bins.
+After CW attack (center), additional spectral components appear across the
+spectrum---the adversarial perturbation adds energy to bins that did not
+originally carry signal power.  After Adaptive-K recovery (right), these
+extraneous components are removed, and the spectral profile closely resembles
+the original clean signal.  This confirms that the Top-K operator selectively
+retains the signal-bearing bins while discarding the adversarially injected
+energy.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{freq_spectra_cw}
+  \caption{Frequency-domain magnitude spectra for a QPSK signal at
+    SNR~$= 18$\,dB.  \emph{Left:} clean signal.  \emph{Center:} after CW
+    attack ($c = 1.0$).  \emph{Right:} after Adaptive-K recovery.  The
+    adversarial perturbation injects energy into high-frequency bins (center),
+    which the Top-K operator removes (right), restoring the original spectral
+    shape.}
+  \label{fig:freq_spectra}
+\end{figure*}
+
 \subsection{Discussion}
 
 \textbf{Why frequency-domain adaptive methods outperform classical filters on
