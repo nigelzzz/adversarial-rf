@@ -205,6 +205,20 @@ substantially larger (7.5\,pp vs.\ 0.5\,pp), because the $\ell_1$-minimizing
 perturbation is more spectrally localized and thus more completely removed by
 Top-K filtering.
 
+Figure~\ref{fig:confmat_eaden} shows the EAD-EN confusion matrix, which exhibits
+a similar pattern to EAD-L1 due to the shared elastic-net penalty structure.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{confmat_eaden_snr18}
+  \caption{Confusion matrices for EAD-EN attack at SNR $= 18$\,dB.
+    \emph{Left:} before defense.
+    \emph{Right:} after Adaptive-K recovery.
+    The elastic-net penalty produces a perturbation profile intermediate between
+    CW ($\ell_2$) and EAD-L1 ($\ell_1$), and the recovery pattern reflects this.}
+  \label{fig:confmat_eaden}
+\end{figure*}
+
 \subsection{Perturbation Budget Curves}
 
 Figure~\ref{fig:budget} shows accuracy as a function of attack strength for FGSM
