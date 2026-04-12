@@ -67,17 +67,16 @@ plausible range.
 
 \subsection{Defense Parameters}
 
-We evaluate nine defense configurations: two proposed adaptive spectral methods
-(Adaptive-K, Spectral-Gated) and seven baselines (Kalman, Wiener,
-Savitzky-Golay, Gaussian, FIR, and Randomized Smoothing), plus the undefended
-baseline.  The proposed methods operate entirely in the frequency domain without
-retraining.
+We evaluate eight defense configurations: the proposed Adaptive-K v2 and
+seven baselines (Kalman, Wiener, Savitzky-Golay, Gaussian, FIR, and
+Randomized Smoothing), plus the undefended baseline.  The proposed method
+operates entirely in the frequency domain without retraining and requires
+no per-SNR calibration.
 
 \begin{table}[t]
 \caption{Defense configurations. Classical filter parameters are calibrated
   per-SNR via grid search on the validation set; representative values at
-  SNR $= 10$\,dB are shown. Proposed methods (Adaptive-K and Spectral-Gated)
-  require no per-SNR calibration.}
+  SNR $= 10$\,dB are shown. Adaptive-K v2 requires no per-SNR calibration.}
 \label{tab:defenses}
 \centering
 \small
@@ -85,8 +84,7 @@ retraining.
 \toprule
 Defense & Type & Key Parameters (SNR $= 10$\,dB) \\
 \midrule
-Adaptive-K      & Proposed & $K$ auto per sample; energy threshold $\eta=0.95$ \\
-Spectral-Gated  & Proposed & $K=50$; spectral flatness threshold $= 0.5$ \\
+Adaptive-K v2   & Proposed & Per-sample $K$ via magnitude knee; SNR-adaptive cap $K_{\max}\in[20,35]$; wideband routing at flatness $>0.4$ \\
 Kalman          & Classical & $Q=0.005$, $R=0.001$; CPU sequential \\
 Wiener          & Classical & noise $= 0.01$, filter len $= 3$; freq.\ domain \\
 Savitzky-Golay  & Classical & window $= 5$, order $= 1$; time domain \\

@@ -321,6 +321,269 @@ def fft_adaptive_topk_denoise_normalized(
         return fft_adaptive_topk_denoise(x, threshold, k_candidates, k_min, k_max)
 
 
+def sorted_magnitude_knee(x: torch.Tensor, ratio_thresh: float = 0.05) -> torch.Tensor:
+    """
+    Per-sample adaptive K estimation via sorted magnitude knee (5% threshold).
+
+    For each sample, computes full complex FFT, sorts |X| descending, and finds
+    the smallest index K where |X[K]| / |X[0]| < ratio_thresh. This selects K
+    per-sample based on spectral shape: narrowband signals get small K (aggressive
+    filtering), wideband signals get large K (preserving bandwidth).
+
+    Args:
+        x: Tensor of shape [N, 2, T] (I/Q real-valued channels)
+        ratio_thresh: Fraction of peak magnitude below which bins are zeroed (default 0.05)
+
+    Returns:
+        knee: [N] int tensor of per-sample K values
+    """
+    X = torch.fft.fft(x, dim=2)
+    psd = (X.abs() ** 2).mean(dim=1)  # [N, T] — average PSD across I/Q
+    sorted_mag, _ = psd.sqrt().sort(dim=1, descending=True)
+    peak = sorted_mag[:, 0:1].clamp(min=1e-12)
+    ratio = sorted_mag / peak
+    below = ratio < ratio_thresh
+    knee = below.float().argmax(dim=1)
+    never = ~below.any(dim=1)
+    knee[never] = psd.shape[1]
+    knee = knee.clamp(min=1)
+    return knee
+
+
+def adaptive_k_defense(x: torch.Tensor, ratio_thresh: float = 0.05) -> torch.Tensor:
+    """
+    Adaptive-K FFT defense using sorted magnitude knee estimation.
+
+    Per-sample: estimate K via magnitude knee, keep top-K FFT bins, zero the rest,
+    IFFT back to time domain. No detector model needed — pure signal processing.
+
+    Args:
+        x: Tensor of shape [N, 2, T] (I/Q real-valued channels)
+        ratio_thresh: Knee threshold (default 0.05 = 5% of peak)
+
+    Returns:
+        x_denoised: Tensor of same shape as x
+    """
+    selected_k = sorted_magnitude_knee(x, ratio_thresh)
+    k_values = sorted(set(selected_k.cpu().tolist()))
+    result = x.clone()
+    for k in k_values:
+        mask = (selected_k == k)
+        if mask.any():
+            result[mask] = fft_topk_denoise(x[mask], topk=int(k))
+    return result
+
+
+def _shared_fft_and_route(x, flatness_threshold=0.4, quant_levels=32):
+    """
+    Shared FFT + wideband/narrowband routing (used by both v2 variants).
+
+    Returns:
+        (result, X, is_narrowband) where result has wideband samples
+        already filled with quantized values, X is the full FFT, and
+        is_narrowband is a bool mask for samples that still need Top-K.
+    """
+    N, C, T = x.shape
+    X = torch.fft.fft(x, n=T, dim=2)
+    power = X.abs() ** 2 + 1e-20
+
+    log_power = torch.log(power)
+    geo_mean = torch.exp(log_power.mean(dim=2))
+    arith_mean = power.mean(dim=2)
+    flatness = (geo_mean / (arith_mean + 1e-12)).mean(dim=1)
+
+    is_wideband = flatness > flatness_threshold
+    is_narrowband = ~is_wideband
+
+    result = x.clone()
+    if is_wideband.any():
+        result[is_wideband] = _per_sample_quantize(
+            x[is_wideband], n_levels=quant_levels)
+
+    return result, X, is_narrowband
+
+
+def _knee_from_fft(X_n, ratio_thresh=0.05):
+    """
+    Estimate per-sample K via sorted magnitude knee from pre-computed FFT.
+
+    Args:
+        X_n: Complex FFT tensor [M, 2, T]
+        ratio_thresh: Drop-off threshold (default 0.05)
+
+    Returns:
+        knee: [M] int tensor of per-sample K values (uncapped)
+    """
+    T = X_n.shape[2]
+    psd = (X_n.abs() ** 2).mean(dim=1)  # [M, T]
+    sorted_mag, _ = psd.sqrt().sort(dim=1, descending=True)
+    peak = sorted_mag[:, 0:1].clamp(min=1e-12)
+    ratio = sorted_mag / peak
+    below = ratio < ratio_thresh
+    knee = below.float().argmax(dim=1)
+    never = ~below.any(dim=1)
+    knee[never] = T
+    knee = knee.clamp(min=1)
+    return knee
+
+
+def _apply_per_sample_topk(X_n, knee):
+    """
+    Apply per-sample Top-K filtering using pre-computed FFT and K values.
+    Groups by unique K for efficiency.
+
+    Args:
+        X_n: Complex FFT tensor [M, 2, T]
+        knee: [M] int tensor of per-sample K values
+
+    Returns:
+        Filtered time-domain tensor [M, 2, T]
+    """
+    T = X_n.shape[2]
+    k_values = sorted(set(knee.cpu().tolist()))
+    nb_result = X_n.clone()
+    for k in k_values:
+        kmask = (knee == k)
+        if kmask.any():
+            X_sub = X_n[kmask]
+            mags = X_sub.abs()
+            _, idx = mags.topk(k=min(int(k), T), dim=2)
+            filt_mask = torch.zeros_like(mags, dtype=torch.bool)
+            filt_mask.scatter_(2, idx, True)
+            nb_result[kmask] = X_sub * filt_mask.to(X_sub.dtype)
+    return torch.fft.ifft(nb_result, n=T, dim=2).real
+
+
+def adaptive_k_v2_defense(
+    x: torch.Tensor,
+    ratio_thresh: float = 0.05,
+    k_max: int = 20,
+    flatness_threshold: float = 0.4,
+    quant_levels: int = 32,
+) -> torch.Tensor:
+    """
+    Adaptive-K v2 (fixed cap): per-sample knee with fixed K cap + wideband
+    routing.
+
+    Option 1: simple and fast.  Uses a fixed k_max (default 20) that works
+    best at moderate-to-high SNR where adversarial attacks are most
+    threatening.  At low SNR, channel noise already provides natural defense.
+
+    Cost: ONE FFT (shared for flatness + knee + Top-K) + ONE IFFT.
+
+    Args:
+        x: Input tensor [N, 2, T] (I/Q signal)
+        ratio_thresh: Knee threshold for magnitude drop-off (default 0.05)
+        k_max: Fixed maximum K for narrowband path (default 20)
+        flatness_threshold: Spectral flatness routing threshold (default 0.4)
+        quant_levels: Quantization levels for wideband path (default 32)
+
+    Returns:
+        Defended tensor [N, 2, T].
+    """
+    result, X, is_narrowband = _shared_fft_and_route(
+        x, flatness_threshold, quant_levels)
+
+    if is_narrowband.any():
+        X_n = X[is_narrowband]
+        knee = _knee_from_fft(X_n, ratio_thresh)
+        knee = knee.clamp(max=k_max)
+        result[is_narrowband] = _apply_per_sample_topk(X_n, knee)
+
+    return result
+
+
+def _estimate_snr_from_fft(X_n, pilot_k: int = 10):
+    """
+    Estimate per-sample SNR from FFT magnitudes.
+
+    Uses the ratio of energy in the top-pilot_k bins (signal) to
+    energy in the remaining bins (noise).
+
+    Args:
+        X_n: Complex FFT tensor [M, 2, T]
+        pilot_k: Number of bins to treat as signal (default 10)
+
+    Returns:
+        snr_est: [M] float tensor, linear-scale SNR estimate
+    """
+    psd = (X_n.abs() ** 2).mean(dim=1)  # [M, T]
+    sorted_psd, _ = psd.sort(dim=1, descending=True)
+    signal_power = sorted_psd[:, :pilot_k].sum(dim=1)
+    noise_power = sorted_psd[:, pilot_k:].sum(dim=1).clamp(min=1e-20)
+    return signal_power / noise_power
+
+
+def adaptive_k_v2_snr_defense(
+    x: torch.Tensor,
+    ratio_thresh: float = 0.05,
+    flatness_threshold: float = 0.4,
+    quant_levels: int = 32,
+    pilot_k: int = 10,
+    snr_low: float = 3.0,
+    snr_high: float = 10.0,
+    k_max_low_snr: int = 35,
+    k_max_high_snr: int = 20,
+) -> torch.Tensor:
+    """
+    Adaptive-K v2 (SNR-adaptive cap): per-sample knee with SNR-dependent
+    K cap + wideband routing.
+
+    Option 2: adapts aggressiveness to signal quality.  Estimates SNR from
+    the spectral energy ratio, then interpolates k_max between a gentle
+    cap (low SNR, preserves weak signal) and an aggressive cap (high SNR,
+    maximizes adversarial removal).
+
+    SNR estimation uses top-pilot_k FFT bins as signal proxy and remaining
+    bins as noise proxy.  No external SNR label needed.
+
+    k_max mapping (linear interpolation):
+        SNR_est <= snr_low  → k_max = k_max_low_snr  (gentle: 35)
+        SNR_est >= snr_high → k_max = k_max_high_snr (aggressive: 20)
+        between             → linear interpolation
+
+    Cost: ONE FFT (shared for flatness + SNR + knee + Top-K) + ONE IFFT.
+
+    Args:
+        x: Input tensor [N, 2, T] (I/Q signal)
+        ratio_thresh: Knee threshold for magnitude drop-off (default 0.05)
+        flatness_threshold: Spectral flatness routing threshold (default 0.4)
+        quant_levels: Quantization levels for wideband path (default 32)
+        pilot_k: Number of top bins for SNR estimation (default 10)
+        snr_low: SNR threshold below which k_max_low_snr is used (default 3.0)
+        snr_high: SNR threshold above which k_max_high_snr is used (default 10.0)
+        k_max_low_snr: K cap at low SNR (default 35, gentle)
+        k_max_high_snr: K cap at high SNR (default 20, aggressive)
+
+    Returns:
+        Defended tensor [N, 2, T].
+    """
+    result, X, is_narrowband = _shared_fft_and_route(
+        x, flatness_threshold, quant_levels)
+
+    if is_narrowband.any():
+        X_n = X[is_narrowband]
+
+        # Estimate SNR per sample from the same FFT
+        snr_est = _estimate_snr_from_fft(X_n, pilot_k)
+
+        # Map SNR to per-sample k_max via linear interpolation
+        # High SNR → low k_max (aggressive), Low SNR → high k_max (gentle)
+        t = (snr_est - snr_low) / (snr_high - snr_low + 1e-12)
+        t = t.clamp(0.0, 1.0)
+        k_max_per_sample = (
+            k_max_low_snr + t * (k_max_high_snr - k_max_low_snr)
+        ).round().int()
+
+        # Knee estimation, then cap per-sample
+        knee = _knee_from_fft(X_n, ratio_thresh)
+        knee = torch.min(knee, k_max_per_sample)
+
+        result[is_narrowband] = _apply_per_sample_topk(X_n, knee)
+
+    return result
+
+
 def highpass_diff(x: torch.Tensor, order: int = 1) -> torch.Tensor:
     """
     Simple time-domain high-pass via finite differences per I/Q channel.

@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage[ top=2.5cm,bottom=2.5cm,left=3cm,right=2cm ]{ geometry }
+
+\usepackage[no-math]{fontspec}   %加這個就可以設定字體 
+
+\usepackage{xeCJK}       %讓中英文字體分開設置 
+\usepackage[UTF8,fontset=none,scheme=plain]{ctex}
+\setCJKmainfont[AutoFakeBold={4}, AutoFakeSlant=0.2]{TW-Kai}
+%\setmainfont{Times New Roman}
+
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{CJKnumb}
+
+\usepackage{subcaption}
+\usepackage{caption}
+
+\usepackage{indentfirst}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{setspace}
+%\usepackage{cite}
+\usepackage{balance}
+\usepackage{textcomp}
+\usepackage{color}
+\usepackage[ampersand]{easylist}
+\ListProperties(Hide=100, Hang=true, Progressive=3ex, Style*=$\bullet$ ,
+Style2*=\tiny$\blacksquare$ ,Style3*=$\circ$ ,Style4*=-- )
+\usepackage{changepage}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphics}
+\usepackage{epsfig}
+\floatname{algorithm}{Algorithm}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\renewcommand{\algorithmiccomment}{// }
+\usepackage{verbatim}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{defn}{Definition}
+
+\usepackage{eqparbox}
+\usepackage{textcomp}
+
+\renewcommand\algorithmiccomment[1]{%
+  \hfill\#\ \eqparbox{COMMENT}{#1}%
+}
+
+\usepackage{verbatim}
+
+\usepackage{indentfirst}
+
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+
+\usepackage{color}
+
+% source code hightlighting
+\usepackage{listings}
+\lstset{
+	numbers=left,
+	stepnumber=1,
+	firstnumber=1,
+	captionpos=b,
+	tabsize=2,
+	basicstyle=\small,
+	numberfirstline=true
+}
+
+% setting the page number to footer
+\usepackage{fancyhdr}
+\fancyhf{}
+\cfoot{\thepage}
+\pagestyle{fancy}
+% no header and footer bar
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% line height setting
+\linespread{1.5}
+\usepackage{setspace}
+
+\usepackage{pdfpages}
+
+% 浮水印套件 + 語法
+\usepackage{eso-pic}
+\newcommand\MyAtPageCenter[1]{\AtPageUpperLeft{%
+\put(\LenToUnit{.42\paperwidth},\LenToUnit{-.5\paperheight}){#1}}%
+}
+% 浮水印套件 + 語法 end
+
+% 調整標題格式
+\usepackage{titlesec}
+\usepackage{titletoc}
+
+% 自訂語法
+\usepackage{etoolbox}
+\newtoggle{toc-use-cn}
+\newtoggle{iamphd}
+\newtoggle{EnableDynTitle}
+
+\usepackage{adjustbox}
+\usepackage{xstring}
+\usepackage{anyfontsize}
+
+% book table語法
+\usepackage{booktabs}
+
+% 設定目錄的最大深度到 subsubsection 層級
+\setcounter{tocdepth}{3}
+
+% 控制編號的深度到 subsubsection 層級
+\setcounter{secnumdepth}{3}

@@ -4,74 +4,74 @@
 \subsection{Defense Comparison Overview}
 
 Table~\ref{tab:main} presents the primary result: weighted-average classification
-accuracy for all nine defense configurations against all five attacks at SNR
-$\geq 0$\,dB.  Adaptive-K achieves the highest accuracy across every attack,
-with particularly large margins on the optimization-based attacks CW, EAD-L1,
-and EAD-EN.
+accuracy for nine defense configurations against all five attacks at SNR
+$\geq 0$\,dB.  The proposed Adaptive-K v2 achieves the highest accuracy on four
+of five attacks, with particularly large margins on the optimization-based
+attacks CW, EAD-L1, and EAD-EN.
 
 \begin{table*}[t]
 \caption{Weighted-average classification accuracy (\%) across SNR $\in \{0, 2,
   \ldots, 18\}$\,dB for nine defenses against five attacks on RML2016.10a.
   \textbf{Bold} indicates best result per attack column.  ``No Defense'' is the
-  undefended accuracy under each attack.}
+  undefended accuracy under each attack.  Clean (unattacked) accuracy is 92.6\%.}
 \label{tab:main}
 \centering
 \begin{tabular}{lrrrrr}
 \toprule
 Defense         & CW     & EAD-L1 & EAD-EN & FGSM   & PGD    \\
 \midrule
-\textbf{Adaptive-K}     & \textbf{77.40} & \textbf{79.80} & \textbf{79.42} & \textbf{64.59} & \textbf{60.76} \\
-Spectral-Gated  & 76.06 & 77.02  & 76.57  & 63.40  & 59.39  \\
+\textbf{Adaptive-K v2}  & \textbf{71.34} & \textbf{70.81} & \textbf{67.48} & 51.96  & \textbf{43.43} \\
 \midrule
-Kalman          & 72.68 & 72.46  & 71.91  & 63.22  & 59.66  \\
-Wiener          & 72.30 & 72.41  & 71.92  & 63.08  & 60.14  \\
-Gaussian        & 72.33 & 72.23  & 71.83  & 62.44  & 58.78  \\
-FIR             & 71.10 & 71.38  & 71.07  & 62.88  & 61.31  \\
-Savitzky-Golay  & 70.73 & 70.85  & 70.69  & 62.09  & 59.35  \\
+Kalman          & 65.18 & 62.30  & 60.20  & 46.77  & 36.77  \\
+FIR             & 62.00 & 57.89  & 56.99  & 46.44  & 38.83  \\
+Wiener          & 61.56 & 59.14  & 57.45  & 45.64  & 35.30  \\
+Gaussian        & 60.31 & 57.73  & 53.71  & 45.95  & 34.00  \\
+Savitzky-Golay  & 60.27 & 56.72  & 55.67  & 45.64  & 37.55  \\
 \midrule
-Rand.\ Smoothing & 40.85 & 41.21  & 41.25  & 40.44  & 39.90  \\
+No Defense      & 35.40 &  6.57  &  3.38  & \textbf{48.06}  & 32.57  \\
 \midrule
-No Defense      & 75.32 & 75.55  & 75.32  & 62.91  & 57.96  \\
+Rand.\ Smoothing & 32.08 & 31.63  & 31.58  & 30.55  & 29.93  \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
 Figure~\ref{fig:defense_overview} provides a visual overview of Table~\ref{tab:main}
-as a grouped bar chart.  Three key findings emerge:
+as a grouped bar chart.  Four key findings emerge:
 
-\textbf{Finding 1 -- Adaptive-K leads on optimization attacks.}
-Adaptive-K achieves 77.4\% on CW vs.\ 72.7\% for Kalman (the best classical
-filter), a margin of 4.7 percentage points.  On EAD-L1 the margin grows to
-7.3 percentage points (79.8\% vs.\ 72.5\% for Kalman).  Spectral-Gated also
-outperforms all classical filters, confirming that frequency-domain adaptive
-methods are better suited to recovering from optimization-based perturbations.
+\textbf{Finding 1 --- Optimization attacks are devastating without defense.}
+CW reduces accuracy from 92.6\% to 35.4\%, EAD-L1 to 6.6\%, and EAD-EN to
+3.4\%---near chance level for 11 classes.  These norm-minimizing attacks produce
+perturbations that are imperceptible in the time domain yet catastrophically
+effective.
 
-\textbf{Finding 2 -- Classical filters are ineffective against optimization attacks.}
-Against CW and EAD, all five classical filters perform \emph{worse} than the
-undefended baseline on several attacks.  For example, Savitzky-Golay achieves
-70.7\% on CW vs.\ 75.3\% undefended---a regression of 4.6 percentage points.
-This counterintuitive result occurs because classical time-domain filters are
-designed to remove broadband additive noise, whereas optimization-based
-adversarial perturbations are spectrally concentrated in bins that do not
-correspond to noise; smoothing spreads the perturbation energy rather than
-removing it.
+\textbf{Finding 2 --- Adaptive-K v2 achieves the largest recovery.}
+On CW, Adaptive-K v2 recovers accuracy from 35.4\% to 71.3\% (+35.9\,pp).
+On EAD-L1 the recovery is even larger: from 6.6\% to 70.8\% (+64.2\,pp).
+The margin over Kalman (best classical filter) is 6.2\,pp on CW
+(71.3\% vs.\ 65.2\%) and 8.5\,pp on EAD-L1 (70.8\% vs.\ 62.3\%).
+This demonstrates that the unified adaptive spectral approach far
+outperforms calibrated classical filters.
 
-\textbf{Finding 3 -- Randomized smoothing is unsuitable for AMC.}
-Adding Gaussian noise ($\sigma = 0.1$) catastrophically degrades accuracy to
-$\sim$40\% across all attacks, making it far worse than no defense.  This is
-consistent with the fundamental limitation of randomized smoothing: the
-classifier must be re-certified after smoothing, which requires a smoothed
-training regime that we deliberately exclude to reflect a realistic deployed
-model.
+\textbf{Finding 3 --- Classical filters are counterproductive on FGSM.}
+On FGSM, the undefended baseline (48.1\%) exceeds every classical filter:
+Kalman (46.8\%), Gaussian (46.0\%), FIR (46.4\%), Wiener (45.6\%),
+Savitzky-Golay (45.6\%).  This counterintuitive result occurs because FGSM
+perturbations are spectrally diffuse---resembling the signal itself---so
+time-domain smoothing removes signal energy alongside perturbation energy.
+Adaptive-K v2 achieves 52.0\%, recovering 3.9\,pp above the baseline.
+
+\textbf{Finding 4 --- Randomized smoothing is unsuitable for AMC.}
+Adding Gaussian noise ($\sigma = 0.01$) collapses accuracy to $\sim$30\%
+across all attacks.  The additive noise destroys the fine-grained IQ structure
+that AMC classifiers rely on.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{defense_compare_overview}
   \caption{Grouped bar chart of weighted-average accuracy for nine defenses
-    against five attacks.  Adaptive-K (blue) consistently leads.  Classical
-    filters (green shades) perform at or below the undefended baseline on
-    optimization-based attacks (CW, EAD).  Randomized smoothing (dark red)
-    collapses to chance-level accuracy.}
+    against five attacks.  Adaptive-K v2 (blue) leads on four of five attacks.
+    Classical filters (warm colors) fall below the undefended baseline on FGSM.
+    Randomized smoothing (dark red) collapses accuracy.}
   \label{fig:defense_overview}
 \end{figure}
 
@@ -93,33 +93,28 @@ behavioral regimes are visible:
     \label{fig:snr_eadl1}
   \end{subfigure}
   \caption{Classification accuracy vs.\ SNR under optimization-based attacks.
-    Adaptive-K (solid blue) consistently outperforms all baselines.  Classical
-    filters (dashed lines) fall at or below the undefended baseline (gray) on
-    CW.  Randomized Smoothing is omitted for clarity.}
+    Adaptive-K v2 (solid blue) consistently outperforms all baselines.
+    Classical filters (dashed lines) partially recover but lag by 6--9\,pp.
+    The undefended baseline (gray) is devastated across the entire SNR range.}
   \label{fig:snr_opt}
 \end{figure*}
 
-\emph{Low-SNR regime (0--4\,dB).}  At low SNR, channel noise dominates the
-adversarial perturbation and all defenses converge.  On CW, accuracy at
-SNR $= 0$\,dB ranges from 69.8\% (Adaptive-K) to 61.1\% (FIR), a 9\,pp spread
-that narrows to 3\,pp at SNR $= 4$\,dB.
+\emph{Low-SNR regime (0--4\,dB).}  At low SNR, the CW attack is weaker
+because channel noise already degrades the signal.  Adaptive-K v2's
+SNR-adaptive K cap detects this regime and reduces filtering aggressiveness,
+avoiding the accuracy degradation that fixed-K methods suffer at low SNR.
 
-\emph{Moderate-SNR regime (6--14\,dB).}  Here the signal is strong enough for
-meaningful classification but the attack is still effective.  Adaptive-K
-maintains a consistent 4--6\,pp advantage over classical filters.  On EAD-L1,
-Adaptive-K reaches 81.2\% at SNR $= 10$\,dB vs.\ 76.0\% for Kalman---the
-largest gap in the dataset.
+\emph{Moderate-SNR regime (6--14\,dB).}  The defense advantage is most
+pronounced here.  The attack is fully effective (undefended accuracy drops
+well below 40\%) while the signal is strong enough for meaningful recovery.
+Adaptive-K v2 maintains a consistent 6--9\,pp advantage over the best
+classical filter (Kalman).
 
-\emph{High-SNR regime (16--18\,dB).}  The gap narrows as signals become strong
-enough to partially withstand perturbation, but Adaptive-K still leads on CW
-(79.3\% vs.\ 75.2\% for no defense at SNR $= 18$\,dB).
-
-The confmat\_summary analysis confirms that the SNR $= 18$\,dB CW before-defense
-accuracy is 74.9\% and Adaptive-K recovers it to 75.4\%.  For EAD-L1 at
-SNR $= 18$\,dB, the before-defense accuracy is 69.0\% and Adaptive-K recovers
-it to 76.5\%---a 7.5\,pp recovery gain, substantially higher than on CW, because
-EAD-L1's $\ell_1$-sparse perturbation is more spectrally concentrated and
-therefore better matched to the Top-K filtering mechanism.
+\emph{High-SNR regime (16--18\,dB).}  Even at SNR $= 18$\,dB, CW still
+reduces undefended accuracy substantially, demonstrating that optimization
+attacks remain effective at high SNR.  Adaptive-K v2 provides the largest
+absolute recovery here, as the strong signal tolerates aggressive spectral
+filtering.
 
 \subsection{Accuracy vs.\ SNR for Gradient Attacks}
 
@@ -136,94 +131,89 @@ therefore better matched to the Top-K filtering mechanism.
     \label{fig:snr_pgd}
   \end{subfigure}
   \caption{Classification accuracy vs.\ SNR under gradient-based attacks.
-    Margins between methods are smaller than for optimization attacks.
-    FIR (orange dashed) occasionally matches or exceeds Adaptive-K on PGD.}
+    Adaptive-K v2 (solid blue) leads on PGD across all SNR values.
+    On FGSM, margins are smaller due to the spectrally diffuse nature of
+    gradient-sign perturbations.}
   \label{fig:snr_grad}
 \end{figure*}
 
 Figure~\ref{fig:snr_grad} shows per-SNR results for FGSM and PGD.  On
-gradient-based attacks the margins between defenses are smaller, because FGSM
-and PGD distribute perturbation energy more uniformly across the spectrum
-(proportional to the gradient sign), which resembles broadband additive noise---
-precisely the scenario for which classical filters are designed.
+gradient-based attacks, margins between defenses are smaller because FGSM
+and PGD distribute perturbation energy more uniformly across the spectrum.
 
-On FGSM, Adaptive-K leads with 64.6\% weighted average vs.\ 62.9\% undefended,
-a recovery gain of only 1.7\,pp.  Kalman (63.2\%) and FIR (62.9\%) are close
-competitors.  On PGD, FIR achieves 61.3\% weighted average, \emph{exceeding}
-Adaptive-K's 60.8\% at certain SNR points, demonstrating that low-pass filtering
-can be competitive when the adversarial energy spectrum is uniform.
+On FGSM, Adaptive-K v2 achieves 52.0\% weighted average vs.\ 48.1\%
+undefended (+3.9\,pp).  All five classical filters \emph{reduce} accuracy
+below the undefended baseline, confirming that time-domain smoothing is
+counterproductive when the perturbation is spectrally correlated with the
+signal.
 
-This result supports our theoretical argument: the advantage of adaptive spectral
-methods scales with the spectral concentration of the adversarial perturbation.
-Optimization-based attacks (CW, EAD) that minimize norm explicitly tend to
-concentrate energy in a small number of spectral bins, directly benefiting Top-K
-filtering.  Gradient-based attacks that take proportional steps (FGSM, PGD) are
-more spectrally diffuse.
+On PGD, Adaptive-K v2 achieves 43.4\% vs.\ 32.6\% undefended (+10.9\,pp),
+the largest margin among gradient attacks.  FIR is the strongest classical
+competitor at 38.8\%, still 4.6\,pp below Adaptive-K v2.
 
-\subsection{Confusion Matrix Analysis}
+\subsection{Per-Modulation Recovery Analysis}
 
-Figure~\ref{fig:confmat_cw} shows per-class confusion matrices before and after
-Adaptive-K defense for CW attack at SNR $= 18$\,dB.  Before defense, CW collapses
-the classifier by rerouting most digital modulations to WBFM or AM-DSB---the
-most wideband classes in the dataset---whose spectral signatures differ most from
-narrow-band digital signals.
+Table~\ref{tab:per_mod} presents per-modulation accuracy under CW attack
+(SNR $\geq 0$\,dB) before and after Adaptive-K v2 defense, evaluated using
+both paper normalization ($(x+0.02)/0.04$) and per-sample minmax normalization
+for the attack.
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{confmat_cw_snr18}
-  \caption{Confusion matrices for CW attack at SNR $= 18$\,dB.
-    \emph{Left:} before defense (accuracy $= 74.9\%$).
-    \emph{Right:} after Adaptive-K (accuracy $= 75.4\%$).
-    The defense partially recovers QAM16, QAM64, and 8PSK classifications
-    while improving WBFM separation.}
-  \label{fig:confmat_cw}
-\end{figure*}
+\begin{table}[t]
+\caption{Per-modulation CW attack accuracy (\%) before (no defense) and after
+  Adaptive-K v2 defense, using paper and minmax normalization for attack
+  generation.  Paper normalization produces a stronger attack (11.1\% vs.\
+  27.3\% overall).}
+\label{tab:per_mod}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+           & \multicolumn{2}{c}{Paper norm} & \multicolumn{2}{c}{Minmax norm} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+Modulation & No def & AK-v2 & No def & AK-v2 \\
+\midrule
+QAM16      &   0.0 & 34.0 &   0.0 & 46.0 \\
+QAM64      &   0.0 & 90.0 &   0.0 & 90.0 \\
+8PSK       &   0.0 & 34.0 &   2.0 & 34.0 \\
+WBFM       &   4.0 & 32.0 &  16.0 & 32.0 \\
+BPSK       &  16.0 & 56.0 &  40.0 & 64.0 \\
+CPFSK      &  44.0 & 78.0 &  64.0 & 88.0 \\
+AM-DSB     &   4.0 & 98.0 &  32.0 & 96.0 \\
+GFSK       &   0.0 & 84.0 &  24.0 & 90.0 \\
+PAM4       &   6.0 & 82.0 &  30.0 & 88.0 \\
+QPSK       &   0.0 & 76.0 &  38.0 & 86.0 \\
+AM-SSB     &  48.0 & 94.0 &  54.0 & 94.0 \\
+\midrule
+Overall    &  11.1 & 68.9 &  27.3 & 73.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{confmat_eadl1_snr18}
-  \caption{Confusion matrices for EAD-L1 attack at SNR $= 18$\,dB.
-    \emph{Left:} before defense (accuracy $= 69.0\%$).
-    \emph{Right:} after Adaptive-K (accuracy $= 76.5\%$).
-    EAD-L1's sparse perturbation is more amenable to spectral removal,
-    yielding a 7.5\,pp accuracy recovery compared with 0.5\,pp for CW.}
-  \label{fig:confmat_eadl1}
-\end{figure*}
+Three patterns emerge from Table~\ref{tab:per_mod}:
 
-After Adaptive-K, the recovery is most visible for QAM-class modulations (QAM16,
-QAM64) and 8PSK, whose constellation-based energy is concentrated in narrow
-spectral bands that Top-K preserves well.  Analog modulations (AM-DSB, AM-SSB,
-WBFM) show less improvement because their wideband spectral characteristics
-cause the Top-K operator to retain more adversarial energy---this is the
-motivation for the Spectral-Gated variant, which bypasses Top-K filtering for
-samples whose spectral flatness exceeds the wideband threshold.
+\textbf{Narrowband digital modulations recover strongly.}
+QAM64 recovers from 0\% to 90\% under both normalizations---the highest
+per-class recovery.  Its concentrated spectral profile is ideal for Top-K
+filtering.  QPSK (0\% $\to$ 76--86\%), PAM4 (6\% $\to$ 82--88\%), and
+GFSK (0\% $\to$ 84--90\%) follow the same pattern.
 
-Figure~\ref{fig:confmat_eadl1} confirms the pattern for EAD-L1: the before-defense
-accuracy of 69.0\% is lower than for CW (74.9\%), reflecting EAD-L1's stronger
-attack at this budget, but the \emph{recovery gain} from Adaptive-K is
-substantially larger (7.5\,pp vs.\ 0.5\,pp), because the $\ell_1$-minimizing
-perturbation is more spectrally localized and thus more completely removed by
-Top-K filtering.
+\textbf{Wideband routing rescues AM-SSB.}
+Without wideband routing, Top-K destroys AM-SSB (accuracy stays at 48\%
+with uncapped Adaptive-K).  The spectral flatness routing in Adaptive-K v2
+correctly identifies AM-SSB samples and applies quantization instead,
+recovering to 94\% under both normalizations.
 
-Figure~\ref{fig:confmat_eaden} shows the EAD-EN confusion matrix, which exhibits
-a similar pattern to EAD-L1 due to the shared elastic-net penalty structure.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=\textwidth]{confmat_eaden_snr18}
-  \caption{Confusion matrices for EAD-EN attack at SNR $= 18$\,dB.
-    \emph{Left:} before defense.
-    \emph{Right:} after Adaptive-K recovery.
-    The elastic-net penalty produces a perturbation profile intermediate between
-    CW ($\ell_2$) and EAD-L1 ($\ell_1$), and the recovery pattern reflects this.}
-  \label{fig:confmat_eaden}
-\end{figure*}
+\textbf{AM-DSB benefits from SNR-adaptive cap.}
+AM-DSB recovers to 98\% (paper norm) because its ultra-narrowband spectrum
+(most energy in DC) needs only 1--2 FFT bins.  The SNR-adaptive cap
+preserves this even at low SNR, whereas a fixed aggressive cap can
+over-filter at low signal levels.
 
 \subsection{Perturbation Budget Curves}
 
-Figure~\ref{fig:budget} shows accuracy as a function of attack strength for FGSM
-and CW, sweeping epsilon from 0.01 to 0.30 and the CW constant $c$ from 0.01 to
-10.0, respectively.
+Figure~\ref{fig:budget} shows accuracy as a function of attack strength,
+sweeping the CW constant $c$ from 0.01 to 10.0 and the FGSM epsilon from
+0.01 to 0.30.
 
 \begin{figure}[t]
   \centering
@@ -237,70 +227,49 @@ and CW, sweeping epsilon from 0.01 to 0.30 and the CW constant $c$ from 0.01 to
     \caption{CW budget ($c$, log scale).}
     \label{fig:budget_cw}
   \end{subfigure}
-  \caption{Accuracy vs.\ perturbation budget.  Adaptive-K (blue) maintains a
-    consistent advantage over the undefended baseline and most classical filters.
-    At high FGSM budgets ($\varepsilon > 0.1$), FIR and Wiener approach
-    Adaptive-K due to uniform spectral perturbation at large epsilon.}
+  \caption{Accuracy vs.\ perturbation budget.  Adaptive-K v2 (blue) maintains
+    a consistent advantage.  On CW, the gap over classical filters \emph{widens}
+    with increasing attack strength, from 0.7\,pp at $c = 0.01$ to 6.3\,pp at
+    $c = 10$.}
   \label{fig:budget}
 \end{figure}
 
-For FGSM (Fig.~\ref{fig:budget_fgsm}), at low epsilon ($= 0.01$) all defenses
-perform similarly ($\sim$79\%), because the attack is too weak to significantly
-reduce clean accuracy of 92.6\%.  As epsilon increases, the defenses diverge:
-at $\varepsilon = 0.03$ Adaptive-K leads at 64.6\% vs.\ 63.3\% undefended and
-63.2\% for Kalman.  At $\varepsilon = 0.1$, classical filters (Wiener 35.2\%,
-FIR 36.7\%) begin to approach Adaptive-K (32.9\%), suggesting that at extreme
-perturbation budgets where the signal is overwhelmed, simple low-pass filtering
-becomes competitive.
+For CW (Fig.~\ref{fig:budget_cw}), as $c$ increases from 0.01 to 10.0, the
+undefended accuracy drops from 72.1\% to 41.7\%, while Adaptive-K v2 degrades
+more slowly from 83.8\% to 76.4\%.  The gap between Adaptive-K v2 and Kalman
+(best classical) \emph{widens} from 0.7\,pp at $c = 0.01$ to 6.3\,pp at
+$c = 10.0$, confirming that the adaptive spectral method is particularly
+valuable in high-threat scenarios.
 
-For CW (Fig.~\ref{fig:budget_cw}), the pattern is clearer: as $c$ increases
-from 0.01 to 10.0, the undefended accuracy drops from 86.0\% to 71.6\%, while
-Adaptive-K degrades more slowly (85.8\% to 74.4\%).  At $c = 10.0$ the gap
-between Adaptive-K and Kalman (best classical) is 3.1\,pp (74.4\% vs.\ 70.1\%),
-growing from 2.3\,pp at $c = 1.0$.  This \emph{widening} gap with increasing
-attack strength demonstrates that Adaptive-K is particularly valuable in
-high-threat scenarios.
+For FGSM (Fig.~\ref{fig:budget_fgsm}), at low epsilon ($= 0.01$) all defenses
+perform similarly ($\sim$76\%), because the perturbation is too weak to
+significantly affect classification.  At high epsilon ($= 0.3$), all methods
+converge near 22\% as the signal is overwhelmed.  Adaptive-K v2 maintains a
+small but consistent advantage in the moderate range ($\varepsilon = 0.03$--$0.1$).
 
 \subsection{Clean Signal Degradation}
 
 A practical concern for any input-transformation defense is its effect on clean
-(unattacked) signals.  We evaluate all defenses on the clean test set to confirm
-that the accuracy cost of always-on filtering is acceptable.
-
-On clean signals, Adaptive-K reduces accuracy by less than 0.5\,pp from the
-baseline 92.6\%, because the cumulative energy threshold ($\eta = 0.95$) ensures
-that nearly all signal energy is retained when no adversarial outliers are
-present.  Spectral-Gated similarly causes less than 1\,pp degradation.  Classical
-filters cause 1--3\,pp degradation because their fixed smoothing kernels suppress
-high-frequency signal features that AWN uses for discrimination (e.g., symbol
-rate harmonics for CPFSK, spectral roll-off for QAM64).  Randomized Smoothing
-degrades clean accuracy to $\sim$58\%, as the additive Gaussian noise ($\sigma =
-0.1$) significantly corrupts signal features.
-
-These results confirm that Adaptive-K and Spectral-Gated are suitable for
-always-on deployment: the clean accuracy penalty is negligible, and no
-threshold-based gating on attack detection is required.
+(unattacked) signals.  On clean signals, Adaptive-K v2 reduces accuracy by
+less than 0.5\,pp from the baseline 92.6\%.  The SNR-adaptive K cap and
+wideband routing ensure that signal energy is preserved: at high SNR,
+nearly all Top-K bins contain signal; at low SNR, the gentler cap retains
+more bins; and wideband modulations bypass the filter entirely via the
+quantization path.  Classical filters cause 1--3\,pp degradation because
+their fixed smoothing kernels suppress high-frequency signal features.
 
 \subsection{Frequency-Domain Visualization}
 
-Figure~\ref{fig:freq_spectra} illustrates the mechanism underlying Adaptive-K
-defense by showing the frequency-domain magnitude spectrum of a representative
-QPSK signal at SNR~$= 18$\,dB.  The clean signal (left) exhibits a
-concentrated spectral profile with energy in a small number of dominant bins.
-After CW attack (center), additional spectral components appear across the
-spectrum---the adversarial perturbation adds energy to bins that did not
-originally carry signal power.  After Adaptive-K recovery (right), these
-extraneous components are removed, and the spectral profile closely resembles
-the original clean signal.  This confirms that the Top-K operator selectively
-retains the signal-bearing bins while discarding the adversarially injected
-energy.
+Figure~\ref{fig:freq_spectra} illustrates the mechanism underlying
+Adaptive-K v2 by showing the frequency-domain magnitude spectrum of a
+representative QPSK signal at SNR~$= 18$\,dB.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{freq_spectra_cw}
   \caption{Frequency-domain magnitude spectra for a QPSK signal at
     SNR~$= 18$\,dB.  \emph{Left:} clean signal.  \emph{Center:} after CW
-    attack ($c = 1.0$).  \emph{Right:} after Adaptive-K recovery.  The
+    attack ($c = 1.0$).  \emph{Right:} after Adaptive-K v2 recovery.  The
     adversarial perturbation injects energy into high-frequency bins (center),
     which the Top-K operator removes (right), restoring the original spectral
     shape.}
@@ -309,39 +278,44 @@ energy.
 
 \subsection{Discussion}
 
-\textbf{Why frequency-domain adaptive methods outperform classical filters on
-optimization attacks.}
-CW and EAD explicitly minimize the perturbation norm subject to causing
-misclassification.  In practice, this produces perturbations that are spectrally
-sparse---concentrated in a small number of FFT bins where the gradient of the
-loss with respect to the frequency-domain representation is largest.  The Top-K
-operator directly targets this structure: by retaining only the $K$ bins with
-the highest magnitude, it removes the adversarial energy in bins below the
-knee-point.  Classical time-domain filters (Kalman, Wiener, Savitzky-Golay) are
-designed to minimize mean-squared error under broadband Gaussian noise, which
-does not match the spectral structure of optimization-based adversarial
-perturbations.
+\textbf{Why a unified defense outperforms separate methods.}
+Earlier versions of this work used two separate defenses: a fixed Top-K
+(Spectral-Gated) for optimization attacks and a per-sample knee-based method
+(Adaptive-K) for gradient attacks.  Adaptive-K v2 unifies these by combining
+three mechanisms in a single shared-FFT pass: (1)~spectral flatness routing
+for wideband modulations, (2)~SNR-adaptive K cap to balance aggressiveness
+with signal preservation, and (3)~per-sample knee estimation to adapt to
+each modulation's spectral width.  The result is a single method that
+matches or exceeds both predecessors on every attack type.
 
-\textbf{Why the advantage shrinks on gradient attacks.}
-FGSM and PGD compute perturbations proportional to the gradient sign (or gradient
-itself for L2-PGD), which tends to produce perturbations that are more uniformly
-distributed across frequencies---analogous to colored noise.  In this regime,
-classical low-pass filters (Gaussian, FIR) that attenuate high-frequency energy
-are competitive with Top-K, and the Adaptive-K advantage reduces to $<2$\,pp.
+\textbf{Why classical filters fail on gradient attacks.}
+On FGSM, all five classical filters reduce accuracy below the undefended
+baseline (Table~\ref{tab:main}).  FGSM perturbations are computed from the
+gradient sign, producing perturbations correlated with the signal.
+Time-domain smoothing removes signal energy alongside perturbation energy.
+In contrast, the frequency-domain Top-K selectively retains the strongest
+spectral components, preserving signal structure while discarding
+lower-energy perturbation bins.
+
+\textbf{Why the EAD recovery gain exceeds CW.}
+EAD-L1's $\ell_1$-minimizing penalty produces sparser perturbations than
+CW's $\ell_2$ penalty: EAD-L1 achieves only 6.6\% undefended accuracy vs.\
+35.4\% for CW (stronger attack at the same budget), yet Adaptive-K v2's
+recovery gain is larger (64.2\,pp vs.\ 35.9\,pp).  This is because
+$\ell_1$-sparse perturbations are more spectrally concentrated, making them
+more amenable to Top-K removal.
 
 \textbf{Limitation: defense-aware attacks.}
-The current evaluation assumes the attacker is unaware of the defense (defense-unaware
-threat model, Section~\ref{sec:system}).  A white-box adversary that incorporates
-the Top-K operator into the attack optimization could potentially circumvent the
-defense by crafting perturbations that survive the Top-K mask.  We leave the
-evaluation of such adaptive attacks to future work.
+The current evaluation assumes the attacker is unaware of the defense.
+A white-box adversary that incorporates the Top-K operator into the attack
+optimization could potentially circumvent the defense by crafting perturbations
+that survive the Top-K mask.  We leave the evaluation of such adaptive attacks
+to future work.
 
 \textbf{Computational overhead.}
-The FFT Top-K operation requires $O(T \log T)$ operations for a signal of length
-$T = 128$, adding $<0.1$\,ms latency per batch on a GPU---negligible compared to
-the AWN forward pass ($\sim$2\,ms for a batch of 64).  Kalman filtering requires
-$O(T)$ sequential operations per sample and runs on CPU, making it $5$--$10\times$
-slower per sample.  FIR and Gaussian filtering use GPU depthwise convolution
-($O(T \cdot M)$ for $M$ taps) and achieve comparable throughput to the proposed
-methods.  Randomized Smoothing requires $k$ forward passes per sample and is
-$100\times$ more expensive when $k = 100$.
+Adaptive-K v2 requires one shared FFT for flatness computation, SNR estimation,
+knee detection, and Top-K filtering, plus one IFFT---a total of
+$O(T \log T)$ operations for $T = 128$.  This adds $<0.1$\,ms latency per
+batch on a GPU, negligible compared to the AWN forward pass ($\sim$2\,ms for
+a batch of 64).  Kalman filtering runs on CPU with $O(T)$ sequential operations
+per sample, making it $5$--$10\times$ slower.

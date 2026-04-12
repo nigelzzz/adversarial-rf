@@ -29,8 +29,12 @@ import torch
 import torch.nn.functional as F
 
 from util.defense import (
+    fft_topk_denoise,
     fft_topk_denoise_normalized,
     spectral_gated_defense,
+    adaptive_k_defense,
+    adaptive_k_v2_defense,
+    adaptive_k_v2_snr_defense,
     normalize_iq_data,
     denormalize_iq_data,
 )
@@ -74,17 +78,51 @@ except ImportError:
 
 def fft_topk_defense_wrapper(x: torch.Tensor, *, topk: int = 50) -> torch.Tensor:
     """
-    Wraps fft_topk_denoise_normalized from util/defense.py.
-    Operates in normalized domain: normalize -> Top-K -> denormalize.
+    FFT Top-K denoising: keep only the top-K frequency bins by magnitude.
+
+    Operates directly on raw IQ data — no normalization needed because Top-K
+    selects bins by relative magnitude (scale/shift invariant).
 
     Args:
-        x: Input tensor [N, 2, T] (raw IQ scale, ~±0.02)
+        x: Input tensor [N, 2, T] (raw IQ scale)
         topk: Number of FFT bins to keep per channel (default: 50)
 
     Returns:
         Denoised tensor in original IQ scale.
     """
-    return fft_topk_denoise_normalized(x, topk=topk)
+    return fft_topk_denoise(x, topk=topk)
+
+
+def adaptive_k_wrapper(x: torch.Tensor, *, ratio_thresh: float = 0.05) -> torch.Tensor:
+    """
+    Wraps adaptive_k_defense from util/defense.py.
+    Per-sample K estimation via sorted magnitude knee, then FFT Top-K filtering.
+
+    Args:
+        x: Input tensor [N, 2, T] (raw IQ scale)
+        ratio_thresh: Knee threshold (default 0.05 = 5% of peak)
+
+    Returns:
+        Denoised tensor in original IQ scale.
+    """
+    return adaptive_k_defense(x, ratio_thresh=ratio_thresh)
+
+
+def adaptive_k_v2_wrapper(x: torch.Tensor, *, k_max: int = 20) -> torch.Tensor:
+    """
+    Adaptive-K v2 (fixed cap): per-sample knee capped at k_max + wideband
+    routing. Best at moderate-to-high SNR where attacks are most threatening.
+    """
+    return adaptive_k_v2_defense(x, k_max=k_max)
+
+
+def adaptive_k_v2_snr_wrapper(x: torch.Tensor) -> torch.Tensor:
+    """
+    Adaptive-K v2 (SNR-adaptive cap): estimates SNR from spectral energy
+    ratio, then interpolates k_max between 35 (low SNR) and 20 (high SNR).
+    Best across the full SNR range.
+    """
+    return adaptive_k_v2_snr_defense(x)
 
 
 def spectral_gated_wrapper(x: torch.Tensor, *, topk: int = 20) -> torch.Tensor:
@@ -113,12 +151,15 @@ DEFENSE_REGISTRY: dict = {
     'gaussian':       gaussian_filter,
     'fir':            fir_filter,
     'fft_topk':       fft_topk_defense_wrapper,
-    'spectral_gated': spectral_gated_wrapper,
+    'adaptive_k':     adaptive_k_wrapper,
+    'adaptive_k_v2':      adaptive_k_v2_wrapper,
+    'adaptive_k_v2_snr':  adaptive_k_v2_snr_wrapper,
+    'spectral_gated':     spectral_gated_wrapper,
     'rand_smooth':    None,   # special case: classifier wrapper, not signal filter
 }
 
 # GPU-native defenses: time with torch.cuda.Event
-_GPU_DEFENSES = {'gaussian', 'fir', 'fft_topk', 'spectral_gated'}
+_GPU_DEFENSES = {'gaussian', 'fir', 'fft_topk', 'adaptive_k', 'adaptive_k_v2', 'adaptive_k_v2_snr', 'spectral_gated'}
 
 # CPU-resident defenses: time with time.perf_counter
 _CPU_DEFENSES = {'kalman', 'wiener', 'savitzky_golay'}
@@ -426,6 +467,10 @@ def _apply_filter(
     if defense_name == 'fft_topk':
         topk = int(getattr(cfg, 'def_topk', 50))
         return filter_fn(x, topk=topk)
+
+    elif defense_name == 'adaptive_k_v2':
+        k_max = int(getattr(cfg, 'def_k_max', 25))
+        return filter_fn(x, k_max=k_max)
 
     elif defense_name == 'spectral_gated':
         topk = int(getattr(cfg, 'def_topk', 20))

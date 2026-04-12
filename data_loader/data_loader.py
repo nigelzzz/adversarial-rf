@@ -7,7 +7,8 @@ import torch.utils.data as Data
 def Load_Dataset(dataset,
                  logger,
                  mod_filter=None,
-                 snr_filter=None):
+                 snr_filter=None,
+                 snr_min=None):
     if dataset == '2016.10a':
         classes = {b'QAM16': 0, b'QAM64': 1, b'8PSK': 2, b'WBFM': 3, b'BPSK': 4,
                    b'CPFSK': 5, b'AM-DSB': 6, b'GFSK': 7, b'PAM4': 8, b'QPSK': 9, b'AM-SSB': 10}
@@ -46,6 +47,8 @@ def Load_Dataset(dataset,
         sel_snrs = all_snrs
         if snr_filter is not None:
             sel_snrs = [s for s in all_snrs if s == snr_filter]
+        if snr_min is not None:
+            sel_snrs = [s for s in sel_snrs if s >= snr_min]
 
         for mod in sel_mods:
             for snr in sel_snrs:

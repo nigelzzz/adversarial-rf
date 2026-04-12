@@ -43,25 +43,26 @@ accuracy under benign channel conditions but collapse under adversarial
 perturbations crafted by optimization-based attacks such as Carlini--Wagner
 (CW) and Elastic-net Attack (EAD).  Existing defenses require model
 retraining or provide insufficient accuracy recovery in the signal domain.
-We propose adaptive spectral defense methods that filter adversarial
-perturbations in the frequency domain without retraining the classifier.
-Our Adaptive-K method automatically selects per-sample filtering intensity
-using a cumulative-energy knee-point criterion ($\eta = 0.95$), while a
-Spectral-Gated variant routes wideband signals around the filter to avoid
-distorting analog modulations.
+We propose Adaptive-K v2, a unified frequency-domain defense that filters
+adversarial perturbations without retraining the classifier.  The method
+combines three mechanisms in a single shared-FFT pass: spectral flatness
+routing for wideband modulations, SNR-adaptive K-cap to balance filtering
+aggressiveness with signal preservation, and per-sample magnitude-knee
+estimation to adapt to each modulation's spectral width.
 We evaluate against five attacks (CW, EAD-L1, EAD-EN, FGSM, PGD) on
 RML2016.10a using the pretrained Adaptive Wavelet Network (AWN) classifier
 and compare against five calibrated classical filters (Kalman, Wiener,
 Savitzky-Golay, Gaussian, FIR) and Randomized Smoothing.
-Adaptive-K achieves the highest recovery accuracy across all five attacks:
-77.4\% weighted-average accuracy against CW vs.\ 75.3\% undefended and
-72.7\% for the best classical filter (Kalman)---a 4.7~pp improvement.
-On EAD-L1 the gain grows to 7.3~pp (79.8\% vs.\ 72.5\%), reflecting
-the sparser spectral structure of $\ell_1$-minimizing perturbations.
-Notably, all classical filters perform at or below the undefended baseline
-on optimization-based attacks despite per-SNR calibration, demonstrating
-that adaptive frequency-domain methods are superior to conventional
-signal processing for defending AMC classifiers against adversarial inputs.
+Optimization attacks are devastating: CW reduces accuracy to 35.4\% and
+EAD-L1 to 6.6\%.  Adaptive-K v2 recovers CW accuracy to 71.3\%
+(+35.9~pp) and EAD-L1 to 70.8\% (+64.2~pp), outperforming the best
+classical filter (Kalman) by 6.2~pp on CW and 8.5~pp on EAD-L1.
+On gradient attacks, Adaptive-K v2 recovers PGD to 43.4\% (+10.9~pp)
+and FGSM to 52.0\% (+3.9~pp).  Classical filters are counterproductive
+on FGSM, reducing accuracy below the undefended baseline despite
+per-SNR calibration.  These results demonstrate that a single adaptive
+spectral method outperforms all classical signal processing baselines
+across both optimization and gradient attack families.
 The defense adds less than 0.1~ms latency overhead per batch and degrades
 clean accuracy by $<$0.5~pp from the 92.6\% baseline.
 \end{abstract}

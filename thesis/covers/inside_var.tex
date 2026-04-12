@@ -1,0 +1,70 @@
+% 書名頁起至最後一頁皆須加入浮水印
+\AddToShipoutPicture{
+    \put(-5,-15){
+        \parbox[b][\paperheight]{\paperwidth}{%
+            \vfill
+            \centering
+            {\includegraphics[scale=0.65]{covers/logo2.pdf}}%
+            \vfill
+        }
+    }
+}
+
+
+\begin{titlepage}
+  \begin{center}
+
+
+% 如果論文標題太長的話, 可以修改下面的標題字型大小
+% 預設是LARGE, 可以換成其他比較小的語法
+% 大小依序為: LARGE > Large > large > normalsize
+    \begin{minipage}[t][3cm][t]{\textwidth}
+        \centering \LARGE \chineseTitle \\
+        \centering \LARGE \englishTitle \\
+    \end{minipage}
+  
+    \fontsize{14}{14}\selectfont{
+    \begin{tabular}{r l c r l}
+    研\hspace{7pt}究\hspace{7pt}生： & \studentCnName & \hspace{0.6cm} & Student： & \studentEnName \\
+    指導教授： & \advisorCnName ~ 博士 & \hspace{0.6cm} & Advisor： & Dr. \advisorEnName \\
+    \ifdefined\advisorCnNameB % 如果有共同指導教授
+      & \advisorCnNameB ~ 博士 & & & Dr. \advisorEnNameB
+    \fi
+    \end{tabular}
+    }
+    
+    \vspace{2.5cm}
+
+    \fontsize{14}{17}\selectfont{國立陽明交通大學} ~\\
+    \fontsize{14}{17}\selectfont{\NameofDepartmentInstituteCN} ~\\  
+    \fontsize{14}{17}\selectfont{\iftoggle{iamphd}{博士論文}{碩士論文}} ~\\     
+
+
+
+    \vspace{1.8cm}
+
+    \fontsize{14}{14}\selectfont{
+    A \iftoggle{iamphd}{Dissertation}{Thesis} ~\\
+    Submitted to \NameofDepartmentInstituteEN \\
+    \NameofCollegeEN \\
+    National Yang Ming Chiao Tung University \\
+    in Partial Fulfillment of the Requirements \\
+    for the Degree of \\
+    \NameofDegree \\
+    \ifdefined\ResearchTopic
+      in \\ \ResearchTopic
+    \fi
+    }
+    
+    \vspace{\fill}
+
+    \ThesisDate \\
+    Taiwan, Republic of China \\
+    ~ \\
+
+    \fontsize{18}{22}\selectfont  \ThesisDateTW
+
+
+  \end{center}
+\end{titlepage}
+

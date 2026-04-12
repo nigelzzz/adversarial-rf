@@ -78,20 +78,20 @@ This paper makes four contributions:
   filters show competitive performance at low SNR where adversarial attacks are
   less effective than channel noise.
 
-\item \textbf{Spectral-gated routing:} We propose a flatness-based bypass
-  criterion that routes wideband modulations (AM-SSB, spectral flatness
-  $\sim$0.55) to input quantization while routing narrowband modulations
-  (spectral flatness $<$0.04) to FFT Top-$K$ filtering. The routing requires
-  only one shared FFT computation, adding negligible latency. The gated
-  defense recovers AM-SSB from 0\% to 20--65\% accuracy under CW and EAD
-  attacks, where Top-$K$ alone achieves 0\%.
+\item \textbf{Unified adaptive spectral defense (Adaptive-K v2):} We combine
+  three mechanisms in a single shared-FFT pass: (i)~spectral flatness routing
+  for wideband modulations (AM-SSB) to input quantization, (ii)~SNR-adaptive
+  K-cap that adjusts filtering aggressiveness based on estimated signal
+  quality, and (iii)~per-sample magnitude-knee estimation that adapts to each
+  modulation's spectral width.  This single method outperforms all classical
+  baselines on four of five attacks, recovering CW accuracy from 35.4\% to
+  71.3\% (+35.9\,pp) and EAD-L1 from 6.6\% to 70.8\% (+64.2\,pp).
 \end{enumerate}
 
 The remainder of this paper is organized as follows. Section~\ref{sec:related}
 reviews related work on adversarial AMC attacks, defense methods, and classical
 signal processing filters. Section~\ref{sec:system} presents the system model,
 attack formulations, and threat model. Section~\ref{sec:method} describes the
-proposed defense methods including the adaptive-$K$ algorithm, spectral-gated
-routing, and classical filter baselines. Section~\ref{sec:setup} details the
+proposed Adaptive-K v2 defense and classical filter baselines. Section~\ref{sec:setup} details the
 experimental setup. Section~\ref{sec:results} presents results and analysis.
 Section~\ref{sec:conclusion} concludes the paper.

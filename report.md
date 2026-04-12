@@ -36,11 +36,11 @@ The standard AWN model achieves high clean accuracy (90--100% for most modulatio
 
 Adversarial training is broadly effective, recovering 10 of 11 modulations. The QAM64 regression and residual QAM16 weakness indicate that higher-order constellation modulations need either stronger adversarial training schedules or complementary defenses (e.g., FFT Top-K recovery) to close the gap.
 
- EADL1 — Per-SNR Accuracy (all defenses)
-  ┌────────────────┬───────┬───────┬───────┬───────┬───────┬────────┬────────┬────────┐
-  │    Defense     │ SNR=0 │ SNR=2 │ SNR=4 │ SNR=6 │ SNR=8 │ SNR=10 │ SNR=12 │ SNR=14 │
-  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
-  │ no_defense     │ 0.13  │ 0.11  │ 0.11  │ 0.11  │ 0.11  │ 0.11   │ 0.10   │ 0.11   │
-  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
-  │ adaptive_k     │ 0.15  │ 0.14  │ 0.14  │ 0.14  │ 0.14  │ 0.14   │ 0.13   │ 0.15   │
-  ├────────────────┼───────┼───────┼───────┼───────┼───────┼────────┼────────┼────────┤
+---
+
+## EADL1 &mdash; Per-SNR Accuracy (%)
+
+| Defense | 0 dB | 2 dB | 4 dB | 6 dB | 8 dB | 10 dB | 12 dB | 14 dB | 16 dB | 18 dB | **Avg** |
+|:--------|-----:|-----:|-----:|-----:|-----:|------:|------:|------:|------:|------:|--------:|
+| No defense | 30.0 | 35.6 | 24.6 | 15.8 | 12.5 | 11.0 | 9.8 | 11.2 | 11.2 | 10.5 | **17.2** |
+| Adaptive-K | 30.3 | 37.2 | 27.8 | 20.0 | 16.3 | 13.9 | 13.0 | 14.6 | 14.4 | 13.6 | **20.1** |

@@ -56,145 +56,114 @@ approach: adversarial perturbations are spectral artifacts that can in principle
 be attenuated by frequency-domain filtering without destroying the underlying
 modulation waveform.
 
-\subsection{FFT Top-\texorpdfstring{$K$}{K} Filtering}
+\subsection{Adaptive-K v2: Unified Spectral Defense}
+\label{sec:adaptivek}
 
-The fundamental building block of our defense is FFT Top-$K$ filtering,
-which retains the $K$ largest-magnitude spectral components and zeros all
-others. Formally, for a single IQ sample $\mathbf{x} \in \mathbb{R}^{2 \times T}$:
+We propose Adaptive-K v2, a unified defense that combines three mechanisms
+in a single shared-FFT pass: (1)~wideband routing via spectral flatness,
+(2)~SNR-adaptive K-cap, and (3)~per-sample magnitude-knee estimation.
+The method operates directly on raw IQ data without normalization, since
+FFT Top-$K$ selects bins by relative magnitude (scale/shift invariant).
 
-\begin{enumerate}
-  \item \textbf{Normalize:} $\tilde{\mathbf{x}} = (\mathbf{x} + x_{\mathrm{off}})
-    / x_{\mathrm{scale}}$, mapping amplitudes to $[0, 1]$.
-  \item \textbf{FFT:} $\mathbf{X} = \text{rFFT}(\tilde{\mathbf{x}})$, producing
-    a complex spectrum $\mathbf{X} \in \mathbb{C}^{2 \times (T/2+1)}$.
-  \item \textbf{Top-$K$ mask:} For each channel $c \in \{I, Q\}$, compute
-    magnitudes $|\mathbf{X}_c|$ and construct binary mask $\mathbf{m}_c$
-    that retains the $K$ largest entries and zeros the rest.
-  \item \textbf{Inverse FFT:} $\hat{\tilde{\mathbf{x}}} =
-    \text{irFFT}(\mathbf{X} \odot \mathbf{m})$.
-  \item \textbf{Denormalize:} $\hat{\mathbf{x}} = \hat{\tilde{\mathbf{x}}}
-    \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$.
-\end{enumerate}
+\subsubsection{FFT Top-$K$ Filtering}
 
-In compact notation:
+The fundamental building block is FFT Top-$K$ filtering, which retains
+the $K$ largest-magnitude spectral components and zeros all others:
 \begin{equation}
-  \hat{\mathbf{x}} = \text{irFFT}\!\bigl(\mathrm{TopK}\bigl(\text{rFFT}(\tilde{\mathbf{x}}),\, K\bigr)\bigr),
+  \hat{\mathbf{x}} = \text{IFFT}\!\bigl(\mathrm{TopK}\bigl(\text{FFT}(\mathbf{x}),\, K\bigr)\bigr).
   \label{eq:topk}
 \end{equation}
-where the normalization and denormalization are implicit. The rationale is that
-adversarial perturbations, which are added in the amplitude domain, tend to
-distribute energy across the full spectrum; retaining only the dominant $K$
-components removes much of this diffuse adversarial energy while preserving the
-modulation-carrying low-frequency components.
+Adversarial perturbations distribute energy across the full spectrum;
+retaining only the dominant $K$ components removes this diffuse adversarial
+energy while preserving the modulation-carrying spectral components.
 
-\subsection{Spectral-Gated Defense}
-\label{sec:sg}
+\subsubsection{Wideband Routing via Spectral Flatness}
 
-FFT Top-$K$ filtering is effective for narrowband modulations (BPSK, QPSK,
-QAM, etc.) but completely fails for wideband modulations such as AM-SSB,
-whose spectral energy is spread uniformly across frequencies. Top-$K$ filtering
-of AM-SSB destroys the signal itself, reducing recovery accuracy to 0\% even
-when $K$ is generous.
-
-We exploit a robust spectral feature, \emph{spectral flatness}, to detect
-wideband signals without a separate classifier. Spectral flatness is defined as
-the ratio of the geometric mean to the arithmetic mean of the power spectrum:
+FFT Top-$K$ is effective for narrowband modulations (BPSK, QPSK, QAM, etc.)
+but fails for wideband modulations such as AM-SSB, whose spectral energy is
+spread uniformly.  We exploit \emph{spectral flatness} to detect and route
+wideband signals:
 \begin{equation}
   \text{SF}(\mathbf{x}) = \frac{\exp\!\bigl(\tfrac{1}{N}\sum_{k}\ln |X_k|^2\bigr)}
-                               {\tfrac{1}{N}\sum_{k}|X_k|^2},
+                               {\tfrac{1}{N}\sum_{k}|X_k|^2}.
   \label{eq:flatness}
 \end{equation}
-where $X_k$ are the rFFT coefficients and $N = T/2 + 1$ is the number of
-positive-frequency bins. For narrowband modulations at SNR~18~dB, spectral
-flatness is below 0.04 (all energy concentrated in few bins). For AM-SSB,
-flatness is approximately 0.55 (energy spread uniformly across frequencies).
-This gap of more than $18\times$ provides a robust routing threshold with
-negligible misclassification between the two routes.
+Narrowband modulations have $\text{SF} < 0.04$; AM-SSB has $\text{SF} \approx
+0.55$---a gap of more than $18\times$ providing robust routing.  Samples with
+$\text{SF} > 0.4$ are routed to per-sample quantization ($L = 32$ levels)
+instead of Top-$K$.
 
-Algorithm~\ref{alg:gated} presents the spectral-gated defense. The key
-efficiency insight is that the FFT computation is \emph{shared}: the same
-FFT coefficients are used for both the flatness check and the Top-$K$
-operation, requiring no additional computation.
+\subsubsection{SNR-Adaptive K-Cap}
+
+Per-sample $K$ is estimated via the magnitude knee: the smallest index where
+the sorted spectral magnitude drops below 5\% of the peak.  However, two
+problems arise: (1)~adversarial perturbations inflate the spectrum, pushing
+the knee to larger $K$ values that retain adversarial bins; (2)~at low SNR,
+aggressive filtering (small $K$) removes signal along with noise.
+
+We address both by estimating SNR from the same FFT and mapping it to a
+per-sample $K$ cap:
+\begin{equation}
+  \widehat{\text{SNR}}_i = \frac{\sum_{k=1}^{K_p} P_i^{\downarrow}[k]}
+    {\sum_{k=K_p+1}^{T} P_i^{\downarrow}[k]},
+  \label{eq:snr_est}
+\end{equation}
+where $P_i^{\downarrow}$ is the sorted power spectrum and $K_p = 10$ bins
+serve as signal proxy.  The cap is then:
+\begin{equation}
+  K_{\max,i} = \begin{cases}
+    35 & \text{if } \widehat{\text{SNR}}_i \leq 3 \text{ (low SNR, gentle)} \\
+    20 & \text{if } \widehat{\text{SNR}}_i \geq 10 \text{ (high SNR, aggressive)} \\
+    \text{linear interp.} & \text{otherwise}
+  \end{cases}
+  \label{eq:kmax}
+\end{equation}
+The final $K$ per sample is $K_i = \min(\text{knee}_i, K_{\max,i})$.
+
+\subsubsection{Complete Algorithm}
+
+Algorithm~\ref{alg:adaptivek} presents the unified defense.  All steps share
+a single FFT computation.
 
 \begin{algorithm}[t]
-\caption{Spectral-Gated Defense}
-\label{alg:gated}
+\caption{Adaptive-K v2: Unified Spectral Defense}
+\label{alg:adaptivek}
 \begin{algorithmic}[1]
 \Require Input $\mathbf{x} \in \mathbb{R}^{N \times 2 \times T}$,
-  Top-$K$ parameter $K$, quantization levels $L$, flatness threshold $\tau$
+  flatness threshold $\tau = 0.4$, quantization levels $L = 32$,
+  knee ratio $\rho = 0.05$, pilot bins $K_p = 10$
 \Ensure Defended signal $\hat{\mathbf{x}}$
-\State Normalize: $\tilde{\mathbf{x}} \leftarrow (\mathbf{x} + x_{\mathrm{off}}) / x_{\mathrm{scale}}$
-\State $\mathbf{X} \leftarrow \text{rFFT}(\tilde{\mathbf{x}})$
-  \hfill \textit{// shared FFT for all samples}
+\State $\mathbf{X} \leftarrow \text{FFT}(\mathbf{x})$
+  \hfill \textit{// ONE shared FFT}
 \For{each sample $i = 1, \ldots, N$}
   \State $\text{SF}_i \leftarrow \text{SpectralFlatness}(\mathbf{X}_i)$
     \hfill \textit{// Eq.~\eqref{eq:flatness}}
   \If{$\text{SF}_i > \tau$}
     \hfill \textit{// wideband (AM-SSB)}
-    \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{Quantize}(\tilde{\mathbf{x}}_i, L)$
+    \State $\hat{\mathbf{x}}_i \leftarrow \text{Quantize}(\mathbf{x}_i, L)$
   \Else
-    \hfill \textit{// narrowband (all others)}
-    \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{irFFT}(\mathrm{TopK}(\mathbf{X}_i, K))$
+    \hfill \textit{// narrowband}
+    \State $\widehat{\text{SNR}}_i \leftarrow$ Eq.~\eqref{eq:snr_est}
+      \hfill \textit{// from same FFT}
+    \State $K_{\max,i} \leftarrow$ Eq.~\eqref{eq:kmax}
+      \hfill \textit{// SNR-adaptive cap}
+    \State $\text{knee}_i \leftarrow$ first $k$ where $|\mathbf{X}_i^{\downarrow}[k]| / |\mathbf{X}_i^{\downarrow}[1]| < \rho$
+    \State $K_i \leftarrow \min(\text{knee}_i,\; K_{\max,i})$
+    \State $\hat{\mathbf{x}}_i \leftarrow \text{IFFT}(\mathrm{TopK}(\mathbf{X}_i, K_i))$
       \hfill \textit{// reuse FFT}
   \EndIf
 \EndFor
-\State Denormalize: $\hat{\mathbf{x}} \leftarrow \hat{\tilde{\mathbf{x}}} \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$
 \State \Return $\hat{\mathbf{x}}$
 \end{algorithmic}
 \end{algorithm}
 
-Default parameters are $K = 20$, $L = 32$, and $\tau = 0.4$.
-The quantization routing recovers AM-SSB from 0\% to 20--65\% accuracy under
-CW and EAD attacks, a modulation where Top-$K$ alone achieves 0\% recovery.
-
-\subsection{Adaptive-\texorpdfstring{$K$}{K} Defense}
-\label{sec:adaptivek}
-
-Fixed-$K$ filtering applies the same spectral truncation to all signals
-regardless of their inherent bandwidth, which can over-filter wideband
-digital modulations or under-filter narrowband signals under low-SNR attacks.
-The Adaptive-$K$ defense selects the number of retained spectral components
-per sample based on the spectral magnitude distribution.
-
-Algorithm~\ref{alg:adaptivek} describes the per-sample $K$ selection procedure.
-The key idea is that the spectral magnitude profile of a clean modulated signal
-has a characteristic shape: a few dominant components carry most of the energy,
-followed by a rapid decay toward noise floor. The \emph{knee point} of this
-profile---where the cumulative energy first exceeds a threshold $\eta$---defines
-the natural $K$ for that signal. Adversarial perturbations, by distributing
-energy across many bins, push the knee point to larger $K$ values; the adaptive
-method corrects for this by anchoring $K$ to the cumulative energy threshold
-rather than a fixed count.
-
-\begin{algorithm}[t]
-\caption{Adaptive-$K$ Spectral Defense}
-\label{alg:adaptivek}
-\begin{algorithmic}[1]
-\Require Input $\mathbf{x} \in \mathbb{R}^{N \times 2 \times T}$,
-  energy threshold $\eta \in (0, 1)$, $K_{\min}$, $K_{\max}$
-\Ensure Defended signal $\hat{\mathbf{x}}$
-\State Normalize: $\tilde{\mathbf{x}} \leftarrow (\mathbf{x} + x_{\mathrm{off}}) / x_{\mathrm{scale}}$
-\State $\mathbf{X} \leftarrow \text{rFFT}(\tilde{\mathbf{x}})$
-\For{each sample $i = 1, \ldots, N$}
-  \State $\mathbf{m}_i \leftarrow |\mathbf{X}_i|$ \hfill \textit{// per-channel magnitudes, flattened}
-  \State Sort $\mathbf{m}_i$ descending: $\mathbf{m}_i^{\downarrow}$
-  \State $E_{\mathrm{total}} \leftarrow \sum_k (\mathbf{m}_i^{\downarrow}[k])^2$
-  \State $K_i \leftarrow \min\{k : \sum_{j=1}^{k}(\mathbf{m}_i^{\downarrow}[j])^2
-    \geq \eta \cdot E_{\mathrm{total}}\}$
-  \State $K_i \leftarrow \mathrm{clip}(K_i,\; K_{\min},\; K_{\max})$
-  \State $\hat{\tilde{\mathbf{x}}}_i \leftarrow \text{irFFT}(\mathrm{TopK}(\mathbf{X}_i, K_i))$
-\EndFor
-\State Denormalize: $\hat{\mathbf{x}} \leftarrow \hat{\tilde{\mathbf{x}}} \cdot x_{\mathrm{scale}} - x_{\mathrm{off}}$
-\State \Return $\hat{\mathbf{x}}$
-\end{algorithmic}
-\end{algorithm}
-
-Default parameters are $\eta = 0.95$, $K_{\min} = 10$, $K_{\max} = 40$.
-For narrowband modulations (BPSK) at high SNR, the selected $K$ is typically
-10--15; for wideband digital modulations (QAM64, GFSK), it is 20--35.
-On the RML2016.10a dataset, adaptive-$K$ achieves the highest overall
-accuracy among all evaluated defenses, outperforming fixed Top-$K$ by 1--3\%
-on CW attacks and 3--5\% on EAD attacks across SNR 0--18~dB.
+The total cost is one FFT plus one IFFT, or $\mathcal{O}(T \log T)$ per
+sample for $T = 128$.  Each mechanism addresses a specific failure mode:
+wideband routing handles AM-SSB (where Top-$K$ destroys the signal),
+the SNR-adaptive cap prevents adversarial bin inflation at high SNR while
+preserving weak signals at low SNR, and the per-sample knee adapts to each
+modulation's natural spectral width (GFSK uses $K \approx 17$, QPSK
+uses $K \approx 25$).
 
 \subsection{Classical Filter Baselines}
 \label{sec:classical}

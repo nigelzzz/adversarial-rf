@@ -13,7 +13,7 @@ Provides:
 Design decisions (from 02-CONTEXT.md):
   D-01: 5 attacks: CW (L2), EAD-L1, EAD-EN, FGSM (Linf), PGD (Linf)
   D-02: SNR >= 0 dB only — 10 points: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18
-  D-03: 9 defense rows: no_defense, ae_fft_topk, spectral_gated, kalman, wiener,
+  D-03: 9 defense rows: no_defense, adaptive_k, spectral_gated, kalman, wiener,
         savitzky_golay, gaussian, fir, rand_smooth
   D-04: 200 samples per (SNR, modulation) cell
   D-05: eps=0.03 (minmax) for Linf attacks; c=1.0 for CW/EAD
@@ -43,7 +43,6 @@ from util.adv_attack import (
 )
 from util.defense_registry import (
     DEFENSE_REGISTRY,
-    defend,
     randomized_smoothing_predict,
     _apply_filter,
 )
@@ -90,15 +89,16 @@ CONFMAT_ATTACKS = ['cw', 'eadl1', 'eaden']   # 3 optimization attacks
 CONFMAT_SNRS = [0, 10, 18]                    # 3 representative SNR points
 
 DEFENSE_CONFIGS = {
-    'no_defense':      {'defense': 'none'},
-    'ae_fft_topk':     {'defense': 'fft_topk'},  # unified pipeline uses detector gate
-    'spectral_gated':  {'defense': 'spectral_gated'},
-    'kalman':          {'defense': 'kalman'},
-    'wiener':          {'defense': 'wiener'},
-    'savitzky_golay':  {'defense': 'savitzky_golay'},
-    'gaussian':        {'defense': 'gaussian'},
-    'fir':             {'defense': 'fir'},
-    'rand_smooth':     {'defense': 'rand_smooth'},
+    'no_defense':       {'defense': 'none'},
+    'adaptive_k_v2_snr': {'defense': 'adaptive_k_v2_snr'},  # proposed: unified adaptive-K with SNR-aware cap + wideband routing
+    'adaptive_k':       {'defense': 'adaptive_k'},
+    'spectral_gated':   {'defense': 'spectral_gated'},
+    'kalman':           {'defense': 'kalman'},
+    'wiener':           {'defense': 'wiener'},
+    'savitzky_golay':   {'defense': 'savitzky_golay'},
+    'gaussian':         {'defense': 'gaussian'},
+    'fir':              {'defense': 'fir'},
+    'rand_smooth':      {'defense': 'rand_smooth'},
 }
 
 _log = logging.getLogger(__name__)
@@ -137,16 +137,17 @@ def create_attack(
 
     elif name == 'cw':
         c = float(getattr(cfg, 'cw_c', 1.0))
-        cw_steps = int(getattr(cfg, 'cw_steps', 200))
-        cw_lr = float(getattr(cfg, 'cw_lr', 0.005))
-        return torchattacks.CW(wrapped_model, c=c, steps=cw_steps, lr=cw_lr)
+        cw_steps = int(getattr(cfg, 'cw_steps', 100))
+        cw_lr = float(getattr(cfg, 'cw_lr', 0.001))
+        cw_kappa = float(getattr(cfg, 'cw_kappa', 1.0))
+        return torchattacks.CW(wrapped_model, c=c, kappa=cw_kappa, steps=cw_steps, lr=cw_lr)
 
     elif name == 'eadl1':
-        kappa = float(getattr(cfg, 'ead_kappa', 0))
+        kappa = float(getattr(cfg, 'ead_kappa', 1.0))
         lr = float(getattr(cfg, 'ead_lr', 0.01))
-        max_iterations = int(getattr(cfg, 'ead_max_iterations', 100))
+        max_iterations = int(getattr(cfg, 'ead_max_iterations', 200))
         binary_search_steps = int(getattr(cfg, 'ead_binary_search_steps', 9))
-        initial_const = float(getattr(cfg, 'ead_initial_const', 0.001))
+        initial_const = float(getattr(cfg, 'ead_initial_const', 1.0))
         beta = float(getattr(cfg, 'ead_beta', 0.001))
         return torchattacks.EADL1(
             wrapped_model,
@@ -159,11 +160,11 @@ def create_attack(
         )
 
     elif name == 'eaden':
-        kappa = float(getattr(cfg, 'ead_kappa', 0))
+        kappa = float(getattr(cfg, 'ead_kappa', 1.0))
         lr = float(getattr(cfg, 'ead_lr', 0.01))
-        max_iterations = int(getattr(cfg, 'ead_max_iterations', 100))
+        max_iterations = int(getattr(cfg, 'ead_max_iterations', 200))
         binary_search_steps = int(getattr(cfg, 'ead_binary_search_steps', 9))
-        initial_const = float(getattr(cfg, 'ead_initial_const', 0.001))
+        initial_const = float(getattr(cfg, 'ead_initial_const', 1.0))
         beta = float(getattr(cfg, 'ead_beta', 0.001))
         return torchattacks.EADEN(
             wrapped_model,
@@ -304,15 +305,15 @@ def _apply_defense(
 
     Dispatch logic:
     - 'no_defense':     classify adversarial directly without any filtering
-    - 'ae_fft_topk':    use defend() pipeline (detector gate + fft_topk recovery)
     - 'rand_smooth':    use randomized_smoothing_predict() majority-vote wrapper
     - all others:       look up DEFENSE_REGISTRY[name], apply filter, then classify
+                        (includes adaptive_k, classical filters, fft_topk, spectral_gated)
 
     Args:
         defense_name: One of the 9 keys in DEFENSE_CONFIGS
         x_adv:        Adversarial signal tensor [N, 2, T] in raw IQ scale
         model:        AWN model: model(x) -> (logits [N, C], regu_sum)
-        detector:     RFSignalAutoEncoder or None (for ae_fft_topk gate)
+        detector:     RFSignalAutoEncoder or None (unused, kept for API compat)
         cfg:          Config object with defense parameters
         logger:       Logger for progress messages
 
@@ -320,21 +321,12 @@ def _apply_defense(
         predictions: [N] numpy array of int class predictions
     """
     device = x_adv.device
+    model.eval()  # torchattacks may leave model in training mode after attack
 
     if defense_name == 'no_defense':
         with torch.no_grad():
             logits, _ = model(x_adv)
         preds = logits.argmax(dim=1).cpu().numpy()
-
-    elif defense_name == 'ae_fft_topk':
-        # Unified detect->recover->classify pipeline
-        # Temporarily set cfg.defense to 'fft_topk' for the defend() call
-        orig_defense = getattr(cfg, 'defense', 'fft_topk')
-        cfg.defense = 'fft_topk'
-        with torch.no_grad():
-            predictions_tensor, _ = defend(x_adv, model, detector, cfg)
-        cfg.defense = orig_defense
-        preds = predictions_tensor.cpu().numpy()
 
     elif defense_name == 'rand_smooth':
         rs_k     = int(getattr(cfg, 'rs_k', 20))
@@ -346,7 +338,7 @@ def _apply_defense(
         preds = predictions_tensor.cpu().numpy()
 
     else:
-        # Classical filters + fft_topk + spectral_gated:
+        # adaptive_k + classical filters + fft_topk + spectral_gated:
         # apply filter then classify
         filter_fn = DEFENSE_REGISTRY.get(defense_name)
         if filter_fn is None:
@@ -788,22 +780,13 @@ def generate_confusion_matrices(
             results[key_before] = cm_before
 
             # ------------------------------------------------------------------
-            # AFTER defense: apply unified FFT Top-K pipeline (ae_fft_topk, D-14)
+            # AFTER defense: apply adaptive-K FFT filtering (D-14)
             # ------------------------------------------------------------------
-            orig_defense = getattr(cfg, 'defense', 'none')
-            orig_topk = getattr(cfg, 'def_topk', 50)
-
-            cfg.defense = 'fft_topk'
-            cfg.def_topk = int(getattr(cfg, 'def_topk', 50))
-
-            try:
-                with torch.no_grad():
-                    preds_after_tensor, _ = defend(x_adv_all, model, detector, cfg)
-                preds_after = preds_after_tensor.cpu().numpy()
-            finally:
-                # Restore original cfg values
-                cfg.defense = orig_defense
-                cfg.def_topk = orig_topk
+            with torch.no_grad():
+                filter_fn = DEFENSE_REGISTRY.get('adaptive_k_v2_snr', DEFENSE_REGISTRY.get('adaptive_k'))
+                x_filtered = filter_fn(x_adv_all)
+                logits, _ = model(x_filtered)
+                preds_after = logits.argmax(dim=1).cpu().numpy()
 
             cm_after = confusion_matrix(
                 labs_snr_np, preds_after, labels=all_class_labels
@@ -1147,7 +1130,7 @@ def generate_budget_curves(
         except Exception as e:
             logger.warning(f"Could not create pivot table for {attack_name}: {e}")
 
-    # Log summary: first vs last perturbation strength for no_defense and ae_fft_topk
+    # Log summary: first vs last perturbation strength for no_defense and adaptive_k
     for attack_name in all_attacks:
         df_atk = df_agg[df_agg['attack'] == attack_name]
         if df_atk.empty:
@@ -1156,7 +1139,7 @@ def generate_budget_curves(
         if len(param_values) < 2:
             continue
         first_val, last_val = param_values[0], param_values[-1]
-        for defense_name in ['no_defense', 'ae_fft_topk']:
+        for defense_name in ['no_defense', 'adaptive_k_v2_snr', 'adaptive_k']:
             rows_first = df_atk[
                 (df_atk['param_value'] == first_val) & (df_atk['defense'] == defense_name)
             ]

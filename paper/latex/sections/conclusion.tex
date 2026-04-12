@@ -1,11 +1,12 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented an adaptive spectral defense framework for protecting
+We presented Adaptive-K v2, a unified frequency-domain defense for protecting
 deep-learning-based automatic modulation classifiers against adversarial attacks.
-Our framework requires no retraining of the classifier and incurs sub-millisecond
-overhead, making it suitable for always-on deployment in real-time spectrum
-monitoring and cognitive radio applications.
+The method combines spectral flatness routing, SNR-adaptive K-cap, and per-sample
+magnitude-knee estimation in a single shared-FFT pass, requiring no retraining
+and incurring sub-millisecond overhead---suitable for always-on deployment in
+real-time spectrum monitoring and cognitive radio applications.
 
 Through systematic evaluation on the RML2016.10a dataset against five attacks
 (CW, EAD-L1, EAD-EN, FGSM, PGD) and comparison with five calibrated classical
@@ -20,30 +21,28 @@ signal processing baselines, we established four principal findings:
   recovery as the correct defense strategy: the perturbation need only be
   removed to restore correct classification.
 
-\item \textbf{Adaptive-K FFT filtering outperforms all classical baselines on
-  optimization-based attacks.}  By automatically selecting the number of
-  retained spectral components per sample based on cumulative energy threshold
-  ($\eta = 0.95$), Adaptive-K achieves 77.4\% weighted-average accuracy against
-  CW (vs.\ 72.7\% for the best classical filter, Kalman) and 79.8\% against
-  EAD-L1 (vs.\ 72.5\% for Kalman)---improvements of 4.7 and 7.3 percentage
-  points, respectively.
+\item \textbf{Adaptive-K v2 outperforms all classical baselines across attack
+  families.}  The unified method achieves the highest recovery accuracy on four
+  of five attacks: 71.3\% on CW (+35.9\,pp over undefended, +6.2\,pp over
+  Kalman), 70.8\% on EAD-L1 (+64.2\,pp, +8.5\,pp), 67.5\% on EAD-EN
+  (+64.1\,pp, +7.3\,pp), and 43.4\% on PGD (+10.9\,pp, +6.7\,pp).  The
+  SNR-adaptive K-cap ensures robust performance across the full SNR range
+  by automatically adjusting filtering aggressiveness based on estimated
+  signal quality.
 
-\item \textbf{Classical signal processing filters are ineffective against
-  optimization-based attacks despite per-SNR calibration.}  Savitzky-Golay,
-  Wiener, and Kalman filters all perform at or below the undefended baseline on
-  CW and EAD attacks, because their smoothing operations spread spectrally
-  concentrated adversarial energy rather than removing it.  This negative result
-  is practically important: it demonstrates that deploying conventional filtering
-  as a security measure provides a false sense of protection against
-  optimization-based adversaries.
+\item \textbf{Classical signal processing filters are counterproductive on
+  gradient attacks.}  On FGSM, all five classical filters reduce accuracy
+  below the undefended baseline (48.1\%) despite per-SNR calibration.  This
+  negative result demonstrates that deploying conventional filtering as a
+  security measure provides a false sense of protection: gradient-sign
+  perturbations are spectrally correlated with the signal, so time-domain
+  smoothing removes signal energy alongside perturbation energy.
 
-\item \textbf{Spectral-gated routing improves recovery for wideband analog
-  modulations.}  By bypassing Top-K filtering for samples whose spectral
-  flatness exceeds a threshold (indicating wideband energy distribution),
-  Spectral-Gated avoids distorting AM-SSB and WBFM signals where Top-K alone
-  introduces classification-relevant artifacts.  Spectral-Gated achieves
-  76.1\% on CW vs.\ 77.4\% for Adaptive-K, offering a useful accuracy--overhead
-  trade-off for heterogeneous signal environments.
+\item \textbf{Wideband routing is essential for universal defense.}  Without
+  spectral flatness routing, Top-K filtering destroys AM-SSB signals
+  (48\% $\to$ 48\% with uncapped Adaptive-K).  The flatness-based routing in
+  Adaptive-K v2 correctly identifies wideband samples and applies per-sample
+  quantization instead, recovering AM-SSB to 94\%.
 
 \end{enumerate}
 
@@ -51,12 +50,10 @@ Several directions remain open for future work.  First, the current evaluation
 assumes a defense-unaware attacker; an adversary with knowledge of the Top-K
 operator could craft perturbations that survive the frequency mask.  Evaluating
 such \emph{adaptive attacks}---where the attack optimization incorporates the
-defense---is an important robustness validation that we leave to future work.
-Second, we focused on RML2016.10a (128-sample signals, 11 classes); extending
-the evaluation to RML2018.01a (1024-sample signals, 24 classes) would establish
-the generality of the spectral defense approach across longer signals and a
-richer modulation set.  Third, combining adaptive spectral filtering with
-adversarial training could provide complementary robustness: training-time
-regularization hardens the classifier's decision boundaries while
-inference-time filtering removes perturbation energy before the signal reaches
-the network.
+defense---is an important robustness validation.  Second, extending the
+evaluation to RML2018.01a (1024-sample signals, 24 classes) would establish
+the generality across longer signals and a richer modulation set.  Third,
+combining Adaptive-K v2 with adversarial training could provide complementary
+robustness: training-time regularization hardens the classifier's decision
+boundaries while inference-time filtering removes perturbation energy before
+the signal reaches the network.

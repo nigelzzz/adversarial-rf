@@ -29,12 +29,13 @@ if __name__ == "__main__":
     # Optional filtering to speed up eval
     parser.add_argument('--mod_filter', type=str, default=None, help='e.g., QAM16')
     parser.add_argument('--snr_filter', type=int, default=None, help='e.g., 18')
+    parser.add_argument('--snr_min', type=int, default=None, help='Min SNR filter, e.g., 0 for SNR>=0')
     # Adversarial eval options
     parser.add_argument('--attack', type=str, default='cw')
     parser.add_argument('--cw_c', type=float, default=1.0)
-    parser.add_argument('--cw_kappa', type=float, default=0.0)
+    parser.add_argument('--cw_kappa', type=float, default=1.0)
     parser.add_argument('--cw_steps', type=int, default=100)
-    parser.add_argument('--cw_lr', type=float, default=1e-2)
+    parser.add_argument('--cw_lr', type=float, default=1e-3)
     parser.add_argument('--cw_targeted', type=bool, default=False)
     parser.add_argument('--cw_scale', type=float, default=None, help='Optional post-scale 0..1 to reduce CW delta magnitude')
     parser.add_argument('--lowpass', default=True, type=lambda x: str(x).lower() != 'false',
@@ -90,7 +91,6 @@ if __name__ == "__main__":
     parser.add_argument('--det_train_limit', type=int, default=20000, help='Limit number of clean training samples for AE')
     parser.add_argument('--det_calib_quantile', type=float, default=0.90, help='KL quantile for threshold calibration')
     # Frequency top-k eval
-    parser.add_argument('--snr_min', type=float, default=None, help='Minimum SNR to keep (e.g., 0 for >=0)')
     parser.add_argument('--freq_percents', type=str, default='0.1,0.2,0.3,0.4,0.5',
                         help='Comma-separated percents (0..1] for fft_topk_percent in freq_topk_eval mode')
     parser.add_argument('--dir_name', type=str, default=None, help='Directory name for experiment')
@@ -182,7 +182,7 @@ if __name__ == "__main__":
     def get_ckpt_name():
         return f"{cfg.dataset}_{model_name.upper()}.pkl"
 
-    Signals, Labels, SNRs, snrs, mods = Load_Dataset(cfg.dataset, logger, mod_filter=args.mod_filter, snr_filter=args.snr_filter)
+    Signals, Labels, SNRs, snrs, mods = Load_Dataset(cfg.dataset, logger, mod_filter=args.mod_filter, snr_filter=args.snr_filter, snr_min=args.snr_min)
     train_set, test_set, val_set, test_idx = Dataset_Split(
         Signals,
         Labels,

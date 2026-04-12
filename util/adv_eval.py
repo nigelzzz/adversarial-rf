@@ -359,13 +359,10 @@ def Run_Adv_Eval(model,
                         for depth in depths
                     ]
                 elif dmode in ('fft_topk', 'topk'):
-                    # AWN_All-style: normalize → keep top-K FFT components → denormalize
+                    # FFT Top-K: keep top-K bins by magnitude, zero the rest
+                    # No normalization needed — Top-K is scale/shift invariant
                     topk = int(getattr(cfg, 'def_topk', 50))
-                    norm_offset = float(getattr(cfg, 'detector_norm_offset', 0.02))
-                    norm_scale = float(getattr(cfg, 'detector_norm_scale', 0.04))
-                    adv_norm = normalize_iq_data(adv, norm_offset, norm_scale)
-                    adv_filt = fft_topk_denoise(adv_norm, topk=topk)
-                    adv_def = denormalize_iq_data(adv_filt, norm_offset, norm_scale)
+                    adv_def = fft_topk_denoise(adv, topk=topk)
                 elif dmode in ('fft_topk_percent', 'topk_percent'):
                     pct = float(getattr(cfg, 'def_topk_percent', 0.1))
                     # guard
