@@ -28,9 +28,11 @@ on RF signals, while maintaining real-time feasibility.
 
 ## Current Position
 
-Milestone: v1.1 (planning)
-Status: Awaiting `/gsd-new-milestone` to define requirements + roadmap
-Last activity: 2026-04-15
+Milestone: v1.1 Robustness Baselines
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-15 — Milestone v1.1 started
 
 Progress: [░░░░░░░░░░] 0%
 

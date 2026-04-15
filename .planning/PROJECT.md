@@ -6,8 +6,21 @@
 manuscript (13 pages, 41 citations, 11 figures) with full reproducible
 defense-vs-attack evaluation pipeline. UAT 10/10.
 
-**Next:** v1.1 — strengthen robustness-baseline coverage (adversarial
-training) and address reviewer concerns before journal camera-ready.
+**Active:** v1.1 Robustness Baselines — see Current Milestone below.
+
+## Current Milestone: v1.1 Robustness Baselines
+
+**Goal:** Strengthen v1.0 paper's defense narrative by adding an
+adversarial-training baseline and closing camera-ready tech debt.
+
+**Target features:**
+
+- Adversarial-training baseline: finetune AWN on mixed FGSM/PGD/EAD-L1/EAD-EN
+  with CW held out for evaluation, mixed clean loss to preserve analog mods
+- Adaptive-K + AT composition study: layered defense comparison, add rows
+  to the paper's defense table
+- v1.0 camera-ready tech debt: `text.usetex=True`, regenerate real
+  `freq_spectra_cw.pdf`, clean stale VERIFICATION frontmatter
 
 ## What This Is
 
