@@ -61,31 +61,31 @@ Deferred from v1.0 and v1.1 discussion — revisit in a later milestone:
 
 ## Traceability
 
-| Requirement  | Phase | Status     |
-|--------------|-------|------------|
-| AT-01        | TBD   | Pending    |
-| AT-02        | TBD   | Pending    |
-| AT-03        | TBD   | Pending    |
-| AT-04        | TBD   | Pending    |
-| AT-05        | TBD   | Pending    |
-| ATEVAL-01    | TBD   | Pending    |
-| ATEVAL-02    | TBD   | Pending    |
-| ATEVAL-03    | TBD   | Pending    |
-| ATEVAL-04    | TBD   | Pending    |
-| ATEVAL-05    | TBD   | Pending    |
-| PAPRU-01     | TBD   | Pending    |
-| PAPRU-02     | TBD   | Pending    |
-| PAPRU-03     | TBD   | Pending    |
-| PAPRU-04     | TBD   | Pending    |
-| CRTD-01      | TBD   | Pending    |
-| CRTD-02      | TBD   | Pending    |
-| CRTD-03      | TBD   | Pending    |
-| CRTD-04      | TBD   | Pending    |
+| Requirement  | Phase   | Status     |
+|--------------|---------|------------|
+| AT-01        | Phase 4 | Pending    |
+| AT-02        | Phase 4 | Pending    |
+| AT-03        | Phase 4 | Pending    |
+| AT-04        | Phase 4 | Pending    |
+| AT-05        | Phase 4 | Pending    |
+| ATEVAL-01    | Phase 5 | Pending    |
+| ATEVAL-02    | Phase 5 | Pending    |
+| ATEVAL-03    | Phase 5 | Pending    |
+| ATEVAL-04    | Phase 5 | Pending    |
+| ATEVAL-05    | Phase 5 | Pending    |
+| PAPRU-01     | Phase 6 | Pending    |
+| PAPRU-02     | Phase 6 | Pending    |
+| PAPRU-03     | Phase 6 | Pending    |
+| PAPRU-04     | Phase 6 | Pending    |
+| CRTD-01      | Phase 6 | Pending    |
+| CRTD-02      | Phase 6 | Pending    |
+| CRTD-03      | Phase 6 | Pending    |
+| CRTD-04      | Phase 6 | Pending    |
 
 **Coverage:**
 - v1.1 requirements: 18 total
-- Mapped to phases: 0 (filled by roadmapper)
-- Unmapped: 18
+- Mapped to phases: 18
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-15*

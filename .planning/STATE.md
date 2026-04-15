@@ -1,13 +1,13 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.1
-milestone_name: planning
-status: planning
-stopped_at: v1.0 archived 2026-04-15
+milestone_name: Robustness Baselines
+status: active
+stopped_at: Phase 4 not started
 last_updated: "2026-04-15T17:00:00.000Z"
 last_activity: 2026-04-15
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -23,18 +23,18 @@ See: .planning/PROJECT.md (updated 2026-04-15)
 **Core value:** A unified detect→recover→classify pipeline that outperforms
 classical filtering defenses against optimization-based adversarial attacks
 on RF signals, while maintaining real-time feasibility.
-**Current focus:** v1.1 planning — adversarial-training baseline + robustness extensions
+**Current focus:** v1.1 Phase 4 — Adversarial Training (produce AT checkpoint)
 **Previous:** v1.0 Paper Submission Package shipped 2026-04-15 (see milestones/v1.0-ROADMAP.md)
 
 ## Current Position
 
 Milestone: v1.1 Robustness Baselines
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-04-15 — Milestone v1.1 started
+Phase: 4 — Adversarial Training
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-04-15 — v1.1 roadmap created
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 0%  (0/3 v1.1 phases)
 
 ## Accumulated Context
 
@@ -49,14 +49,24 @@ Decisions from v1.0 are archived in `milestones/v1.0-ROADMAP.md` and
 - IEEE TCCN/TWC is the target venue
 - GPU-native filters (depthwise conv1d) used to preserve honest latency claims
 
+**v1.1 decisions:**
+
+- Adversarial training is a baseline, not the main contribution; Adaptive-K remains primary
+- AT warm-starts from `./checkpoint/2016.10a_AWN.pkl` (not scratch) to save ~10x compute
+- CW held out from AT training; used only in evaluation to test generalization
+- Mixed clean+adversarial loss (alpha=0.5 default) prevents forgetting of analog mods
+- AT training pattern parallels `synth_finetune.py` finetuning structure
+- CRTD requirements (camera-ready debt) bundled into Phase 6 with paper update (coarse granularity; both produce paper artifacts; CRTD-01 enables clean figure fonts for PAPRU figures)
+
 ### Pending Todos
 
-- v1.1 requirements definition (via `/gsd-new-milestone`)
-- Adversarial-training baseline experiments (FGSM/PGD/EAD-L1/EAD-EN training, CW held-out)
+- Plan Phase 4: Adversarial Training (AT-01..05)
+- Implement adversarial training script (pattern: synth_finetune.py with attack loop replacing synthetic generation)
+- Confirm alpha=0.5 default preserves WBFM/AM-DSB/AM-SSB accuracy before full AT run
 
 ### Blockers/Concerns
 
-v1.0 tech debt carried forward (non-blocking):
+v1.0 tech debt (all addressed in Phase 6):
 
 - Stale `status: gaps_found` in phases 02 and 03 VERIFICATION.md frontmatter
   (gaps closed by commits 69b2595, de3da10 and plan 02-05)
@@ -69,5 +79,5 @@ v1.0 tech debt carried forward (non-blocking):
 ## Session Continuity
 
 Last session: 2026-04-15T17:00:00.000Z
-Stopped at: v1.0 archived; awaiting v1.1 setup
+Stopped at: v1.1 roadmap created; Phase 4 ready to plan
 Resume file: None
