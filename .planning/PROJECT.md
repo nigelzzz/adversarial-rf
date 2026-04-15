@@ -1,12 +1,31 @@
 # Real-Time Defense Pipeline for Adversarial Attacks on AMC
 
+## Current State
+
+**Shipped:** v1.0 Paper Submission Package (2026-04-15) — IEEE TCCN/TWC
+manuscript (13 pages, 41 citations, 11 figures) with full reproducible
+defense-vs-attack evaluation pipeline. UAT 10/10.
+
+**Next:** v1.1 — strengthen robustness-baseline coverage (adversarial
+training) and address reviewer concerns before journal camera-ready.
+
 ## What This Is
 
-A unified real-time defense framework for automatic modulation classification (AMC) that combines adversarial detection, frequency-domain recovery (FFT Top-K), and robust classification into a single pipeline. Targets IEEE TCCN/TWC submission using RML2016.10a data, comparing against classical signal processing baselines (Kalman, Wiener, Savitzky-Golay, Gaussian, FIR filters) and randomized smoothing.
+A unified real-time defense framework for automatic modulation classification
+(AMC) that combines adversarial detection, frequency-domain recovery (FFT
+Top-K via Adaptive-K v2), and robust classification into a single pipeline.
+Shipped an IEEE TCCN/TWC submission on RML2016.10a comparing against five
+classical signal-processing baselines (Kalman, Wiener, Savitzky-Golay,
+Gaussian, FIR) and randomized smoothing.
 
 ## Core Value
 
-Demonstrate that a unified detect→recover→classify pipeline outperforms individual classical filtering defenses against optimization-based adversarial attacks (CW, EAD) on RF signals, while maintaining real-time feasibility.
+A unified detect→recover→classify pipeline that outperforms individual
+classical filtering defenses against optimization-based adversarial attacks
+(CW, EAD) on RF signals, while maintaining real-time feasibility.
+
+**Validated in v1.0:** Adaptive-K v2 beats every classical-filter baseline
+on CW and EAD attacks at SNR ≥ 0 dB with a ~1 ms/sample GPU cost.
 
 ## Requirements
 
@@ -20,26 +39,35 @@ Demonstrate that a unified detect→recover→classify pipeline outperforms indi
 - ✓ SigGuard-style evaluation tables (attack acc vs defense acc) — existing
 - ✓ Multi-attack evaluation with per-SNR/per-modulation breakdown — existing
 - ✓ Synthetic data generation and curriculum finetuning for robust classification — existing
+- ✓ Unified detect→recover→classify pipeline as single inference path — v1.0
+- ✓ 5 classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR) with calibration — v1.0
+- ✓ Randomized smoothing baseline (σ=0.01, k=20) — v1.0
+- ✓ Comparative evaluation tables (9 defenses × 5 attacks × 10 SNRs) — v1.0
+- ✓ Per-SNR and per-modulation accuracy breakdown — v1.0
+- ✓ Latency/throughput benchmarks — v1.0
+- ✓ IEEE TCCN/TWC LaTeX manuscript with 7 sections — v1.0
+- ✓ Publication-quality figures (11 PDFs, 300 dpi) — v1.0
+- ✓ Reproducibility scripts (`paper/reproduce.sh`) — v1.0
 
 ### Active
 
-- [ ] Unified detect→recover→classify pipeline as single inference path
-- [ ] Baseline implementations: Kalman filter, Wiener filter, Savitzky-Golay filter, Gaussian filter, FIR filter
-- [ ] Randomized smoothing baseline (σ=0.01, k=1)
-- [ ] Comparative evaluation tables: unified pipeline vs each baseline vs no defense
-- [ ] Per-SNR and per-modulation accuracy breakdown for all defenses
-- [ ] Latency/throughput benchmarks proving real-time feasibility
-- [ ] LaTeX paper draft for IEEE TCCN/TWC (intro, related work, method, experiments, conclusion)
-- [ ] Publication-quality figures: accuracy curves, confusion matrices, defense comparison charts
-- [ ] Reproducibility scripts to regenerate all results from scratch
+Defined in the next milestone (v1.1) via `/gsd-new-milestone`. Likely
+candidates based on project discussion:
+
+- [ ] Adversarial-training baseline (mixed FGSM/PGD/EAD-L1/EAD-EN training, CW held-out)
+- [ ] Adaptive-K + AT composition study (does the unified pipeline stack?)
+- [ ] Close non-blocking v1.0 tech debt (usetex, stale VERIFICATION frontmatter, freq_spectra_cw real-data regen)
 
 ### Out of Scope
 
-- RML2018.01a evaluation — focus on RML2016.10a for this submission
-- Novel attack development — paper is defense-focused
-- Adversarial training as primary defense — already explored via finetuning, not the paper's contribution
-- Over-the-air validation — simulation-only for this submission
-- GUI or web interface — research code only
+| Feature | Reason |
+|---------|--------|
+| RML2018.01a experiments | Deferred; v1.0 focused on RML2016.10a. Revisit for journal revision if reviewers request. |
+| Novel attack development | Paper is defense-focused |
+| Over-the-air validation | Requires hardware; listed as future work in paper |
+| GUI or web interface | Research code only |
+| Multi-model evaluation | AWN-only; other classifiers are future work |
+| Adversarial training as **primary** defense | Adaptive-K remains main contribution; AT is a baseline for v1.1 |
 
 ## Context
 
@@ -47,16 +75,14 @@ Demonstrate that a unified detect→recover→classify pipeline outperforms indi
 - **Model**: Pretrained AWN checkpoint at `./checkpoint/2016.10a_AWN.pkl`, finetuned variant at `./checkpoint/2016.10a_AWN_ft.pkl`
 - **Dataset**: RML2016.10a (11 modulations, 220K samples, IQ format [2, 128])
 - **Attack library**: torchattacks with 17 attack methods, custom wrappers for IQ normalization (`Model01Wrapper`, `iq_to_ta_input_minmax`)
-- **Detection**: Conv autoencoder detector in `util/detector.py`, trained/calibrated via `main.py --mode train_detector/calibrate_detector`
-- **Recovery**: FFT Top-K in `util/defense.py`, gated by detector (`ae_fft_topk` mode)
-- **Prior experiments**: Extensive results in `inference/` and `reports/` directories
-- **Baselines needed**: Classical signal processing filters not yet implemented as defense baselines
-- **Timeline**: ~1 month to submission
+- **Defense registry**: 9 defenses in `DEFENSE_REGISTRY` (unified, 5 classical, rand_smooth, fft_topk, ae_fft_topk)
+- **Experimental results**: CSVs under `inference/2016.10a_165/result/defense_compare/`
+- **Paper artifacts**: `paper/latex/main.pdf` (13 pages), `paper/reproduce.sh`
+- **v1.0 outcome**: Shipped IEEE TCCN/TWC-ready manuscript with passing UAT
 
 ## Constraints
 
 - **Data**: RML2016.10a only (11 classes, SNR range -20 to +18 dB)
-- **Timeline**: ~1 month to submission-ready paper
 - **Compute**: Single GPU (existing setup)
 - **Format**: IEEE transaction paper format (double-column LaTeX)
 - **Attacks**: Must cover CW (L2), EAD (L1, EN), FGSM, PGD at minimum
@@ -66,27 +92,31 @@ Demonstrate that a unified detect→recover→classify pipeline outperforms indi
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Unified pipeline (detect+recover+classify) as main contribution | Novel for RF domain, practical for deployment | — Pending |
-| Classical filters as baselines (not other ML defenses) | Shows improvement over signal processing approach | — Pending |
-| RML2016.10a only | Standard benchmark, sufficient for initial submission | — Pending |
-| IEEE TCCN/TWC as target venue | Matches RF + adversarial ML topic | — Pending |
+| Unified pipeline (detect+recover+classify) as main contribution | Novel for RF domain, practical for deployment | ✓ Good — shipped in v1.0, validated on CW/EAD |
+| Classical filters as baselines (not other ML defenses) | Shows improvement over signal-processing approach | ✓ Good — 5 baselines provide fair comparison in Table I |
+| RML2016.10a only | Standard benchmark, sufficient for initial submission | ✓ Good — kept scope manageable; revisit for journal rev. |
+| IEEE TCCN/TWC as target venue | Matches RF + adversarial ML topic | ✓ Good — paper drafted in IEEEtran format |
+| Adaptive-K v2 with SNR-adaptive cap over fixed K | Handles both low/high SNR regimes without labels | ✓ Good — core to proposed method |
+| Shared-FFT design (1 FFT + 1 IFFT) | Real-time feasibility requirement | ✓ Good — O(T log T) per sample |
+| GPU-native depthwise conv1d for Gaussian/FIR | Avoid CPU roundtrip invalidating latency claims | ✓ Good — clean latency story |
+| Spectral flatness > 0.4 → quantization (wideband routing) | Top-K fails on AM-SSB; quantization preserves classification | ✓ Good — isolated 18× margin between narrowband and AM-SSB |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
-**After each phase transition** (via `/gsd:transition`):
+**After each phase transition:**
 1. Requirements invalidated? → Move to Out of Scope with reason
 2. Requirements validated? → Move to Validated with phase reference
 3. New requirements emerged? → Add to Active
 4. Decisions to log? → Add to Key Decisions
 5. "What This Is" still accurate? → Update if drifted
 
-**After each milestone** (via `/gsd:complete-milestone`):
+**After each milestone:**
 1. Full review of all sections
 2. Core Value check — still the right priority?
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-31 after initialization*
+*Last updated: 2026-04-15 after v1.0 Paper Submission Package milestone*
