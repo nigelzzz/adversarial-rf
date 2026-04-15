@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Robustness Baselines
-status: active
-stopped_at: Phase 4 not started
-last_updated: "2026-04-15T17:00:00.000Z"
-last_activity: 2026-04-15
+status: planning
+stopped_at: Phase 4 context gathered
+last_updated: "2026-04-15T16:45:05.897Z"
+last_activity: 2026-04-15 — v1.1 roadmap created
 progress:
   total_phases: 3
   completed_phases: 0
@@ -70,14 +70,17 @@ v1.0 tech debt (all addressed in Phase 6):
 
 - Stale `status: gaps_found` in phases 02 and 03 VERIFICATION.md frontmatter
   (gaps closed by commits 69b2595, de3da10 and plan 02-05)
+
 - `freq_spectra_cw.pdf` uses placeholder synthetic spectra in environments
   without venv/dataset (documented limitation)
+
 - `text.usetex=False` in `ieee_style.py` → matplotlib fallback fonts; enable
   for camera-ready submission
+
 - NYCU-thesis-template submodule left dirty (unrelated to paper artifacts)
 
 ## Session Continuity
 
-Last session: 2026-04-15T17:00:00.000Z
-Stopped at: v1.1 roadmap created; Phase 4 ready to plan
-Resume file: None
+Last session: 2026-04-15T16:45:05.892Z
+Stopped at: Phase 4 context gathered
+Resume file: .planning/phases/04-adversarial-training/04-CONTEXT.md
