@@ -52,6 +52,7 @@ on CW and EAD attacks at SNR ≥ 0 dB with a ~1 ms/sample GPU cost.
 - ✓ SigGuard-style evaluation tables (attack acc vs defense acc) — existing
 - ✓ Multi-attack evaluation with per-SNR/per-modulation breakdown — existing
 - ✓ Synthetic data generation and curriculum finetuning for robust classification — existing
+- ✓ Adversarial-training baseline (mixed FGSM/PGD/EAD-L1/EAD-EN training, CW held-out, analog classes kept clean) — v1.1 Phase 04
 - ✓ Unified detect→recover→classify pipeline as single inference path — v1.0
 - ✓ 5 classical filter baselines (Kalman, Wiener, SG, Gaussian, FIR) with calibration — v1.0
 - ✓ Randomized smoothing baseline (σ=0.01, k=20) — v1.0
@@ -67,7 +68,7 @@ on CW and EAD attacks at SNR ≥ 0 dB with a ~1 ms/sample GPU cost.
 Defined in the next milestone (v1.1) via `/gsd-new-milestone`. Likely
 candidates based on project discussion:
 
-- [ ] Adversarial-training baseline (mixed FGSM/PGD/EAD-L1/EAD-EN training, CW held-out)
+- [x] Adversarial-training baseline (mixed FGSM/PGD/EAD-L1/EAD-EN training, CW held-out) — completed in Phase 04 (2026-04-16)
 - [ ] Adaptive-K + AT composition study (does the unified pipeline stack?)
 - [ ] Close non-blocking v1.0 tech debt (usetex, stale VERIFICATION frontmatter, freq_spectra_cw real-data regen)
 
@@ -132,4 +133,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-15 after v1.0 Paper Submission Package milestone*
+*Last updated: 2026-04-16 after Phase 04 Adversarial Training*
