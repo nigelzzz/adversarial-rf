@@ -365,7 +365,7 @@ def adv_train(model, wrapped_model, train_loader, val_loader, attacks, device, a
 
     # mode='max': we monitor weighted accuracy (higher is better), NOT loss
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, mode='max', factor=0.5, patience=4, verbose=False)
+        optimizer, mode='max', factor=0.5, patience=4)
 
     best_weighted = -1.0
     best_epoch = -1
