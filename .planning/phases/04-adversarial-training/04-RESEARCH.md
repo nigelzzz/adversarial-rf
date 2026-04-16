@@ -398,22 +398,19 @@ with open(log_path, 'a', newline='') as f:
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
 (Table has 3 items — planner should clarify A1 and A2 before finalizing the training loop body.)
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **EAD iteration budget interpretation (A1)**
+1. **EAD iteration budget interpretation (A1)** — RESOLVED: `binary_search_steps=1`, `--ead_bss` CLI flag defaulting to 1. Plan 01 Task 1 implements this.
    - What we know: D-03 says "EAD-L1=7, EAD-EN=7" under "Madry-style fast-AT budget"
-   - What's unclear: Whether "7" means `max_iterations=7, binary_search_steps=1` or `max_iterations=7` with default `binary_search_steps=9`
-   - Recommendation: Implement `binary_search_steps=1` to match the "fast" framing; add a CLI flag `--ead_bss` defaulting to 1 so the planner can document this clearly
+   - Resolution: `max_iterations=7, binary_search_steps=1` to match the "fast" framing
 
-2. **regu_sum from one or both forward passes (A2)**
+2. **regu_sum from one or both forward passes (A2)** — RESOLVED: `sum(regu_adv)` only (adversarial forward), not both forwards. Plan 01 Task 1 implements this.
    - What we know: D-06 says "AWN's internal regularization added once per forward (detail)"
-   - What's unclear: "once per forward" could mean "once, from the adversarial forward" or "once per each of the two forwards"
-   - Recommendation: Add from adversarial forward only (cleaner, lower loss scale); if the clean forward also contributes regularization, the dual-regu variant can be added as a comment
+   - Resolution: Add from adversarial forward only (cleaner loss semantics, lower scale)
 
-3. **Per-class accuracy logging in val loop**
+3. **Per-class accuracy logging in val loop** — RESOLVED: per-class analog accuracy printed in `run_sanity_eval` console output. Plan 02 Task 2 implements this.
    - What we know: D-17 columns do not include per-class accuracy
-   - What's unclear: AT-02 success criterion requires "training log shows analog classes retain non-trivial accuracy" — this requires per-class logging somewhere
-   - Recommendation: Add a per-class accuracy breakdown to the end-of-epoch console print (not to the CSV, to keep columns stable); or add optional per-class CSV as a separate file
+   - Resolution: Per-class analog accuracy breakdown in post-training sanity eval console print (CSV columns kept stable per D-17)
 
 ## Environment Availability
 
