@@ -113,7 +113,7 @@ def build_loaders(dataset='2016.10a', batch_size=256, val_ratio=0.15,
 # Attack factory
 # ─────────────────────────────────────────────────────────────────────────────
 
-def make_attacks(wrapped_model, eps=0.1, pgd_steps=7, ead_iters=7, ead_bss=1):
+def make_attacks(wrapped_model, eps=0.1, pgd_steps=7, ead_iters=10, ead_bss=1):
     """
     Instantiate FGSM, PGD, EADL1, EADEN attack objects.
 
@@ -131,15 +131,19 @@ def make_attacks(wrapped_model, eps=0.1, pgd_steps=7, ead_iters=7, ead_bss=1):
     Returns:
         dict mapping attack name -> torchattacks attack object
     """
+    # torchattacks EADL1/EADEN compute `iteration % (max_iterations // 10)`
+    # internally, which raises ZeroDivisionError when max_iterations < 10.
+    ead_iters_safe = max(ead_iters, 10)
+
     attacks = {
         'fgsm': torchattacks.FGSM(wrapped_model, eps=eps),
         'pgd':  torchattacks.PGD(wrapped_model, eps=eps, alpha=eps / 4,
                                   steps=pgd_steps),
         'eadl1': torchattacks.EADL1(wrapped_model, kappa=0, lr=0.01,
-                                     max_iterations=ead_iters,
+                                     max_iterations=ead_iters_safe,
                                      binary_search_steps=ead_bss),
         'eaden': torchattacks.EADEN(wrapped_model, kappa=0, lr=0.01,
-                                     max_iterations=ead_iters,
+                                     max_iterations=ead_iters_safe,
                                      binary_search_steps=ead_bss),
     }
     return attacks
@@ -357,8 +361,8 @@ def main():
                         help='Linf/L1 epsilon budget in minmax space (default: 0.1, per D-02)')
     parser.add_argument('--pgd_steps', type=int, default=7,
                         help='PGD iteration count (default: 7, per D-03)')
-    parser.add_argument('--ead_iters', type=int, default=7,
-                        help='EAD max_iterations (default: 7, per D-03)')
+    parser.add_argument('--ead_iters', type=int, default=10,
+                        help='EAD max_iterations (min 10; default: 10, per D-03)')
     parser.add_argument('--ead_bss', type=int, default=1,
                         help='EAD binary_search_steps (default: 1, fast training mode)')
     parser.add_argument('--ckpt_path', default='./checkpoint',
