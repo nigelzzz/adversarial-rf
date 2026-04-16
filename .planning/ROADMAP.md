@@ -40,7 +40,7 @@ end-to-end pipeline. UAT 10/10. See [archive](milestones/v1.0-ROADMAP.md).
   4. Per-batch random attack selection draws from FGSM, PGD, EAD-L1, EAD-EN; CW is absent from training
 **Plans:** 2 plans
 Plans:
-- [ ] 04-01-PLAN.md — Script scaffold with data loading, attack factory, and dual-batch training loop
+- [x] 04-01-PLAN.md — Script scaffold with data loading, attack factory, and dual-batch training loop
 - [ ] 04-02-PLAN.md — Checkpoint management, CSV logging, JSON config, and sanity eval
 
 ### Phase 5: AT Evaluation
