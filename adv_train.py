@@ -3,7 +3,7 @@
 """
 Adversarial Training Script for AWN on RML2016.10a.
 
-Implements the AT pipeline (AT-01, AT-03, AT-04): loads SNR >= 0 dB data,
+Implements the full AT pipeline (AT-01..AT-05): loads SNR >= 0 dB data,
 generates adversarial examples with FGSM/PGD/EADL1/EADEN, and trains the
 AWN model with a dual-batch loss (alpha * adv + (1-alpha) * clean).
 
@@ -12,21 +12,27 @@ adversarial stream to prevent forgetting.
 
 Model warm-starts from the pretrained AWN checkpoint before first optimizer step.
 
-Plan 02 adds: checkpoint selection, CSV logging, JSON config, scheduler,
-early stopping, and post-training eval hook.
+Artifacts produced at runtime:
+  ./checkpoint/2016.10a_AWN_at.pkl         - best-epoch state_dict
+  ./checkpoint/2016.10a_AWN_at.config.json - training hyperparameters (D-16)
+  ./checkpoint/2016.10a_AWN_at_log.csv     - per-epoch metrics (D-17)
 
 Usage:
-    # Smoke test (1 epoch)
-    python adv_train.py --mode train --epochs 1 --batch_size 64
+    # Smoke test (2 epochs)
+    python adv_train.py --mode train --epochs 2 --batch_size 64
 
-    # Full training run (Plan 02 adds early stopping)
+    # Full training run
     python adv_train.py --mode train --epochs 30 --batch_size 256
 """
 
 import argparse
+import csv
+import json
 import logging
 import os
 import random
+import subprocess
+import time
 
 import numpy as np
 import torch
@@ -36,7 +42,7 @@ import torch.utils.data as Data
 import torchattacks
 
 from util.adv_attack import Model01Wrapper, iq_to_ta_input_minmax, ta_output_to_iq_minmax
-from data_loader.data_loader import Load_Dataset
+from data_loader.data_loader import Load_Dataset, Dataset_Split
 from util.utils import create_model, fix_seed
 from util.config import Config
 
@@ -332,6 +338,207 @@ def val_epoch(model, wrapped_model, val_loader, attacks, criterion, device):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Training orchestrator
+# ─────────────────────────────────────────────────────────────────────────────
+
+def adv_train(model, wrapped_model, train_loader, val_loader, attacks, device, args):
+    """
+    Full adversarial training loop with ReduceLROnPlateau, best-epoch checkpoint
+    selection, per-epoch CSV logging, and early stopping.
+
+    Per D-12, D-13, D-15, D-17.
+
+    Args:
+        model:          AWN model (nn.Module)
+        wrapped_model:  Model01Wrapper wrapping model
+        train_loader:   DataLoader for training data
+        val_loader:     DataLoader for validation data
+        attacks:        dict of attack name -> torchattacks attack object
+        device:         torch.device
+        args:           argparse Namespace with lr, alpha, epochs, patience, ckpt_path
+
+    Returns:
+        (best_epoch, best_weighted, epochs_trained) tuple
+    """
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    criterion = nn.CrossEntropyLoss().to(device)
+
+    # mode='max': we monitor weighted accuracy (higher is better), NOT loss
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, mode='max', factor=0.5, patience=4, verbose=False)
+
+    best_weighted = -1.0
+    best_epoch = -1
+    no_improve = 0
+    ckpt_path = os.path.join(args.ckpt_path, '2016.10a_AWN_at.pkl')
+    log_path = os.path.join(args.ckpt_path, '2016.10a_AWN_at_log.csv')
+
+    os.makedirs(args.ckpt_path, exist_ok=True)
+
+    log_fields = ['epoch', 'lr', 'train_loss', 'train_loss_clean', 'train_loss_adv',
+                  'val_clean_acc', 'val_robust_fgsm_acc', 'val_weighted', 'time_s']
+    log_file = open(log_path, 'w', newline='')
+    log_writer = csv.DictWriter(log_file, fieldnames=log_fields)
+    log_writer.writeheader()
+    log_file.flush()
+
+    epochs_trained = 0
+    try:
+        for epoch in range(args.epochs):
+            t0 = time.time()
+            train_loss, train_loss_clean, train_loss_adv = train_epoch(
+                model, wrapped_model, train_loader, attacks, optimizer,
+                criterion, args.alpha, device)
+            val_clean_acc, val_robust_fgsm_acc = val_epoch(
+                model, wrapped_model, val_loader, attacks, criterion, device)
+            elapsed = time.time() - t0
+            lr_now = optimizer.param_groups[0]['lr']
+            epochs_trained = epoch + 1
+
+            # Weighted validation metric per D-12
+            val_weighted = 0.5 * val_clean_acc + 0.5 * val_robust_fgsm_acc
+
+            # CSV log row per D-17
+            log_writer.writerow({
+                'epoch': epoch + 1,
+                'lr': f'{lr_now:.2e}',
+                'train_loss': f'{train_loss:.6f}',
+                'train_loss_clean': f'{train_loss_clean:.6f}',
+                'train_loss_adv': f'{train_loss_adv:.6f}',
+                'val_clean_acc': f'{val_clean_acc:.4f}',
+                'val_robust_fgsm_acc': f'{val_robust_fgsm_acc:.4f}',
+                'val_weighted': f'{val_weighted:.4f}',
+                'time_s': f'{elapsed:.1f}',
+            })
+            log_file.flush()
+
+            # Console print
+            print(f"Ep {epoch+1:3d}/{args.epochs}: "
+                  f"loss={train_loss:.4f} (clean={train_loss_clean:.4f} adv={train_loss_adv:.4f}) "
+                  f"val_clean={100*val_clean_acc:.1f}% val_robust={100*val_robust_fgsm_acc:.1f}% "
+                  f"weighted={100*val_weighted:.1f}% lr={lr_now:.2e} [{elapsed:.0f}s]")
+
+            # Best-epoch checkpoint per D-12, D-15
+            if val_weighted > best_weighted:
+                best_weighted = val_weighted
+                best_epoch = epoch + 1
+                torch.save(model.state_dict(), ckpt_path)
+                no_improve = 0
+                print(f"  >> New best (weighted={100*val_weighted:.1f}%), saved {ckpt_path}")
+            else:
+                no_improve += 1
+
+            # Scheduler step per D-13
+            scheduler.step(val_weighted)
+
+            # Early stopping per D-13
+            if no_improve >= args.patience:
+                print(f"Early stopping at epoch {epoch+1} (best epoch={best_epoch}, "
+                      f"weighted={100*best_weighted:.1f}%)")
+                break
+    finally:
+        log_file.close()
+
+    print(f"\nTraining complete. Best epoch: {best_epoch}, weighted: {100*best_weighted:.1f}%")
+    return (best_epoch, best_weighted, epochs_trained)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Config persistence
+# ─────────────────────────────────────────────────────────────────────────────
+
+def save_config(path, args, best_epoch, best_weighted, epochs_trained):
+    """Save training hyperparameters to JSON. Called after training completes."""
+    try:
+        sha = subprocess.run(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            capture_output=True, text=True, timeout=5
+        ).stdout.strip()
+    except Exception:
+        sha = 'unknown'
+    cfg = {
+        'epochs_total': args.epochs,
+        'epochs_trained': epochs_trained,
+        'lr_initial': args.lr,
+        'batch_size': args.batch_size,
+        'ta_box': 'minmax',
+        'eps': args.eps,
+        'attack_iters': {
+            'fgsm': 1,
+            'pgd': args.pgd_steps,
+            'eadl1': args.ead_iters,
+            'eaden': args.ead_iters,
+        },
+        'attack_list': list(ATTACK_NAMES),
+        'alpha': args.alpha,
+        'snr_filter': 'snr_min=0',
+        'analog_mods_kept_clean': ['WBFM', 'AM-DSB', 'AM-SSB'],
+        'best_epoch': best_epoch,
+        'best_val_weighted': round(best_weighted, 6),
+        'seed': args.seed,
+        'warm_start_ckpt': args.warm_start,
+        'git_sha': sha,
+    }
+    with open(path, 'w') as f:
+        json.dump(cfg, f, indent=2)
+    print(f"Config saved: {path}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Post-training sanity evaluation
+# ─────────────────────────────────────────────────────────────────────────────
+
+def run_sanity_eval(model, device, args):
+    """Evaluate AT checkpoint on full RML test set (all SNRs) as sanity check."""
+    ckpt_path = os.path.join(args.ckpt_path, '2016.10a_AWN_at.pkl')
+    model.load_state_dict(
+        torch.load(ckpt_path, map_location=device, weights_only=True))
+    model.eval()
+
+    logger = logging.getLogger('at_sanity')
+    logger.setLevel(logging.WARNING)
+
+    # Load full dataset (all SNRs)
+    Signals, Labels, SNRs, snrs, mods = Load_Dataset(args.dataset, logger)
+    # Use Dataset_Split to get the standard test set
+    _, test_set, _, test_idx = Dataset_Split(
+        Signals, Labels, snrs, mods, logger)
+    Sig_test, Lab_test = test_set
+
+    # Per-SNR accuracy
+    print("\n=== Sanity Eval: AT checkpoint on full RML test set ===")
+    snrs_arr = np.array([SNRs[i] for i in test_idx])
+    preds_all = []
+    loader = Data.DataLoader(
+        Data.TensorDataset(Sig_test, Lab_test),
+        batch_size=256, shuffle=False)
+    with torch.no_grad():
+        for sig, lab in loader:
+            sig = sig.to(device)
+            logit, _ = model(sig)
+            preds_all.append(logit.argmax(1).cpu())
+    preds = torch.cat(preds_all).numpy()
+    labs = Lab_test.numpy()
+
+    overall_acc = (preds == labs).mean()
+    print(f"Overall test accuracy: {100*overall_acc:.2f}%")
+    for snr in sorted(set(snrs_arr)):
+        mask = snrs_arr == snr
+        if mask.any():
+            acc = (preds[mask] == labs[mask]).mean()
+            print(f"  SNR={snr:3d} dB: {100*acc:.1f}%")
+
+    # Per-class accuracy for analog classes (AT-02 success criterion)
+    print("\nAnalog class accuracy (catastrophic forgetting check):")
+    for cls_idx, cls_name in IDX_TO_MOD.items():
+        if cls_idx in ANALOG_INDICES:
+            cls_mask = labs == cls_idx
+            if cls_mask.any():
+                cls_acc = (preds[cls_mask] == labs[cls_mask]).mean()
+                print(f"  {cls_name} (idx={cls_idx}): {100*cls_acc:.1f}%")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Entry point
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -407,31 +614,23 @@ def main():
     attacks = make_attacks(wrapped, eps=args.eps, pgd_steps=args.pgd_steps,
                            ead_iters=args.ead_iters, ead_bss=args.ead_bss)
     print(f"  Attacks: {list(attacks.keys())} | eps={args.eps}")
-
-    # ── Optimiser and criterion ──────────────────────────────────────────────
-    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
-    criterion = nn.CrossEntropyLoss().to(device)
-
-    # -- training loop (Plan 02 Task 1 completes this with checkpoint saving,
-    #    CSV logging, scheduler, and early stopping) --
-    print(f"  Starting {args.epochs} epoch(s) of adversarial training ...")
     print(f"  alpha={args.alpha}, lr={args.lr}, patience={args.patience}")
     print()
 
-    for ep in range(args.epochs):
-        train_loss, loss_clean, loss_adv = train_epoch(
-            model, wrapped, train_loader, attacks, optimizer, criterion,
-            args.alpha, device
-        )
-        val_clean, val_robust = val_epoch(
-            model, wrapped, val_loader, attacks, criterion, device
-        )
-        print(
-            f"Ep {ep + 1:3d}: loss={train_loss:.4f} "
-            f"(clean={loss_clean:.4f}, adv={loss_adv:.4f}) | "
-            f"val_clean={100 * val_clean:.1f}% "
-            f"robust={100 * val_robust:.1f}%"
-        )
+    # ── Training with graceful interrupt handling ────────────────────────────
+    best_epoch = -1
+    best_weighted = -1.0
+    epochs_trained = 0
+    try:
+        best_epoch, best_weighted, epochs_trained = adv_train(
+            model, wrapped, train_loader, val_loader, attacks, device, args)
+    except KeyboardInterrupt:
+        print("\nInterrupted. Saving config for partial run...")
+    finally:
+        config_path = os.path.join(args.ckpt_path, '2016.10a_AWN_at.config.json')
+        save_config(config_path, args, best_epoch, best_weighted, epochs_trained)
+        if best_epoch > 0:
+            run_sanity_eval(model, device, args)
 
 
 if __name__ == '__main__':
