@@ -38,7 +38,10 @@ end-to-end pipeline. UAT 10/10. See [archive](milestones/v1.0-ROADMAP.md).
   2. Training log shows both clean accuracy and robust accuracy per epoch, confirming analog classes (AM-DSB, AM-SSB, WBFM) retain non-trivial accuracy
   3. A JSON config file saved alongside the checkpoint records epochs, LR, attack list, eps, ta_box mode, and alpha used
   4. Per-batch random attack selection draws from FGSM, PGD, EAD-L1, EAD-EN; CW is absent from training
-**Plans**: TBD
+**Plans:** 2 plans
+Plans:
+- [ ] 04-01-PLAN.md — Script scaffold with data loading, attack factory, and dual-batch training loop
+- [ ] 04-02-PLAN.md — Checkpoint management, CSV logging, JSON config, and sanity eval
 
 ### Phase 5: AT Evaluation
 **Goal**: Quantitative evidence exists comparing AT and AT+Adaptive-K to the v1.0 defense table across all paper attack/SNR conditions
@@ -71,6 +74,6 @@ end-to-end pipeline. UAT 10/10. See [archive](milestones/v1.0-ROADMAP.md).
 | 1. Defense Implementations     | v1.0      | 3/3            | Complete    | 2026-04-01 |
 | 2. Experimental Results        | v1.0      | 5/5            | Complete    | 2026-04-06 |
 | 3. Paper                       | v1.0      | 3/3            | Complete    | 2026-04-06 |
-| 4. Adversarial Training        | v1.1      | 0/TBD          | Not started | -          |
+| 4. Adversarial Training        | v1.1      | 0/2            | Planning    | -          |
 | 5. AT Evaluation               | v1.1      | 0/TBD          | Not started | -          |
 | 6. Paper Update + Camera-Ready | v1.1      | 0/TBD          | Not started | -          |
