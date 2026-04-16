@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Robustness Baselines
-status: planning
+status: executing
 stopped_at: Phase 4 context gathered
-last_updated: "2026-04-15T16:45:05.897Z"
-last_activity: 2026-04-15 — v1.1 roadmap created
+last_updated: "2026-04-16T02:24:33.579Z"
+last_activity: 2026-04-16 -- Phase 04 execution started
 progress:
   total_phases: 3
   completed_phases: 0
-  total_plans: 0
+  total_plans: 2
   completed_plans: 0
   percent: 0
 ---
@@ -23,16 +23,16 @@ See: .planning/PROJECT.md (updated 2026-04-15)
 **Core value:** A unified detect→recover→classify pipeline that outperforms
 classical filtering defenses against optimization-based adversarial attacks
 on RF signals, while maintaining real-time feasibility.
-**Current focus:** v1.1 Phase 4 — Adversarial Training (produce AT checkpoint)
+**Current focus:** Phase 04 — adversarial-training
 **Previous:** v1.0 Paper Submission Package shipped 2026-04-15 (see milestones/v1.0-ROADMAP.md)
 
 ## Current Position
 
 Milestone: v1.1 Robustness Baselines
-Phase: 4 — Adversarial Training
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-04-15 — v1.1 roadmap created
+Phase: 04 (adversarial-training) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 04
+Last activity: 2026-04-16 -- Phase 04 execution started
 
 Progress: [░░░░░░░░░░] 0%  (0/3 v1.1 phases)
 
