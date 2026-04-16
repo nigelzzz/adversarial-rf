@@ -41,7 +41,7 @@ end-to-end pipeline. UAT 10/10. See [archive](milestones/v1.0-ROADMAP.md).
 **Plans:** 2 plans
 Plans:
 - [x] 04-01-PLAN.md — Script scaffold with data loading, attack factory, and dual-batch training loop
-- [ ] 04-02-PLAN.md — Checkpoint management, CSV logging, JSON config, and sanity eval
+- [x] 04-02-PLAN.md — Checkpoint management, CSV logging, JSON config, and sanity eval
 
 ### Phase 5: AT Evaluation
 **Goal**: Quantitative evidence exists comparing AT and AT+Adaptive-K to the v1.0 defense table across all paper attack/SNR conditions
