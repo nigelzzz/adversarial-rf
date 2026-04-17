@@ -1,0 +1,8 @@
+=== Plan 05-02 Task 1: Checkpoint integrity check ===
+model keys: 26, ckpt keys: 26
+missing in ckpt: []
+extra in ckpt:   []
+PARAM_COUNT: 124043
+FIRST_KEYS: ['SE_attention_score.0.weight', 'SE_attention_score.3.weight', 'conv1.1.weight', 'conv1.2.bias', 'conv1.2.num_batches_tracked']
+LAST_KEYS: ['levels.level_0.wavelet.P.operator.4.weight', 'levels.level_0.wavelet.U.operator.1.bias', 'levels.level_0.wavelet.U.operator.1.weight', 'levels.level_0.wavelet.U.operator.4.bias', 'levels.level_0.wavelet.U.operator.4.weight']
+CHECKPOINT_INTEGRITY_OK
