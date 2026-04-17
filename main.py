@@ -182,6 +182,21 @@ if __name__ == "__main__":
     def get_ckpt_name():
         return f"{cfg.dataset}_{model_name.upper()}.pkl"
 
+    def resolve_ckpt_path(ckpt_path: str) -> str:
+        """
+        Resolve --ckpt_path to an absolute file path.
+
+        - If ckpt_path ends with '.pkl' AND is an existing file,
+          return it verbatim (D-01: enables loading non-canonical
+          checkpoints like 2016.10a_AWN_at.pkl without editing
+          get_ckpt_name()).
+        - Otherwise treat ckpt_path as a directory and join with
+          get_ckpt_name() (existing behavior).
+        """
+        if ckpt_path.endswith('.pkl') and os.path.isfile(ckpt_path):
+            return ckpt_path
+        return os.path.join(ckpt_path, get_ckpt_name())
+
     Signals, Labels, SNRs, snrs, mods = Load_Dataset(cfg.dataset, logger, mod_filter=args.mod_filter, snr_filter=args.snr_filter, snr_min=args.snr_min)
     train_set, test_set, val_set, test_idx = Dataset_Split(
         Signals,
@@ -214,7 +229,7 @@ if __name__ == "__main__":
                  logger)
 
     elif args.mode == 'eval':
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         Run_Eval(model,
                  Signals_test,
                  Labels_test,
@@ -225,7 +240,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'visualize':
         from util.visualize import Visualize_LiftingScheme
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         for i in range(0, 8):
             index = np.random.randint(0, Signals_test.shape[0])
             test_sample = Signals_test[index]
@@ -233,7 +248,7 @@ if __name__ == "__main__":
             Visualize_LiftingScheme(model, test_sample, cfg, index)
 
     elif args.mode == 'adv_eval':
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         Run_Adv_Eval(model,
                      Signals_test,
                      Labels_test,
@@ -244,7 +259,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'freq_compare':
         from util.freq_compare import run_freq_compare
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         run_freq_compare(
             model,
             Signals_test,
@@ -262,7 +277,7 @@ if __name__ == "__main__":
         )
     elif args.mode == 'freq_topk_eval':
         from util.freq_topk_eval import run_freq_topk_eval
-        model_path = os.path.join(args.ckpt_path, get_ckpt_name())
+        model_path = resolve_ckpt_path(args.ckpt_path)
         model.load_state_dict(torch.load(model_path, map_location=cfg.device))
         run_freq_topk_eval(
             model,
@@ -282,7 +297,7 @@ if __name__ == "__main__":
         )
     elif args.mode == 'freq_topk_adv_eval':
         from util.freq_topk_adv_eval import run_freq_topk_adv_eval
-        model_path = os.path.join(args.ckpt_path, get_ckpt_name())
+        model_path = resolve_ckpt_path(args.ckpt_path)
         model.load_state_dict(torch.load(model_path, map_location=cfg.device))
         run_freq_topk_adv_eval(
             model,
@@ -401,7 +416,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'adv_bench':
         from util.bench import run_attack_bench
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         run_attack_bench(
             model,
             Signals_test,
@@ -412,7 +427,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'multi_attack_eval':
         from util.multi_attack_eval import run_multi_attack_snr_mod_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         # Parse attack list if provided
         attack_list = None
         if args.attack_list is not None:
@@ -442,7 +457,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'sigguard_eval':
         from util.sigguard_eval import run_sigguard_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         # Parse attack list if provided
         attack_list = None
         if args.attack_list is not None:
@@ -471,7 +486,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'calibrate_adaptive_k':
         from util.adaptive_k_calibration import run_adaptive_k_calibration
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         adaptive_k_list = [int(k) for k in args.adaptive_k_list.split(',') if k.strip()]
         run_adaptive_k_calibration(
             model,
@@ -505,7 +520,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'adaptive_eval':
         from util.adaptive_eval import run_adaptive_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         attack_list = None
         if args.attack_list is not None:
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
@@ -539,7 +554,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'power_budget_eval':
         from util.power_budget_eval import run_power_budget_eval
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         attack_list = None
         if args.attack_list is not None:
             attack_list = [a.strip() for a in args.attack_list.split(',') if a.strip()]
@@ -557,7 +572,7 @@ if __name__ == "__main__":
 
     elif args.mode == 'defense_compare':
         from util.defense_compare import run_defense_compare
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         # Load detector if checkpoint provided
         detector = None
         if args.detector_ckpt is not None:
@@ -625,7 +640,7 @@ if __name__ == "__main__":
         from util.defense_calibrate import run_calibration_sweep
         from util.adv_attack import Model01Wrapper, iq_to_ta_input_minmax, ta_output_to_iq_minmax
         import torchattacks as _torchattacks
-        model.load_state_dict(torch.load(os.path.join(args.ckpt_path, get_ckpt_name()), map_location=cfg.device))
+        model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
         model.eval()
         # Build CW attack function using minmax normalization (consistent with D-05)
         wrapped_model = Model01Wrapper(model).to(cfg.device)
