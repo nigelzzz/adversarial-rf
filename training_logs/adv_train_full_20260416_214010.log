@@ -1,0 +1,82 @@
+  Using device: cuda
+  AT dataset: 93500 train, 16500 val (SNR >= 0 dB)
+  Warm-started from: ./checkpoint/2016.10a_AWN.pkl
+  Attacks: ['fgsm', 'pgd', 'eadl1', 'eaden'] | eps=0.1
+  alpha=0.5, lr=0.0001, patience=8
+
+Ep   1/30: loss=1.0052 (clean=0.3343 adv=1.6581) val_clean=89.2% val_robust=52.3% weighted=70.8% lr=1.00e-04 [32s]
+  >> New best (weighted=70.8%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep   2/30: loss=0.6694 (clean=0.3377 adv=0.9829) val_clean=89.7% val_robust=53.0% weighted=71.4% lr=1.00e-04 [27s]
+  >> New best (weighted=71.4%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep   3/30: loss=0.6055 (clean=0.3230 adv=0.8697) val_clean=90.0% val_robust=55.7% weighted=72.8% lr=1.00e-04 [24s]
+  >> New best (weighted=72.8%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep   4/30: loss=0.5990 (clean=0.3142 adv=0.8656) val_clean=90.5% val_robust=56.0% weighted=73.2% lr=1.00e-04 [24s]
+  >> New best (weighted=73.2%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep   5/30: loss=0.5772 (clean=0.3057 adv=0.8304) val_clean=90.5% val_robust=55.8% weighted=73.1% lr=1.00e-04 [25s]
+Ep   6/30: loss=0.5906 (clean=0.3093 adv=0.8535) val_clean=90.7% val_robust=55.1% weighted=72.9% lr=1.00e-04 [24s]
+Ep   7/30: loss=0.5550 (clean=0.2945 adv=0.7972) val_clean=90.9% val_robust=55.2% weighted=73.1% lr=1.00e-04 [26s]
+Ep   8/30: loss=0.5848 (clean=0.2989 adv=0.8524) val_clean=90.9% val_robust=55.5% weighted=73.2% lr=1.00e-04 [28s]
+Ep   9/30: loss=0.5457 (clean=0.2916 adv=0.7816) val_clean=91.2% val_robust=56.3% weighted=73.8% lr=1.00e-04 [25s]
+  >> New best (weighted=73.8%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  10/30: loss=0.5466 (clean=0.2854 adv=0.7897) val_clean=91.0% val_robust=56.5% weighted=73.7% lr=1.00e-04 [26s]
+Ep  11/30: loss=0.5569 (clean=0.2875 adv=0.8082) val_clean=91.3% val_robust=56.6% weighted=73.9% lr=1.00e-04 [25s]
+  >> New best (weighted=73.9%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  12/30: loss=0.5301 (clean=0.2805 adv=0.7617) val_clean=91.1% val_robust=56.1% weighted=73.6% lr=1.00e-04 [25s]
+Ep  13/30: loss=0.5428 (clean=0.2794 adv=0.7882) val_clean=90.5% val_robust=56.5% weighted=73.5% lr=1.00e-04 [28s]
+Ep  14/30: loss=0.5215 (clean=0.2775 adv=0.7473) val_clean=91.0% val_robust=56.9% weighted=73.9% lr=1.00e-04 [25s]
+  >> New best (weighted=73.9%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  15/30: loss=0.4950 (clean=0.2654 adv=0.7066) val_clean=91.2% val_robust=57.9% weighted=74.6% lr=1.00e-04 [27s]
+  >> New best (weighted=74.6%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  16/30: loss=0.5402 (clean=0.2739 adv=0.7884) val_clean=91.4% val_robust=58.2% weighted=74.8% lr=1.00e-04 [27s]
+  >> New best (weighted=74.8%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  17/30: loss=0.4989 (clean=0.2652 adv=0.7147) val_clean=91.3% val_robust=58.7% weighted=75.0% lr=1.00e-04 [25s]
+  >> New best (weighted=75.0%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  18/30: loss=0.4999 (clean=0.2618 adv=0.7201) val_clean=91.4% val_robust=59.7% weighted=75.6% lr=1.00e-04 [35s]
+  >> New best (weighted=75.6%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  19/30: loss=0.4898 (clean=0.2595 adv=0.7022) val_clean=91.6% val_robust=58.4% weighted=75.0% lr=1.00e-04 [28s]
+Ep  20/30: loss=0.4916 (clean=0.2575 adv=0.7078) val_clean=91.5% val_robust=60.4% weighted=75.9% lr=1.00e-04 [27s]
+  >> New best (weighted=75.9%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  21/30: loss=0.5110 (clean=0.2616 adv=0.7424) val_clean=91.3% val_robust=60.3% weighted=75.8% lr=1.00e-04 [30s]
+Ep  22/30: loss=0.5109 (clean=0.2621 adv=0.7418) val_clean=91.6% val_robust=58.8% weighted=75.2% lr=1.00e-04 [36s]
+Ep  23/30: loss=0.5043 (clean=0.2583 adv=0.7324) val_clean=91.0% val_robust=60.3% weighted=75.7% lr=1.00e-04 [37s]
+Ep  24/30: loss=0.5103 (clean=0.2578 adv=0.7451) val_clean=91.4% val_robust=60.5% weighted=76.0% lr=1.00e-04 [27s]
+  >> New best (weighted=76.0%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  25/30: loss=0.4922 (clean=0.2565 adv=0.7101) val_clean=91.5% val_robust=60.0% weighted=75.7% lr=1.00e-04 [28s]
+Ep  26/30: loss=0.4813 (clean=0.2518 adv=0.6930) val_clean=91.7% val_robust=61.3% weighted=76.5% lr=1.00e-04 [28s]
+  >> New best (weighted=76.5%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  27/30: loss=0.4737 (clean=0.2482 adv=0.6815) val_clean=91.5% val_robust=61.2% weighted=76.4% lr=1.00e-04 [29s]
+Ep  28/30: loss=0.4756 (clean=0.2464 adv=0.6870) val_clean=91.4% val_robust=61.8% weighted=76.6% lr=1.00e-04 [24s]
+  >> New best (weighted=76.6%), saved ./checkpoint/2016.10a_AWN_at.pkl
+Ep  29/30: loss=0.4719 (clean=0.2461 adv=0.6801) val_clean=91.3% val_robust=61.2% weighted=76.2% lr=1.00e-04 [26s]
+Ep  30/30: loss=0.4797 (clean=0.2464 adv=0.6954) val_clean=91.5% val_robust=60.6% weighted=76.1% lr=1.00e-04 [34s]
+
+Training complete. Best epoch: 28, weighted: 76.6%
+Config saved: ./checkpoint/2016.10a_AWN_at.config.json
+
+=== Sanity Eval: AT checkpoint on full RML test set ===
+Overall test accuracy: 57.03%
+  SNR=-20 dB: 9.1%
+  SNR=-18 dB: 9.1%
+  SNR=-16 dB: 9.1%
+  SNR=-14 dB: 9.1%
+  SNR=-12 dB: 9.1%
+  SNR=-10 dB: 9.1%
+  SNR= -8 dB: 11.1%
+  SNR= -6 dB: 23.4%
+  SNR= -4 dB: 52.2%
+  SNR= -2 dB: 80.7%
+  SNR=  0 dB: 89.6%
+  SNR=  2 dB: 90.8%
+  SNR=  4 dB: 90.3%
+  SNR=  6 dB: 92.5%
+  SNR=  8 dB: 91.6%
+  SNR= 10 dB: 93.2%
+  SNR= 12 dB: 93.3%
+  SNR= 14 dB: 92.5%
+  SNR= 16 dB: 92.7%
+  SNR= 18 dB: 92.1%
+
+Analog class accuracy (catastrophic forgetting check):
+  WBFM (idx=3): 25.4%
+  AM-DSB (idx=6): 51.7%
+  AM-SSB (idx=10): 100.0%
