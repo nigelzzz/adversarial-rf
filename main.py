@@ -430,6 +430,34 @@ if __name__ == "__main__":
             logger,
         )
 
+    elif args.mode == 'attack_bench':
+        # Phase 7: 5-attack x 2-device adversarial generation latency benchmark.
+        # Reuses util/sigguard_eval.create_attack via util/attack_bench.run_attack_bench_5x2.
+        # Single invocation runs CPU pass then GPU pass (D-13, D-16).
+        from util.attack_bench import run_attack_bench_5x2
+
+        # Load checkpoint with weights_only=True (project convention).
+        ckpt = torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device, weights_only=True)
+        model.load_state_dict(ckpt)
+
+        # D-05: pin paper-default attack hyperparameters BEFORE create_attack() reads cfg.
+        cfg.ta_box = 'unit'
+        cfg.attack_eps = 0.03
+        cfg.cw_c = 1.0
+        cfg.cw_steps = 100
+        cfg.cw_lr = 0.01
+        cfg.ead_max_iterations = 100
+
+        run_attack_bench_5x2(
+            model,
+            Signals_test,
+            Labels_test,
+            cfg,
+            logger,
+            snrs_test=SNRs,
+            test_idx=test_idx,
+        )
+
     elif args.mode == 'multi_attack_eval':
         from util.multi_attack_eval import run_multi_attack_snr_mod_eval
         model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
