@@ -448,13 +448,17 @@ if __name__ == "__main__":
         cfg.cw_lr = 0.01
         cfg.ead_max_iterations = 100
 
+        # Slice SNRs down to the test-split rows (Dataset_Split returns the
+        # original-index list test_idx). Without this slice the engine
+        # raises ValueError because len(SNRs) != len(Labels_test).
+        snrs_test = [SNRs[i] for i in test_idx]
         run_attack_bench_5x2(
             model,
             Signals_test,
             Labels_test,
             cfg,
             logger,
-            snrs_test=SNRs,
+            snrs_test=snrs_test,
             test_idx=test_idx,
         )
 
