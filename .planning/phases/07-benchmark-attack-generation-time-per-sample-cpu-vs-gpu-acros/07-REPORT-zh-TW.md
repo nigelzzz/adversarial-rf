@@ -134,20 +134,139 @@ FGSM 的計算極輕，導致 **kernel 啟動延遲、Python 開銷與 CUDA 同�
 威脅模型論點：在缺乏專屬加速硬體的情況下，迭代式攻擊不具實際對
 即時 RF 接收端部署的可行性。
 
-## 7. 實作細節
+## 7. CW / EAD-L1 / EAD-EN 迭代流程圖解
 
-### 7.1 計時協定（D-01..D-04）
+本節以 mermaid 圖示三種迭代式攻擊的內部結構，並對應到第 6 節 GPU
+加速比的差異。三者皆有「每次迭代各 1 次前向 + 1 次反向」的共同骨幹，
+差別在於各自的最佳化步驟與近似運算（proximal operator）。
+
+### 7.1 CW 攻擊迭代
+
+```mermaid
+flowchart TD
+    Start([起點：乾淨樣本 x0、目標標籤 y]) --> Init[初始化 w = atanh 2x0 - 1<br/>x_adv = tanh w / 2 + 0.5]
+    Init --> Loop{step 小於 max_steps？<br/>預設 100}
+    Loop -- 是 --> Forward[前向傳播<br/>logits = model x_adv]
+    Forward --> CWLoss["f x = max max_other - target_logit, -kappa<br/>L2 = ||x_adv - x0||²<br/>Loss = L2 + c · f x"]
+    CWLoss --> Backward[反向傳播<br/>計算梯度 grad w]
+    Backward --> Adam[Adam 更新 w<br/>lr = 0.01]
+    Adam --> Box[以 tanh 隱式套用箱型約束<br/>x_adv = tanh w / 2 + 0.5]
+    Box --> Track[追蹤目前最佳對抗樣本<br/>誤分類且 L2 更小者]
+    Track --> Loop
+    Loop -- 否 --> Out([回傳最佳 x_adv])
+
+    style CWLoss fill:#fff3cd
+    style Adam fill:#d1ecf1
+```
+
+**CW 的核心思想：** 以 Adam 最小化 L2 正則化目標；透過 `tanh`
+重參數化（reparameterization）隱式維持箱型約束。**單次內部迭代 ≈
+1 前向 + 1 反向 + 1 次 Adam 更新。** 100 steps ⇒ 每樣本 100 次前/
+反向傳播。
+
+### 7.2 EAD-L1 攻擊迭代
+
+```mermaid
+flowchart TD
+    Start([起點：乾淨樣本 x0、目標標籤 y]) --> Init[x_adv ← x0<br/>y_k ← x0  FISTA 動量]
+    Init --> Loop{iter 小於 max_iter？<br/>預設 100}
+    Loop -- 是 --> Forward[前向傳播<br/>logits = model y_k]
+    Forward --> Loss["f y_k = max other_logit - target, -kappa"]
+    Loss --> Backward[反向傳播<br/>計算梯度 grad y_k]
+    Backward --> Grad[梯度步驟<br/>z = y_k - lr · grad - lr · 2 · y_k - x0]
+    Grad --> Prox["L1 近似運算 soft-threshold ISTA<br/>x_new = sign z · max |z| - lr·beta, 0<br/>beta = L1 權重"]
+    Prox --> Box[裁切到 0,1]
+    Box --> Momentum["FISTA 動量更新<br/>y_k+1 = x_new + k / k+3 · x_new - x_adv<br/>x_adv ← x_new"]
+    Momentum --> Track[追蹤目前最佳對抗樣本<br/>誤分類且 L1 更小者]
+    Track --> Loop
+    Loop -- 否 --> Out([回傳最佳 x_adv])
+
+    style Prox fill:#fff3cd
+    style Momentum fill:#d1ecf1
+```
+
+**EAD-L1 的核心思想：** 僅以 L1 推動稀疏性的攻擊，採 ISTA + FISTA
+加速。**L1 軟閾值（soft-threshold）** 是其辨識性運算（將小值壓為 0）。
+**單次內部迭代 ≈ 1 前向 + 1 反向 + 軟閾值 + 動量更新。**
+
+### 7.3 EAD-EN 攻擊迭代
+
+```mermaid
+flowchart TD
+    Start([起點：乾淨樣本 x0、目標標籤 y]) --> Init[x_adv ← x0<br/>y_k ← x0  FISTA 動量<br/>beta_1 為 L1 權重，beta_2 為 L2 權重]
+    Init --> Loop{iter 小於 max_iter？<br/>預設 100}
+    Loop -- 是 --> Forward[前向傳播<br/>logits = model y_k]
+    Forward --> Loss["f y_k = max other_logit - target, -kappa"]
+    Loss --> Backward[反向傳播<br/>計算梯度 grad y_k]
+    Backward --> Grad["含 L2 項的梯度步驟<br/>z = y_k - lr · grad - lr · 2·beta_2 · y_k - x0"]
+    Grad --> Prox["L1 近似運算 soft-threshold 同 EAD-L1<br/>x_L1 = sign z · max |z| - lr·beta_1, 0"]
+    Prox --> ProxL2["L2 解析式收縮 elastic-net<br/>x_new = x_L1 + 2·beta_2·x0 / 1 + 2·beta_2"]
+    ProxL2 --> Box[裁切到 0,1]
+    Box --> Momentum["FISTA 動量更新<br/>y_k+1 = x_new + k / k+3 · x_new - x_adv<br/>x_adv ← x_new"]
+    Momentum --> Track[追蹤目前最佳對抗樣本<br/>誤分類且 EN cost 更小者]
+    Track --> Loop
+    Loop -- 否 --> Out([回傳最佳 x_adv])
+
+    style Prox fill:#fff3cd
+    style ProxL2 fill:#f8d7da
+    style Momentum fill:#d1ecf1
+```
+
+**EAD-EN 的核心思想：** 在 EAD-L1 之上加入額外的 **L2 解析式收縮
+（elastic-net shrink）** 步驟。這個額外的次梯度/解析式運算正是
+**EAD-EN 在 GPU 上加速比最大（5.7×）的關鍵**——其邊際成本在 GPU
+上可融合進同一個 batch kernel，而 CPU 則需線性付出此成本。
+
+### 7.4 三種攻擊比較
+
+```mermaid
+flowchart LR
+    subgraph CW["CW 共 100 步"]
+        A1[fwd] --> A2[bwd] --> A3[Adam] --> A4[tanh box]
+    end
+    subgraph EADL1["EAD-L1 共 100 步"]
+        B1[fwd] --> B2[bwd] --> B3[grad step] --> B4[L1 soft-threshold] --> B5[FISTA momentum]
+    end
+    subgraph EADEN["EAD-EN 共 100 步"]
+        C1[fwd] --> C2[bwd] --> C3[grad step + L2 term] --> C4[L1 soft-threshold] --> C5[L2 EN shrink] --> C6[FISTA momentum]
+    end
+
+    style A4 fill:#d1ecf1
+    style B4 fill:#fff3cd
+    style C4 fill:#fff3cd
+    style C5 fill:#f8d7da
+```
+
+**單次內部迭代每樣本的計算量：**
+
+| 攻擊 | Fwd | Bwd | 最佳化器 | Proximal / 約束 | 總運算量 |
+|---|:-:|:-:|---|---|---:|
+| CW       | 1 | 1 | Adam       | tanh 重參數化                          | ~3 + box |
+| EAD-L1   | 1 | 1 | ISTA       | L1 軟閾值 + FISTA                       | ~3.5 |
+| EAD-EN   | 1 | 1 | ISTA       | L1 軟閾值 + L2 收縮 + FISTA             | ~4 |
+
+**這如何對應到延遲結果：**
+- 三者皆受 **100 次前/反向傳播** 主導 → 基線成本接近。
+- EAD-EN 每步多出的 L2 收縮 + L1 軟閾值在 **GPU 上可輕易平行化**，
+  但在 CPU 上需線性累加 → 解釋了其相對於 CW 的 2.5× 為何能達到
+  5.7× 加速比。
+- CW 的 `tanh` 重參數化與 Adam 狀態更新在每步增加少量負擔，但兩
+  種裝置上皆未主導，因此 CPU/GPU 加速比（2.5×）落在中間。
+
+## 8. 實作細節
+
+### 8.1 計時協定（D-01..D-04）
 - 每一格（cell）：丟棄 W 次 warmup 迭代，回報 R 次計時迭代的 mean ± std。
 - GPU：每對 `perf_counter()` 的 t0/t1 都以 `torch.cuda.synchronize()` 框住。
 - CPU：不需同步（CPU 操作預設為同步）。
 - 每次重複的延遲 = (t1 - t0) / n_total_samples × 1000 毫秒。
 
-### 7.2 分層抽樣（D-06）
+### 8.2 分層抽樣（D-06）
 透過 `_stratified_indices()` 在 (snr, label) 桶之間採輪詢式抽取，
 以 `np.random.default_rng(2022)` 做為決定性種子。當未提供 SNR 時，
 退化為僅依 label 分桶。
 
-### 7.3 論文超參數釘定（D-05）
+### 8.3 論文超參數釘定（D-05）
 基準測試在呼叫 `create_attack()` 前以原地（in-place）方式覆寫 cfg：
 - `ta_box='unit'`、`attack_eps=0.03`
 - CW：`c=1.0`、`steps=100`、`lr=0.01`
@@ -155,12 +274,12 @@ FGSM 的計算極輕，導致 **kernel 啟動延遲、Python 開銷與 CUDA 同�
 - PGD：論文指定 `alpha=0.01`；sigguard 推導為 `alpha=eps/4=0.0075`。
   基準測試接受 0.0075 值（相對於 10 步內部前/反向成本，延遲差異可忽略）。
 
-### 7.4 State_dict 衛生（D-13，T-07-01 緩解）
+### 8.4 State_dict 衛生（D-13，T-07-01 緩解）
 裝置迴圈前先在 CPU 端快照原始 state_dict，每次裝置切換前重新載入到
 目標裝置。可防範攻擊修改 `requires_grad` 或 BN 統計量所造成的模型
 參數原地變動。
 
-### 7.5 Dispatcher 錯誤修復
+### 8.5 Dispatcher 錯誤修復
 原本 Plan 02 的接線將完整的 220k 列 `SNRs` 陣列傳入了 44k 列的測試
 切分，執行期間被捕獲並就地修復為：
 ```python
@@ -168,7 +287,7 @@ snrs_test = [SNRs[i] for i in test_idx]
 run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 ```
 
-## 8. 程式碼審查
+## 9. 程式碼審查
 
 | 嚴重度 | 數量 | 處置 |
 |---|---:|---|
@@ -186,7 +305,7 @@ run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 完整報告：`.planning/phases/07-.../07-REVIEW.md`。可透過
 `/gsd-code-review-fix 7` 自動修復。
 
-## 9. 驗證
+## 10. 驗證
 
 - **自動化驗證：** 3 個 plan 共 18/18 項 must-have 全部通過（檔案存在、
   schema、跨檔案連結接線、D-01..D-16 程式碼不變式）。
@@ -197,7 +316,7 @@ run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 完整報告：`.planning/phases/07-.../07-VERIFICATION.md`。
 追蹤於：`.planning/phases/07-.../07-HUMAN-UAT.md`。
 
-## 10. 後續步驟
+## 11. 後續步驟
 
 1. **視覺檢查** `paper/latex/figures/attack_bench_latency.pdf`。
 2. **完整預算重新生成**（RTX 5060 Ti 約 15–30 分鐘）：
@@ -209,7 +328,7 @@ run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 3. **可選：** `/gsd-code-review-fix 7` 套用 WR-01/02/03 清理。
 4. **Phase 6 整合：** 將 PDF 嵌入相機就緒版手稿，與 Table I 並列。
 
-## 11. 提交紀錄（Phase 7 於 `main` 分支）
+## 12. 提交紀錄（Phase 7 於 `main` 分支）
 
 ```
 b77d899 test(07): persist human verification items as UAT
