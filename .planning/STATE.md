@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Robustness Baselines
 status: executing
-stopped_at: Phase 5 context gathered
-last_updated: "2026-04-16T14:26:57.458Z"
+stopped_at: Phase 7 context gathered
+last_updated: "2026-04-26T07:39:18.343Z"
 last_activity: 2026-04-16
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
-  percent: 100
+  total_plans: 5
+  completed_plans: 4
+  percent: 80
 ---
 
 # Project State
@@ -64,6 +64,10 @@ Decisions from v1.0 are archived in `milestones/v1.0-ROADMAP.md` and
 - Implement adversarial training script (pattern: synth_finetune.py with attack loop replacing synthetic generation)
 - Confirm alpha=0.5 default preserves WBFM/AM-DSB/AM-SSB accuracy before full AT run
 
+### Roadmap Evolution
+
+- Phase 7 added: Benchmark attack generation time per sample (CPU vs GPU) across 5 attacks
+
 ### Blockers/Concerns
 
 v1.0 tech debt (all addressed in Phase 6):
@@ -81,6 +85,6 @@ v1.0 tech debt (all addressed in Phase 6):
 
 ## Session Continuity
 
-Last session: 2026-04-16T14:26:57.452Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-at-evaluation/05-CONTEXT.md
+Last session: 2026-04-26T07:39:18.338Z
+Stopped at: Phase 7 context gathered
+Resume file: .planning/phases/07-benchmark-attack-generation-time-per-sample-cpu-vs-gpu-acros/07-CONTEXT.md
