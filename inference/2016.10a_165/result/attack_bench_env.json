@@ -1,0 +1,128 @@
+{
+  "env": {
+    "torch_version": "2.9.0+cu130",
+    "cuda_version": "13.0",
+    "cuda_available": true,
+    "gpu_name": "NVIDIA GeForce RTX 5060 Ti",
+    "cpu_count": 6,
+    "cpu_processor": "x86_64",
+    "platform": "Linux-6.8.0-110-generic-x86_64-with-glibc2.35",
+    "python_version": "3.10.12"
+  },
+  "rows": [
+    {
+      "attack": "fgsm",
+      "device": "cpu",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 0.17579953905055845,
+      "std_ms_per_sample": 0.002056523442206526,
+      "total_seconds": 0.02250234099847148
+    },
+    {
+      "attack": "pgd",
+      "device": "cpu",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 2.073328070309799,
+      "std_ms_per_sample": 0.14936866406856097,
+      "total_seconds": 0.26538599299965426
+    },
+    {
+      "attack": "cw",
+      "device": "cpu",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 5.69758404688514,
+      "std_ms_per_sample": 0.0053923281200241036,
+      "total_seconds": 0.729290758001298
+    },
+    {
+      "attack": "eadl1",
+      "device": "cpu",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 95.93789064844316,
+      "std_ms_per_sample": 15.755771210947955,
+      "total_seconds": 12.280050003000724
+    },
+    {
+      "attack": "eaden",
+      "device": "cpu",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 146.11022514063166,
+      "std_ms_per_sample": 5.03336245313335,
+      "total_seconds": 18.702108818000852
+    },
+    {
+      "attack": "fgsm",
+      "device": "cuda",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 0.08432077343911715,
+      "std_ms_per_sample": 0.0014211015724185927,
+      "total_seconds": 0.010793059000206995
+    },
+    {
+      "attack": "pgd",
+      "device": "cuda",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 0.7533433984292515,
+      "std_ms_per_sample": 0.0008772734361173207,
+      "total_seconds": 0.09642795499894419
+    },
+    {
+      "attack": "cw",
+      "device": "cuda",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 2.2690945703232046,
+      "std_ms_per_sample": 0.01273600781814821,
+      "total_seconds": 0.2904441050013702
+    },
+    {
+      "attack": "eadl1",
+      "device": "cuda",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 26.24372749220072,
+      "std_ms_per_sample": 1.2622143828053822,
+      "total_seconds": 3.359197119001692
+    },
+    {
+      "attack": "eaden",
+      "device": "cuda",
+      "batch_size": 128,
+      "n_samples": 64,
+      "n_reps": 2,
+      "mean_ms_per_sample": 25.452041859367114,
+      "std_ms_per_sample": 0.10682903125314169,
+      "total_seconds": 3.2578613579989906
+    }
+  ],
+  "config": {
+    "n_samples": 64,
+    "n_reps": 2,
+    "batch_size": 128,
+    "warmup": 1,
+    "ta_box": "unit",
+    "attacks": [
+      "fgsm",
+      "pgd",
+      "cw",
+      "eadl1",
+      "eaden"
+    ]
+  }
+}
