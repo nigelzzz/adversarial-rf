@@ -52,6 +52,11 @@ if __name__ == "__main__":
     parser.add_argument('--eval_limit', type=int, default=None, help='Limit per-SNR test examples for (adv_)eval')
     parser.add_argument('--attack_backend', type=str, default='torchattacks', help='torchattacks (default) or internal')
     parser.add_argument('--ta_box', type=str, default='unit', help='torchattacks input mapping: unit|minmax')
+    # Phase 7 attack-bench knobs (--mode attack_bench)
+    parser.add_argument('--bench_n_samples', type=int, default=512, help='Phase 7 bench: total IQ samples per (attack, device) cell')
+    parser.add_argument('--bench_n_reps', type=int, default=5, help='Phase 7 bench: timing repetitions per cell (mean +/- std)')
+    parser.add_argument('--bench_batch_size', type=int, default=128, help='Phase 7 bench: fixed batch size for adversarial generation')
+    parser.add_argument('--bench_warmup', type=int, default=3, help='Phase 7 bench: warmup iterations discarded before timing')
     parser.add_argument('--spec_mask_out', type=str, default=None, help='Output path for build_psd_mask mode')
     # Optional defense (FFT-domain recovery)
     parser.add_argument('--def_band_low', type=float, default=None, help='Lower edge for fft_notch in [0,0.5]')
@@ -423,6 +428,34 @@ if __name__ == "__main__":
             Labels_test,
             cfg,
             logger,
+        )
+
+    elif args.mode == 'attack_bench':
+        # Phase 7: 5-attack x 2-device adversarial generation latency benchmark.
+        # Reuses util/sigguard_eval.create_attack via util/attack_bench.run_attack_bench_5x2.
+        # Single invocation runs CPU pass then GPU pass (D-13, D-16).
+        from util.attack_bench import run_attack_bench_5x2
+
+        # Load checkpoint with weights_only=True (project convention).
+        ckpt = torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device, weights_only=True)
+        model.load_state_dict(ckpt)
+
+        # D-05: pin paper-default attack hyperparameters BEFORE create_attack() reads cfg.
+        cfg.ta_box = 'unit'
+        cfg.attack_eps = 0.03
+        cfg.cw_c = 1.0
+        cfg.cw_steps = 100
+        cfg.cw_lr = 0.01
+        cfg.ead_max_iterations = 100
+
+        run_attack_bench_5x2(
+            model,
+            Signals_test,
+            Labels_test,
+            cfg,
+            logger,
+            snrs_test=SNRs,
+            test_idx=test_idx,
         )
 
     elif args.mode == 'multi_attack_eval':
