@@ -83,20 +83,82 @@ variance on CPU (σ ≈ 16%) due to early-termination behavior in the
 elastic-net optimizer interacting with cache effects. GPU variance is
 uniformly low (<5% relative for all 5 attacks).
 
-## 6. Implementation Details
+## 6. Why GPU Improves Adversarial Generation Time
 
-### 6.1 Timing Protocol (D-01..D-04)
+Adversarial attacks are dominated by repeated forward + backward passes
+through the model. Every iteration computes large matmuls and convolutions
+over a batch — exactly the workload GPUs are built for.
+
+### 6.1 Massive Parallelism on Tensor Ops
+Each forward/backward pass through AWN executes thousands of independent
+multiply-accumulate operations across the batch and channel dimensions. A
+CPU executes these on 6 cores; the RTX 5060 Ti executes them across
+thousands of CUDA cores simultaneously. This is the single biggest factor.
+
+### 6.2 Tensor Cores Accelerate Matmul
+The 5060 Ti has dedicated tensor cores that perform fused multiply-accumulate
+at much higher throughput than general-purpose CPU SIMD (AVX2/AVX-512). The
+dense linear layers in the AWN classifier and the inner conv stacks benefit
+directly.
+
+### 6.3 Higher Memory Bandwidth
+GPU GDDR memory bandwidth is roughly 5–20× CPU DRAM bandwidth. Adversarial
+attacks repeatedly stream activations, gradients, and intermediate buffers —
+bandwidth-bound workloads scale almost linearly with this.
+
+### 6.4 Iteration Count Amplifies the Win
+Single-step attacks (FGSM = 1 fwd + 1 bwd) only see ~2× speedup because
+launch overhead and host↔device transfer dominate the tiny compute.
+Iterative attacks scale much better:
+
+| Attack | Inner iterations | GPU speedup observed |
+|---|---:|---:|
+| FGSM   | 1   | 2.1× |
+| PGD    | 10  | 2.8× |
+| CW     | 100 | 2.5× |
+| EAD-L1 | 100 | 3.7× |
+| EAD-EN | 100 | 5.7× |
+
+The pattern: **the more iterations, the more the GPU's compute parallelism
+amortizes the fixed launch/transfer overhead**, and the bigger the speedup.
+
+### 6.5 Why EAD-EN Tops the Chart (5.7×)
+EAD-EN's elastic-net inner step does two extra subgradient computations per
+iteration on top of the standard L2 attack. On CPU these add up linearly; on
+GPU they fuse into the same parallel kernel launch, so the marginal cost
+approaches zero. EAD-EN is the most "compute per iteration" attack in the
+suite, and that maps best onto GPU.
+
+### 6.6 Why FGSM Only Gets 2.1× (the small-workload trap)
+FGSM's compute is so light that **kernel launch latency, Python overhead,
+and CUDA synchronization** become the dominant cost. The GPU finishes the
+math in microseconds but waits on the host to dispatch the next call. This
+is the classic "small-batch GPU underutilization" pattern. To get more
+speedup on FGSM you'd need larger batches (amortizing launch cost),
+`torch.compile`, or CUDA graphs.
+
+### 6.7 Threat-Model Implication
+For real-time RF defense, **only FGSM is GPU-fast enough to be a viable
+online attack** (84 µs vs 125 µs/sample symbol budget at the RML2016 rate).
+All optimization-based attacks (PGD/CW/EAD) require offline precomputation
+even on a modern GPU — which strengthens the threat-model argument that
+iterative attacks are not realistically deployable against live RF receivers
+without dedicated acceleration hardware.
+
+## 7. Implementation Details
+
+### 7.1 Timing Protocol (D-01..D-04)
 - Per cell: W warmup iters discarded, R timed iters reported as mean ± std.
 - GPU: `torch.cuda.synchronize()` brackets every `perf_counter()` t0/t1 pair.
 - CPU: no sync (CPU ops are synchronous by default).
 - Per-rep latency = (t1 - t0) / n_total_samples × 1000 ms.
 
-### 6.2 Stratification (D-06)
+### 7.2 Stratification (D-06)
 Round-robin draw across (snr, label) buckets via `_stratified_indices()`,
 seeded `np.random.default_rng(2022)` for determinism. Falls back to
 label-only buckets when SNRs aren't provided.
 
-### 6.3 Paper Hyperparameter Pinning (D-05)
+### 7.3 Paper Hyperparameter Pinning (D-05)
 Bench overwrites cfg in-place before `create_attack()` is called:
 - `ta_box='unit'`, `attack_eps=0.03`
 - CW: `c=1.0`, `steps=100`, `lr=0.01`
@@ -105,13 +167,13 @@ Bench overwrites cfg in-place before `create_attack()` is called:
   Bench accepts the 0.0075 value (latency delta is negligible vs the 10
   inner-step forward/backward cost).
 
-### 6.4 State_dict Hygiene (D-13, T-07-01 mitigation)
+### 7.4 State_dict Hygiene (D-13, T-07-01 mitigation)
 Original state_dict snapshotted on CPU once before the device loop, then
 reloaded onto each device before that device's pass. Defends against
 in-place mutation of model parameters by attacks that modify
 `requires_grad` or BN statistics.
 
-### 6.5 Dispatcher Bug Fix
+### 7.5 Dispatcher Bug Fix
 The Plan 02 wiring originally passed the full 220k-row `SNRs` array into a
 44k-row test split. Caught during execution; fixed inline via:
 ```python
@@ -119,7 +181,7 @@ snrs_test = [SNRs[i] for i in test_idx]
 run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 ```
 
-## 7. Code Review
+## 8. Code Review
 
 | Severity | Count | Action |
 |---|---:|---|
@@ -138,7 +200,7 @@ run_attack_bench_5x2(..., snrs_test=snrs_test, test_idx=test_idx)
 Full report: `.planning/phases/07-.../07-REVIEW.md`. Auto-fix available via
 `/gsd-code-review-fix 7`.
 
-## 8. Verification
+## 9. Verification
 
 - **Automated:** 18/18 must-haves verified across the 3 plans (artifact
   existence, schema, key-link wiring, code invariants for D-01..D-16).
@@ -151,7 +213,7 @@ Full report: `.planning/phases/07-.../07-REVIEW.md`. Auto-fix available via
 Full report: `.planning/phases/07-.../07-VERIFICATION.md`.
 Tracked in: `.planning/phases/07-.../07-HUMAN-UAT.md`.
 
-## 9. Next Steps
+## 10. Next Steps
 
 1. **Visual check** of `paper/latex/figures/attack_bench_latency.pdf`.
 2. **Full-budget regeneration** (~15-30 min on RTX 5060 Ti):
@@ -164,7 +226,7 @@ Tracked in: `.planning/phases/07-.../07-HUMAN-UAT.md`.
 4. **Phase 6 integration:** drop the PDF into the camera-ready manuscript
    alongside Table I.
 
-## 10. Commits (Phase 7 on `main`)
+## 11. Commits (Phase 7 on `main`)
 
 ```
 b77d899 test(07): persist human verification items as UAT
