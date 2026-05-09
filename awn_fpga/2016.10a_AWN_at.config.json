@@ -1,0 +1,32 @@
+{
+  "epochs_total": 30,
+  "epochs_trained": 30,
+  "lr_initial": 0.0001,
+  "batch_size": 256,
+  "ta_box": "minmax",
+  "eps": 0.1,
+  "attack_iters": {
+    "fgsm": 1,
+    "pgd": 7,
+    "eadl1": 10,
+    "eaden": 10
+  },
+  "attack_list": [
+    "fgsm",
+    "pgd",
+    "eadl1",
+    "eaden"
+  ],
+  "alpha": 0.5,
+  "snr_filter": "snr_min=0",
+  "analog_mods_kept_clean": [
+    "WBFM",
+    "AM-DSB",
+    "AM-SSB"
+  ],
+  "best_epoch": 28,
+  "best_val_weighted": 0.76603,
+  "seed": 42,
+  "warm_start_ckpt": "./checkpoint/2016.10a_AWN.pkl",
+  "git_sha": "1897a27"
+}

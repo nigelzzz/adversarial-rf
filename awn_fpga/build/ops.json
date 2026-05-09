@@ -1,0 +1,741 @@
+[
+  {
+    "seq": 1,
+    "kind": "ZeroPad2d",
+    "name": "conv1.0",
+    "in": [
+      [
+        1,
+        1,
+        2,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      1,
+      2,
+      134
+    ],
+    "padding": [
+      3,
+      3,
+      0,
+      0
+    ]
+  },
+  {
+    "seq": 2,
+    "kind": "Conv2d",
+    "name": "conv1.1",
+    "in": [
+      [
+        1,
+        1,
+        2,
+        134
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      1,
+      128
+    ],
+    "in_ch": 1,
+    "out_ch": 64,
+    "kernel": [
+      2,
+      7
+    ],
+    "stride": [
+      1
+    ],
+    "padding": [
+      0,
+      0
+    ],
+    "bias": false,
+    "w_shape": [
+      64,
+      1,
+      2,
+      7
+    ],
+    "macs": 114688
+  },
+  {
+    "seq": 3,
+    "kind": "BatchNorm2d",
+    "name": "conv1.2",
+    "in": [
+      [
+        1,
+        64,
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      1,
+      128
+    ],
+    "num_features": 64,
+    "note": "fold into preceding conv"
+  },
+  {
+    "seq": 4,
+    "kind": "LeakyReLU",
+    "name": "conv1.3",
+    "in": [
+      [
+        1,
+        64,
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      1,
+      128
+    ],
+    "negative_slope": 0.01
+  },
+  {
+    "seq": 5,
+    "kind": "Conv1d",
+    "name": "conv2.0",
+    "in": [
+      [
+        1,
+        64,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      128
+    ],
+    "in_ch": 64,
+    "out_ch": 64,
+    "kernel": 5,
+    "stride": [
+      1
+    ],
+    "padding": [
+      2
+    ],
+    "bias": false,
+    "w_shape": [
+      64,
+      64,
+      5
+    ],
+    "macs": 2621440
+  },
+  {
+    "seq": 6,
+    "kind": "BatchNorm1d",
+    "name": "conv2.1",
+    "in": [
+      [
+        1,
+        64,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      128
+    ],
+    "num_features": 64,
+    "note": "fold into preceding conv"
+  },
+  {
+    "seq": 7,
+    "kind": "LeakyReLU",
+    "name": "conv2.2",
+    "in": [
+      [
+        1,
+        64,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      128
+    ],
+    "negative_slope": 0.01
+  },
+  {
+    "seq": 8,
+    "kind": "ReflectionPad1d",
+    "name": "levels.level_0.wavelet.U.operator.0",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      68
+    ],
+    "padding": [
+      2,
+      2
+    ]
+  },
+  {
+    "seq": 9,
+    "kind": "Conv1d",
+    "name": "levels.level_0.wavelet.U.operator.1",
+    "in": [
+      [
+        1,
+        64,
+        68
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ],
+    "in_ch": 64,
+    "out_ch": 64,
+    "kernel": 3,
+    "stride": [
+      1
+    ],
+    "padding": [
+      0
+    ],
+    "bias": true,
+    "w_shape": [
+      64,
+      64,
+      3
+    ],
+    "macs": 811008
+  },
+  {
+    "seq": 10,
+    "kind": "LeakyReLU",
+    "name": "levels.level_0.wavelet.U.operator.2",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ],
+    "negative_slope": 0.01
+  },
+  {
+    "seq": 11,
+    "kind": "Dropout",
+    "name": "levels.level_0.wavelet.U.operator.3",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ]
+  },
+  {
+    "seq": 12,
+    "kind": "Conv1d",
+    "name": "levels.level_0.wavelet.U.operator.4",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ],
+    "in_ch": 64,
+    "out_ch": 64,
+    "kernel": 3,
+    "stride": [
+      1
+    ],
+    "padding": [
+      0
+    ],
+    "bias": true,
+    "w_shape": [
+      64,
+      64,
+      3
+    ],
+    "macs": 786432
+  },
+  {
+    "seq": 13,
+    "kind": "Tanh",
+    "name": "levels.level_0.wavelet.U.operator.5",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ]
+  },
+  {
+    "seq": 14,
+    "kind": "Add",
+    "name": "elementwise_add",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ],
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ]
+  },
+  {
+    "seq": 15,
+    "kind": "ReflectionPad1d",
+    "name": "levels.level_0.wavelet.P.operator.0",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      68
+    ],
+    "padding": [
+      2,
+      2
+    ]
+  },
+  {
+    "seq": 16,
+    "kind": "Conv1d",
+    "name": "levels.level_0.wavelet.P.operator.1",
+    "in": [
+      [
+        1,
+        64,
+        68
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ],
+    "in_ch": 64,
+    "out_ch": 64,
+    "kernel": 3,
+    "stride": [
+      1
+    ],
+    "padding": [
+      0
+    ],
+    "bias": true,
+    "w_shape": [
+      64,
+      64,
+      3
+    ],
+    "macs": 811008
+  },
+  {
+    "seq": 17,
+    "kind": "LeakyReLU",
+    "name": "levels.level_0.wavelet.P.operator.2",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ],
+    "negative_slope": 0.01
+  },
+  {
+    "seq": 18,
+    "kind": "Dropout",
+    "name": "levels.level_0.wavelet.P.operator.3",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      66
+    ]
+  },
+  {
+    "seq": 19,
+    "kind": "Conv1d",
+    "name": "levels.level_0.wavelet.P.operator.4",
+    "in": [
+      [
+        1,
+        64,
+        66
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ],
+    "in_ch": 64,
+    "out_ch": 64,
+    "kernel": 3,
+    "stride": [
+      1
+    ],
+    "padding": [
+      0
+    ],
+    "bias": true,
+    "w_shape": [
+      64,
+      64,
+      3
+    ],
+    "macs": 786432
+  },
+  {
+    "seq": 20,
+    "kind": "Tanh",
+    "name": "levels.level_0.wavelet.P.operator.5",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ]
+  },
+  {
+    "seq": 21,
+    "kind": "Sub",
+    "name": "elementwise_sub",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ],
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      64
+    ]
+  },
+  {
+    "seq": 22,
+    "kind": "Add",
+    "name": "elementwise_add",
+    "in": [
+      [],
+      []
+    ],
+    "out": []
+  },
+  {
+    "seq": 23,
+    "kind": "AdaptiveAvgPool1d",
+    "name": "avgpool",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      1
+    ],
+    "output_size": 1
+  },
+  {
+    "seq": 24,
+    "kind": "AdaptiveAvgPool1d",
+    "name": "avgpool",
+    "in": [
+      [
+        1,
+        64,
+        64
+      ]
+    ],
+    "out": [
+      1,
+      64,
+      1
+    ],
+    "output_size": 1
+  },
+  {
+    "seq": 25,
+    "kind": "Concat",
+    "name": "concat_dim1",
+    "in": [
+      [
+        1,
+        64,
+        1
+      ],
+      [
+        1,
+        64,
+        1
+      ]
+    ],
+    "out": [
+      1,
+      128,
+      1
+    ],
+    "dim": 1
+  },
+  {
+    "seq": 26,
+    "kind": "Linear",
+    "name": "SE_attention_score.0",
+    "in": [
+      [
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      32
+    ],
+    "in_f": 128,
+    "out_f": 32,
+    "bias": false,
+    "w_shape": [
+      32,
+      128
+    ],
+    "macs": 4096
+  },
+  {
+    "seq": 27,
+    "kind": "Dropout",
+    "name": "SE_attention_score.1",
+    "in": [
+      [
+        1,
+        32
+      ]
+    ],
+    "out": [
+      1,
+      32
+    ]
+  },
+  {
+    "seq": 28,
+    "kind": "ReLU",
+    "name": "SE_attention_score.2",
+    "in": [
+      [
+        1,
+        32
+      ]
+    ],
+    "out": [
+      1,
+      32
+    ]
+  },
+  {
+    "seq": 29,
+    "kind": "Linear",
+    "name": "SE_attention_score.3",
+    "in": [
+      [
+        1,
+        32
+      ]
+    ],
+    "out": [
+      1,
+      128
+    ],
+    "in_f": 32,
+    "out_f": 128,
+    "bias": false,
+    "w_shape": [
+      128,
+      32
+    ],
+    "macs": 4096
+  },
+  {
+    "seq": 30,
+    "kind": "Sigmoid",
+    "name": "SE_attention_score.4",
+    "in": [
+      [
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      128
+    ]
+  },
+  {
+    "seq": 31,
+    "kind": "Mul",
+    "name": "torch_mul",
+    "in": [
+      [
+        1,
+        128
+      ],
+      [
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      128
+    ]
+  },
+  {
+    "seq": 32,
+    "kind": "Linear",
+    "name": "fc.0",
+    "in": [
+      [
+        1,
+        128
+      ]
+    ],
+    "out": [
+      1,
+      320
+    ],
+    "in_f": 128,
+    "out_f": 320,
+    "bias": true,
+    "w_shape": [
+      320,
+      128
+    ],
+    "macs": 40960
+  },
+  {
+    "seq": 33,
+    "kind": "LeakyReLU",
+    "name": "fc.1",
+    "in": [
+      [
+        1,
+        320
+      ]
+    ],
+    "out": [
+      1,
+      320
+    ],
+    "negative_slope": 0.01
+  },
+  {
+    "seq": 34,
+    "kind": "Linear",
+    "name": "fc.2",
+    "in": [
+      [
+        1,
+        320
+      ]
+    ],
+    "out": [
+      1,
+      11
+    ],
+    "in_f": 320,
+    "out_f": 11,
+    "bias": true,
+    "w_shape": [
+      11,
+      320
+    ],
+    "macs": 3520
+  }
+]

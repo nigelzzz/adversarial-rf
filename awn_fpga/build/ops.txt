@@ -1,0 +1,57 @@
+AWN forward graph — 34 ops, 5,983,680 MACs total
+
+  #  kind                   name                                             in                           out                            macs
+--------------------------------------------------------------------------------------------------------------------------------------------
+  1  ZeroPad2d              conv1.0                                          [1, 1, 2, 128]               [1, 1, 2, 134]                    0
+  2  Conv2d                 conv1.1                                          [1, 1, 2, 134]               [1, 64, 1, 128]             114,688
+  3  BatchNorm2d            conv1.2                                          [1, 64, 1, 128]              [1, 64, 1, 128]                   0
+  4  LeakyReLU              conv1.3                                          [1, 64, 1, 128]              [1, 64, 1, 128]                   0
+  5  Conv1d                 conv2.0                                          [1, 64, 128]                 [1, 64, 128]              2,621,440
+  6  BatchNorm1d            conv2.1                                          [1, 64, 128]                 [1, 64, 128]                      0
+  7  LeakyReLU              conv2.2                                          [1, 64, 128]                 [1, 64, 128]                      0
+  8  ReflectionPad1d        levels.level_0.wavelet.U.operator.0              [1, 64, 64]                  [1, 64, 68]                       0
+  9  Conv1d                 levels.level_0.wavelet.U.operator.1              [1, 64, 68]                  [1, 64, 66]                 811,008
+ 10  LeakyReLU              levels.level_0.wavelet.U.operator.2              [1, 64, 66]                  [1, 64, 66]                       0
+ 11  Dropout                levels.level_0.wavelet.U.operator.3              [1, 64, 66]                  [1, 64, 66]                       0
+ 12  Conv1d                 levels.level_0.wavelet.U.operator.4              [1, 64, 66]                  [1, 64, 64]                 786,432
+ 13  Tanh                   levels.level_0.wavelet.U.operator.5              [1, 64, 64]                  [1, 64, 64]                       0
+ 14  Add                    elementwise_add                                  [1, 64, 64],[1, 64, 64]      [1, 64, 64]                       0
+ 15  ReflectionPad1d        levels.level_0.wavelet.P.operator.0              [1, 64, 64]                  [1, 64, 68]                       0
+ 16  Conv1d                 levels.level_0.wavelet.P.operator.1              [1, 64, 68]                  [1, 64, 66]                 811,008
+ 17  LeakyReLU              levels.level_0.wavelet.P.operator.2              [1, 64, 66]                  [1, 64, 66]                       0
+ 18  Dropout                levels.level_0.wavelet.P.operator.3              [1, 64, 66]                  [1, 64, 66]                       0
+ 19  Conv1d                 levels.level_0.wavelet.P.operator.4              [1, 64, 66]                  [1, 64, 64]                 786,432
+ 20  Tanh                   levels.level_0.wavelet.P.operator.5              [1, 64, 64]                  [1, 64, 64]                       0
+ 21  Sub                    elementwise_sub                                  [1, 64, 64],[1, 64, 64]      [1, 64, 64]                       0
+ 22  Add                    elementwise_add                                  [],[]                        []                                0
+ 23  AdaptiveAvgPool1d      avgpool                                          [1, 64, 64]                  [1, 64, 1]                        0
+ 24  AdaptiveAvgPool1d      avgpool                                          [1, 64, 64]                  [1, 64, 1]                        0
+ 25  Concat                 concat_dim1                                      [1, 64, 1],[1, 64, 1]        [1, 128, 1]                       0
+ 26  Linear                 SE_attention_score.0                             [1, 128]                     [1, 32]                       4,096
+ 27  Dropout                SE_attention_score.1                             [1, 32]                      [1, 32]                           0
+ 28  ReLU                   SE_attention_score.2                             [1, 32]                      [1, 32]                           0
+ 29  Linear                 SE_attention_score.3                             [1, 32]                      [1, 128]                      4,096
+ 30  Sigmoid                SE_attention_score.4                             [1, 128]                     [1, 128]                          0
+ 31  Mul                    torch_mul                                        [1, 128],[1, 128]            [1, 128]                          0
+ 32  Linear                 fc.0                                             [1, 128]                     [1, 320]                     40,960
+ 33  LeakyReLU              fc.1                                             [1, 320]                     [1, 320]                          0
+ 34  Linear                 fc.2                                             [1, 320]                     [1, 11]                       3,520
+
+By kind:
+  LeakyReLU                x 5
+  Conv1d                   x 5
+  Linear                   x 4
+  Dropout                  x 3
+  ReflectionPad1d          x 2
+  Tanh                     x 2
+  Add                      x 2
+  AdaptiveAvgPool1d        x 2
+  ZeroPad2d                x 1
+  Conv2d                   x 1
+  BatchNorm2d              x 1
+  BatchNorm1d              x 1
+  Sub                      x 1
+  Concat                   x 1
+  ReLU                     x 1
+  Sigmoid                  x 1
+  Mul                      x 1
