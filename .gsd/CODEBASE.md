@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-13T10:31:16Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T10:31:16Z","fingerprint":"9f8d4b862c7d6d87eb50bc8f350038c42229a984","fileCount":500,"truncated":true} -->
+Generated: 2026-05-13T11:16:46Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T11:16:46Z","fingerprint":"ebe9f17426f02a6773b51051eeff34a6b73939c6","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -83,14 +83,18 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### awn_fpga/rtl/
 - `awn_fpga/rtl/avgpool1d_s8.v`
+- `awn_fpga/rtl/bram_feeder_a.v`
+- `awn_fpga/rtl/bram_feeder_b.v`
 - `awn_fpga/rtl/eltwise_addsub_s8.v`
 - `awn_fpga/rtl/gemm_s8.v`
 - `awn_fpga/rtl/global_buffer.v`
 - `awn_fpga/rtl/leaky_relu_s8.v`
 - `awn_fpga/rtl/lut_s8.v`
 - `awn_fpga/rtl/mul_s8.v`
+- `awn_fpga/rtl/pe_s8.v`
 - `awn_fpga/rtl/relu_s8.v`
 - `awn_fpga/rtl/requantize_s32_s8.v`
+- `awn_fpga/rtl/systolic_mesh_s8.v`
 
 ### awn_fpga/sw/
 - `awn_fpga/sw/iohex.py`
@@ -98,6 +102,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `awn_fpga/sw/quantize_awn.py`
 - `awn_fpga/sw/refmodel.py`
 - `awn_fpga/sw/run_op_test.py`
+- `awn_fpga/sw/test_systolic.py`
 
 ### awn_fpga/tb/
 - `awn_fpga/tb/tb_avgpool1d_s8.v`
@@ -106,8 +111,10 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `awn_fpga/tb/tb_leaky_relu_s8.v`
 - `awn_fpga/tb/tb_lut_s8.v`
 - `awn_fpga/tb/tb_mul_s8.v`
+- `awn_fpga/tb/tb_pe_s8.v`
 - `awn_fpga/tb/tb_relu_s8.v`
 - `awn_fpga/tb/tb_requantize_s32_s8.v`
+- `awn_fpga/tb/tb_systolic_mesh_s8.v`
 
 ### awn_fpga/vectors/
 - *(126 files: 126 .hex)*
@@ -392,11 +399,4 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr10_before.npy`
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_after_pct.csv`
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_after.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_before_pct.csv`
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_before.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr0_after_pct.csv`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr0_after.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr0_before_pct.csv`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr0_before.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr10_after_pct.csv`
-- `inference/2016.10a_165/result/defense_compare/confmat/eaden_snr10_after.npy`

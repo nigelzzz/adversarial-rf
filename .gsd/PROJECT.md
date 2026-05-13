@@ -14,14 +14,16 @@ End-to-end AWN inference in hardware fast enough for WiFi burst-level classifica
 - 9 behavioral Verilog RTL modules implemented and verified bit-exact against numpy (gemm_s8, requantize_s32_s8, leaky_relu_s8, relu_s8, avgpool1d_s8, eltwise_addsub_s8, mul_s8, lut_s8, global_buffer)
 - End-to-end inference orchestrator (refmodel.py, 38 op invocations) produces correct classification
 - 126 hex test vectors for all operations
-- Behavioral gemm_s8 achieves correct results but at 1 MAC/cycle — 30.8 ms latency at 200 MHz (61x over budget)
-- Systolic array design analysis complete (8x16 output-stationary, tiling math, resource estimates)
+- **S01 complete:** 8x16 output-stationary systolic array (128 pe_s8 instances) verified bit-exact against numpy for all single-tile sizes (M≤8, N≤16, arbitrary K up to 320). BRAM feeder modules created as standalone RTL.
+- 64 randomized + deterministic systolic mesh tests pass, including worst-case K=320 (AWN conv2 GEMM dimension)
+- Behavioral gemm_s8 still used for full pipeline; systolic mesh replaces it for single-tile GEMM only
 
 ## Architecture / Key Patterns
 
 - **Quantization:** int8 weights/activations, int32 accumulation, requantize via shift+clamp
 - **RTL style:** Parameterized Verilog modules, hex-file-based testbenches ($readmemh/$fwrite)
 - **Verification:** Python numpy reference model → hex vectors → iverilog simulation → byte-for-byte comparison
+- **Systolic array:** Output-stationary 8×16 grid, skewed feeding from a_buf/b_buf, 4-state FSM (IDLE→COMPUTE→DRAIN→DONE)
 - **Target:** Zynq-7020 (Pynq-Z2), 200 MHz clock, 220 DSP48s, 140 BRAM36Ks
 
 ## Capability Contract
@@ -31,3 +33,8 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 ## Milestone Sequence
 
 - [ ] M001: Systolic Array AWN Accelerator — Replace behavioral GEMM with 8x16 systolic array, hardware im2col, and AXI PS-PL interface; prove <500 us latency in simulation
+  - [x] S01: Systolic Array PE + 8x16 Mesh (verified, 64 tests pass)
+  - [ ] S02: Tile Sequencer FSM + Weight Double-Buffering
+  - [ ] S03: Hardware im2col Unit
+  - [ ] S04: Full AWN Pipeline Controller
+  - [ ] S05: AXI-Lite/DMA Interface + Latency Proof
