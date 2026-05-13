@@ -358,7 +358,7 @@ All three commands must complete with zero errors.
   - Files: `awn_fpga/rtl/bram_feeder_a.v`, `awn_fpga/rtl/bram_feeder_b.v`, `awn_fpga/rtl/systolic_mesh_s8.v`
   - Verify: cd awn_fpga && mkdir -p build && iverilog -g2005-sv -s bram_feeder_a -o /dev/null rtl/bram_feeder_a.v && iverilog -g2005-sv -s bram_feeder_b -o /dev/null rtl/bram_feeder_b.v && iverilog -g2005-sv -s systolic_mesh_s8 -o build/chk_mesh rtl/systolic_mesh_s8.v rtl/pe_s8.v && echo 'ALL COMPILE OK'
 
-- [ ] **T03: Create mesh testbench and randomized verification** `est:1h30m`
+- [x] **T03: Create mesh testbench and randomized verification** `est:1h30m`
   ## Description
 
 Create the mesh testbench and a Python randomized verification script that proves the systolic array produces bit-exact int32 results matching numpy for all single-tile matrix sizes (M≤8, N≤16, arbitrary K). The testbench follows the existing `tb_gemm_s8.v` pattern exactly (plusargs, $readmemh, $fwrite). The Python script generates random int8 matrices, writes hex vectors, runs the iverilog simulation, and asserts zero divergence.
