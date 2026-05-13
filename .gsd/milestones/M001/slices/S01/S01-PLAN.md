@@ -135,7 +135,7 @@ vvp build/sim_pe_s8
   - Files: `awn_fpga/rtl/pe_s8.v`, `awn_fpga/tb/tb_pe_s8.v`
   - Verify: cd awn_fpga && mkdir -p build && iverilog -g2005-sv -o build/sim_pe_s8 tb/tb_pe_s8.v rtl/pe_s8.v && vvp build/sim_pe_s8 | grep -q 'ALL PE TESTS PASSED'
 
-- [ ] **T02: Create BRAM feeders and 8x16 systolic mesh module** `est:2h`
+- [x] **T02: Create BRAM feeders and 8x16 systolic mesh module** `est:2h`
   ## Description
 
 Create the BRAM feeder modules and the 8x16 systolic mesh that wires 128 PEs into an output-stationary grid. The mesh has the same external interface as the behavioral `gemm_s8.v` (same parameters, ports, and array names) so existing testbench patterns work unchanged. For S01, the mesh handles single-tile only (M≤8, N≤16, arbitrary K). Full tiling comes in S02.
