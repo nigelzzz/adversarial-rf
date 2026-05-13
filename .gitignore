@@ -4,3 +4,31 @@ venv/
 # AI tooling local state
 .claude/
 .codex
+
+# ── GSD baseline (auto-generated) ──
+.gsd-id
+.bg-shell/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+dist/
+build/
+__pycache__/
+*.pyc
+.venv/
+target/
+vendor/
+*.log
+coverage/
+.cache/
+tmp/

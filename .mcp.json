@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "gsd-workflow": {
+      "command": "/home/nigel/.nvm/versions/node/v24.15.0/bin/node",
+      "args": [
+        "/home/nigel/.nvm/versions/node/v24.15.0/lib/node_modules/gsd-pi/packages/mcp-server/dist/cli.js"
+      ],
+      "cwd": "/home/nigel/opensource/adversarial-rf",
+      "env": {
+        "GSD_CLI_PATH": "/home/nigel/.nvm/versions/node/v24.15.0/bin/gsd",
+        "GSD_WORKFLOW_EXECUTORS_MODULE": "/home/nigel/.gsd/agent/extensions/gsd/tools/workflow-tool-executors.js",
+        "GSD_WORKFLOW_WRITE_GATE_MODULE": "/home/nigel/.gsd/agent/extensions/gsd/bootstrap/write-gate.js",
+        "GSD_PERSIST_WRITE_GATE_STATE": "1",
+        "GSD_WORKFLOW_PROJECT_ROOT": "/home/nigel/opensource/adversarial-rf"
+      }
+    }
+  }
+}
