@@ -1,7 +1,7 @@
 # Codebase Map
 
-Generated: 2026-05-13T11:16:46Z | Files: 500 | Described: 0/500
-<!-- gsd:codebase-meta {"generatedAt":"2026-05-13T11:16:46Z","fingerprint":"ebe9f17426f02a6773b51051eeff34a6b73939c6","fileCount":500,"truncated":true} -->
+Generated: 2026-05-14T05:35:43Z | Files: 500 | Described: 0/500
+<!-- gsd:codebase-meta {"generatedAt":"2026-05-14T05:35:43Z","fingerprint":"643468ff128fcf121692518fe110456eee60a208","fileCount":500,"truncated":true} -->
 Note: Truncated to first 500 files. Run with higher --max-files to include all.
 
 ### (root)/
@@ -95,6 +95,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `awn_fpga/rtl/relu_s8.v`
 - `awn_fpga/rtl/requantize_s32_s8.v`
 - `awn_fpga/rtl/systolic_mesh_s8.v`
+- `awn_fpga/rtl/tiled_gemm_s8.v`
 
 ### awn_fpga/sw/
 - `awn_fpga/sw/iohex.py`
@@ -103,6 +104,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `awn_fpga/sw/refmodel.py`
 - `awn_fpga/sw/run_op_test.py`
 - `awn_fpga/sw/test_systolic.py`
+- `awn_fpga/sw/test_tiled_systolic.py`
 
 ### awn_fpga/tb/
 - `awn_fpga/tb/tb_avgpool1d_s8.v`
@@ -115,6 +117,7 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `awn_fpga/tb/tb_relu_s8.v`
 - `awn_fpga/tb/tb_requantize_s32_s8.v`
 - `awn_fpga/tb/tb_systolic_mesh_s8.v`
+- `awn_fpga/tb/tb_tiled_gemm_s8.v`
 
 ### awn_fpga/vectors/
 - *(126 files: 126 .hex)*
@@ -397,6 +400,3 @@ Note: Truncated to first 500 files. Run with higher --max-files to include all.
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr10_after.npy`
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr10_before_pct.csv`
 - `inference/2016.10a_165/result/defense_compare/confmat/cw_snr10_before.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_after_pct.csv`
-- `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_after.npy`
-- `inference/2016.10a_165/result/defense_compare/confmat/cw_snr18_before.npy`

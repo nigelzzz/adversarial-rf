@@ -1,0 +1,13 @@
+{
+  "milestoneId": "M001",
+  "worktreePath": null,
+  "originalBasePath": "/home/nigel/opensource/adversarial-rf",
+  "stepMode": false,
+  "pausedAt": "2026-05-13T11:31:43.200Z",
+  "sessionFile": "/home/nigel/.gsd/sessions/--home-nigel-opensource-adversarial-rf--/2026-05-13T11-21-31-809Z_59871551-0272-4c2d-860c-78c23272dae0.jsonl",
+  "unitType": "execute-task",
+  "unitId": "M001/S02/T02",
+  "activeEngineId": null,
+  "activeRunDir": null,
+  "autoStartTime": 1778668434821
+}

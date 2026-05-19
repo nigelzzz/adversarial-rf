@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Randomized verification of tiled_gemm_s8 against numpy."""
+"""Comprehensive verification of tiled_gemm_s8 against numpy.
+
+Tests all 10 AWN GEMM shapes, boundary cases, 50 randomized dimensions,
+and cross-checks against gemm_s8 behavioral reference when available.
+"""
 import sys, os, subprocess, tempfile
 import numpy as np
 
@@ -22,6 +26,25 @@ def compile_sim():
         os.path.join(AWN_DIR, 'rtl', 'bram_feeder_b.v'),
     ])
     return sim
+
+
+def compile_gemm_s8():
+    """Compile behavioral gemm_s8 for cross-check. Returns None if unavailable."""
+    tb_path = os.path.join(AWN_DIR, 'tb', 'tb_gemm_s8.v')
+    rtl_path = os.path.join(AWN_DIR, 'rtl', 'gemm_s8.v')
+    if not os.path.exists(tb_path) or not os.path.exists(rtl_path):
+        return None
+    os.makedirs(BUILD_DIR, exist_ok=True)
+    sim = os.path.join(BUILD_DIR, 'sim_gemm_s8')
+    try:
+        subprocess.check_call([
+            'iverilog', '-g2005-sv', '-o', sim,
+            '-I', os.path.join(AWN_DIR, 'rtl'),
+            tb_path,
+        ], stderr=subprocess.DEVNULL)
+        return sim
+    except subprocess.CalledProcessError:
+        return None
 
 
 def run_gemm(sim, M, K, N, A, B, bias=None):
@@ -69,42 +92,72 @@ def main():
     ok = True
     tid = 0
 
-    # Single-tile (same range as systolic_mesh_s8)
-    for M, K, N in [(1, 1, 1), (4, 4, 4), (8, 16, 16), (8, 320, 16)]:
+    # --- AWN GEMM shapes ---
+    print('--- AWN GEMM shapes ---')
+    awn_shapes = [
+        (64,  14,  128, 'conv1'),
+        (64,  320, 128, 'conv2'),
+        (64,  192, 66,  'U.conv1'),
+        (64,  192, 64,  'U.conv2'),
+        (64,  192, 66,  'P.conv1'),
+        (64,  192, 64,  'P.conv2'),
+        (32,  128, 1,   'SE_lin0'),
+        (128, 32,  1,   'SE_lin3'),
+        (320, 128, 1,   'fc.0'),
+        (11,  320, 1,   'fc.2'),
+    ]
+    for M, K, N, layer in awn_shapes:
         for ub in [False, True]:
             tid += 1
-            ok &= test_one(sim, M, K, N, ub, f'T{tid:02d}')
+            ok &= test_one(sim, M, K, N, ub, f'T{tid:02d} ({layer})')
 
-    # Multi-tile aligned
-    for M, K, N in [(16, 32, 32), (64, 320, 128)]:
+    # --- Boundary cases ---
+    print('--- Boundary cases ---')
+    boundary_cases = [
+        (11,  320, 1,   'M+N boundary'),
+        (64,  192, 66,  'N-boundary'),
+        (32,  128, 1,   'SE linear'),
+        (320, 128, 1,   'large M skinny N'),
+        (1,   1,   1,   'minimum'),
+        (8,   1,   16,  'min K full tile'),
+        (9,   1,   17,  'M+N just over tile'),
+    ]
+    for M, K, N, desc in boundary_cases:
         for ub in [False, True]:
             tid += 1
-            ok &= test_one(sim, M, K, N, ub, f'T{tid:02d}')
+            ok &= test_one(sim, M, K, N, ub, f'T{tid:02d} ({desc})')
 
-    # M-boundary: last M-tile has 3 rows
-    for ub in [False, True]:
-        tid += 1
-        ok &= test_one(sim, 11, 320, 1, ub, f'T{tid:02d}')
-
-    # N-boundary: last N-tile has 2 cols
-    for ub in [False, True]:
-        tid += 1
-        ok &= test_one(sim, 64, 192, 66, ub, f'T{tid:02d}')
-
-    # Both M and N boundary
-    for ub in [False, True]:
-        tid += 1
-        ok &= test_one(sim, 11, 192, 66, ub, f'T{tid:02d}')
-
-    # Randomized tests
-    for _ in range(20):
-        M = int(np.random.choice([1, 2, 4, 7, 8, 9, 11, 16, 32, 64]))
-        K = int(np.random.choice([1, 4, 16, 32, 64, 128, 192, 320]))
-        N = int(np.random.choice([1, 2, 8, 15, 16, 17, 32, 64, 66, 128]))
+    # --- 50 Randomized tests ---
+    print('--- Randomized ---')
+    M_choices = [1, 2, 3, 7, 8, 9, 11, 16, 32, 48, 64]
+    K_choices = [1, 4, 14, 32, 64, 128, 192, 320]
+    N_choices = [1, 2, 8, 15, 16, 17, 32, 64, 66, 128]
+    for _ in range(50):
+        M = int(np.random.choice(M_choices))
+        K = int(np.random.choice(K_choices))
+        N = int(np.random.choice(N_choices))
         ub = bool(np.random.random() < 0.5)
         tid += 1
         ok &= test_one(sim, M, K, N, ub, f'T{tid:02d}')
 
+    # --- Cross-check vs gemm_s8 ---
+    print('--- Cross-check vs gemm_s8 ---')
+    gemm_sim = compile_gemm_s8()
+    if gemm_sim is not None:
+        M, K, N = 64, 320, 128
+        A = np.random.randint(-128, 128, (M, K), dtype=np.int8)
+        B = np.random.randint(-128, 128, (K, N), dtype=np.int8)
+        C_tiled = run_gemm(sim, M, K, N, A, B)
+        C_behav = run_gemm(gemm_sim, M, K, N, A, B)
+        xok = np.array_equal(C_tiled, C_behav)
+        status = 'PASS' if xok else 'FAIL'
+        print(f'{status}: (64,320,128) tiled output matches gemm_s8 byte-for-byte')
+        ok &= xok
+        tid += 1
+    else:
+        print('SKIP: tb_gemm_s8.v not found, cross-check skipped (numpy is authoritative)')
+
+    # --- Summary ---
     if ok:
         print(f'\nALL TILED SYSTOLIC TESTS PASSED ({tid} tests)')
         sys.exit(0)

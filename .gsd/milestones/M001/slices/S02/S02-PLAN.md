@@ -217,7 +217,7 @@ Read `awn_fpga/sw/test_systolic.py` and `awn_fpga/sw/iohex.py` for the exact run
   - Files: `awn_fpga/rtl/tiled_gemm_s8.v`, `awn_fpga/tb/tb_tiled_gemm_s8.v`, `awn_fpga/sw/test_tiled_systolic.py`
   - Verify: cd awn_fpga && python sw/test_tiled_systolic.py 2>&1 | tail -1 | grep -q 'ALL TILED SYSTOLIC TESTS PASSED'
 
-- [ ] **T02: Add BRAM double-buffering for B-matrix weights** `est:2h`
+- [x] **T02: Add BRAM double-buffering for B-matrix weights** `est:2h`
   ## Overview
 
 Add weight double-buffering to `tiled_gemm_s8.v` using two `bram_feeder_b` banks. While the PE grid computes a tile using one BRAM bank, the next tile's B-matrix loads into the other bank, hiding the K-cycle load latency behind the K+22-cycle compute. This requires:
@@ -419,7 +419,7 @@ iverilog -g2005-sv -o sim tb/tb_tiled_gemm_s8.v rtl/tiled_gemm_s8.v rtl/pe_s8.v 
   - Files: `awn_fpga/rtl/bram_feeder_b.v`, `awn_fpga/rtl/tiled_gemm_s8.v`, `awn_fpga/sw/test_tiled_systolic.py`
   - Verify: cd awn_fpga && python sw/test_tiled_systolic.py 2>&1 | tail -1 | grep -q 'ALL TILED SYSTOLIC TESTS PASSED'
 
-- [ ] **T03: Comprehensive randomized verification covering all AWN GEMM shapes** `est:1h`
+- [x] **T03: Comprehensive randomized verification covering all AWN GEMM shapes** `est:1h`
   ## Overview
 
 Expand `test_tiled_systolic.py` to comprehensively verify tiled_gemm_s8 across all 10 AWN GEMM shapes from refmodel.py, all boundary conditions from the real AWN pipeline, and 50+ randomized tests with arbitrary dimensions. Create a repo-root wrapper for GSD verification gate compatibility. This is the final acceptance gate for S02.
