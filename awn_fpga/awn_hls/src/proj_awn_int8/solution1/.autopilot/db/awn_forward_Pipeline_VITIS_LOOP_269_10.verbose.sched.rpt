@@ -1,0 +1,181 @@
+
+
+================================================================
+== Vitis HLS Report for 'awn_forward_Pipeline_VITIS_LOOP_269_10'
+================================================================
+* Date:           Sat May 30 20:40:57 2026
+
+* Version:        2023.2 (Build 4023990 on Oct 11 2023)
+* Project:        proj_awn_int8
+* Solution:       solution1 (Vivado IP Flow Target)
+* Product family: zynquplus
+* Target device:  xczu7ev-ffvc1156-2-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  |  5.00 ns|  3.482 ns|     1.35 ns|
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+    |   min   |   max   |    min   |    max   | min | max |   Type  |
+    +---------+---------+----------+----------+-----+-----+---------+
+    |      132|      132|  0.660 us|  0.660 us|  132|  132|       no|
+    +---------+---------+----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +---------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |                     |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        |      Loop Name      |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +---------------------+---------+---------+----------+-----------+-----------+------+----------+
+        |- VITIS_LOOP_269_10  |      130|      130|         4|          1|          1|   128|       yes|
+        +---------------------+---------+---------+----------+-----------+-----------+------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 2
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
++ Individual pipeline summary: 
+  * Pipeline-0: initiation interval (II) = 1, depth = 4
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 4
+* Pipeline : 1
+  Pipeline-0 : II = 1, D = 4, States = { 1 2 3 4 }
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 1.66>
+ST_1 : Operation 7 [1/1] (0.00ns)   --->   "%i_2 = alloca i32 1" [awn_int8.cpp:269]   --->   Operation 7 'alloca' 'i_2' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 8 [1/1] (0.42ns)   --->   "%store_ln269 = store i8 0, i8 %i_2" [awn_int8.cpp:269]   --->   Operation 8 'store' 'store_ln269' <Predicate = true> <Delay = 0.42>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "%br_ln0 = br void %for.inc165"   --->   Operation 9 'br' 'br_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 10 [1/1] (0.00ns)   --->   "%i = load i8 %i_2" [awn_int8.cpp:269]   --->   Operation 10 'load' 'i' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 11 [1/1] (0.76ns)   --->   "%icmp_ln269 = icmp_eq  i8 %i, i8 128" [awn_int8.cpp:269]   --->   Operation 11 'icmp' 'icmp_ln269' <Predicate = true> <Delay = 0.76> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 12 [1/1] (0.76ns)   --->   "%add_ln269 = add i8 %i, i8 1" [awn_int8.cpp:269]   --->   Operation 12 'add' 'add_ln269' <Predicate = true> <Delay = 0.76> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.76> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 13 [1/1] (0.00ns)   --->   "%br_ln269 = br i1 %icmp_ln269, void %for.inc165.split, void %for.end167.exitStub" [awn_int8.cpp:269]   --->   Operation 13 'br' 'br_ln269' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 14 [1/1] (0.00ns)   --->   "%zext_ln269 = zext i8 %i" [awn_int8.cpp:269]   --->   Operation 14 'zext' 'zext_ln269' <Predicate = (!icmp_ln269)> <Delay = 0.00>
+ST_1 : Operation 15 [1/1] (0.00ns)   --->   "%sig_q_addr = getelementptr i7 %sig_q, i64 0, i64 %zext_ln269" [awn_int8.cpp:270]   --->   Operation 15 'getelementptr' 'sig_q_addr' <Predicate = (!icmp_ln269)> <Delay = 0.00>
+ST_1 : Operation 16 [2/2] (0.67ns)   --->   "%sig_q_load = load i7 %sig_q_addr" [awn_int8.cpp:270]   --->   Operation 16 'load' 'sig_q_load' <Predicate = (!icmp_ln269)> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 7> <Depth = 128> <RAM>
+ST_1 : Operation 17 [1/1] (0.00ns)   --->   "%cat_q_addr = getelementptr i8 %cat_q, i64 0, i64 %zext_ln269" [awn_int8.cpp:270]   --->   Operation 17 'getelementptr' 'cat_q_addr' <Predicate = (!icmp_ln269)> <Delay = 0.00>
+ST_1 : Operation 18 [2/2] (1.23ns)   --->   "%cat_q_load = load i7 %cat_q_addr" [awn_int8.cpp:270]   --->   Operation 18 'load' 'cat_q_load' <Predicate = (!icmp_ln269)> <Delay = 1.23> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 1.23> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 8> <Depth = 128> <RAM>
+ST_1 : Operation 19 [1/1] (0.42ns)   --->   "%store_ln269 = store i8 %add_ln269, i8 %i_2" [awn_int8.cpp:269]   --->   Operation 19 'store' 'store_ln269' <Predicate = (!icmp_ln269)> <Delay = 0.42>
+
+State 2 <SV = 1> <Delay = 2.88>
+ST_2 : Operation 20 [1/2] (0.67ns)   --->   "%sig_q_load = load i7 %sig_q_addr" [awn_int8.cpp:270]   --->   Operation 20 'load' 'sig_q_load' <Predicate = true> <Delay = 0.67> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.67> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 7> <Depth = 128> <RAM>
+ST_2 : Operation 21 [1/1] (0.00ns)   --->   "%zext_ln270 = zext i7 %sig_q_load" [awn_int8.cpp:270]   --->   Operation 21 'zext' 'zext_ln270' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 22 [1/2] (1.23ns)   --->   "%cat_q_load = load i7 %cat_q_addr" [awn_int8.cpp:270]   --->   Operation 22 'load' 'cat_q_load' <Predicate = true> <Delay = 1.23> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 1.23> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 8> <Depth = 128> <RAM>
+ST_2 : Operation 23 [1/1] (0.00ns)   --->   "%sext_ln270 = sext i8 %cat_q_load" [awn_int8.cpp:270]   --->   Operation 23 'sext' 'sext_ln270' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 24 [1/1] (1.65ns)   --->   "%prod = mul i15 %sext_ln270, i15 %zext_ln270" [awn_int8.cpp:270]   --->   Operation 24 'mul' 'prod' <Predicate = true> <Delay = 1.65> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 1.65> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+
+State 3 <SV = 2> <Delay = 3.42>
+ST_3 : Operation 25 [1/1] (0.00ns)   --->   "%sext_ln17 = sext i15 %prod" [awn_int8.cpp:17->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 25 'sext' 'sext_ln17' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 26 [1/1] (3.42ns)   --->   "%mul_ln17 = mul i46 %sext_ln17, i46 1198996078" [awn_int8.cpp:17->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 26 'mul' 'mul_ln17' <Predicate = true> <Delay = 3.42> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 3.42> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_3 : Operation 42 [1/1] (0.00ns)   --->   "%ret_ln0 = ret"   --->   Operation 42 'ret' 'ret_ln0' <Predicate = (icmp_ln269)> <Delay = 0.00>
+
+State 4 <SV = 3> <Delay = 3.48>
+ST_4 : Operation 27 [1/1] (0.00ns)   --->   "%specpipeline_ln269 = specpipeline void @_ssdm_op_SpecPipeline, i32 4294967295, i32 0, i32 0, i32 0, void @empty_3" [awn_int8.cpp:269]   --->   Operation 27 'specpipeline' 'specpipeline_ln269' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 28 [1/1] (0.00ns)   --->   "%speclooptripcount_ln269 = speclooptripcount void @_ssdm_op_SpecLoopTripCount, i64 128, i64 128, i64 128" [awn_int8.cpp:269]   --->   Operation 28 'speclooptripcount' 'speclooptripcount_ln269' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 29 [1/1] (0.00ns)   --->   "%specloopname_ln269 = specloopname void @_ssdm_op_SpecLoopName, void @empty_0" [awn_int8.cpp:269]   --->   Operation 29 'specloopname' 'specloopname_ln269' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 30 [1/1] (1.07ns)   --->   "%sum = add i46 %mul_ln17, i46 68719476736" [awn_int8.cpp:19->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 30 'add' 'sum' <Predicate = true> <Delay = 1.07> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.07> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_4 : Operation 31 [1/1] (0.00ns)   --->   "%trunc_ln20_5 = partselect i9 @_ssdm_op_PartSelect.i9.i46.i32.i32, i46 %sum, i32 37, i32 45" [awn_int8.cpp:20->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 31 'partselect' 'trunc_ln20_5' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 32 [1/1] (0.00ns)   --->   "%tmp = partselect i2 @_ssdm_op_PartSelect.i2.i46.i32.i32, i46 %sum, i32 44, i32 45" [awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 32 'partselect' 'tmp' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 33 [1/1] (0.54ns)   --->   "%icmp_ln24 = icmp_eq  i2 %tmp, i2 1" [awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 33 'icmp' 'icmp_ln24' <Predicate = true> <Delay = 0.54> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 0.54> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_4 : Operation 34 [1/1] (0.77ns)   --->   "%icmp_ln25 = icmp_slt  i9 %trunc_ln20_5, i9 384" [awn_int8.cpp:25->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 34 'icmp' 'icmp_ln25' <Predicate = true> <Delay = 0.77> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 0.77> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_4 : Operation 35 [1/1] (0.00ns) (grouped into LUT with out node select_ln24_5)   --->   "%trunc_ln26_5 = partselect i8 @_ssdm_op_PartSelect.i8.i46.i32.i32, i46 %sum, i32 37, i32 44" [awn_int8.cpp:26->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 35 'partselect' 'trunc_ln26_5' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 36 [1/1] (0.00ns) (grouped into LUT with out node select_ln24_5)   --->   "%select_ln24 = select i1 %icmp_ln24, i8 127, i8 128" [awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 36 'select' 'select_ln24' <Predicate = true> <Delay = 0.00> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.39> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_4 : Operation 37 [1/1] (0.00ns) (grouped into LUT with out node select_ln24_5)   --->   "%or_ln24 = or i1 %icmp_ln24, i1 %icmp_ln25" [awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 37 'or' 'or_ln24' <Predicate = true> <Delay = 0.00> <CoreInst = "LogicGate">   --->   Core 74 'LogicGate' <Latency = 0> <II = 1> <Delay = 0.28> <FuncUnit> <Opcode : 'and' 'or' 'xor'> <InPorts = 2> <OutPorts = 1>
+ST_4 : Operation 38 [1/1] (0.39ns) (out node of the LUT)   --->   "%select_ln24_5 = select i1 %or_ln24, i8 %select_ln24, i8 %trunc_ln26_5" [awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271]   --->   Operation 38 'select' 'select_ln24_5' <Predicate = true> <Delay = 0.39> <CoreInst = "Sel">   --->   Core 73 'Sel' <Latency = 0> <II = 1> <Delay = 0.39> <FuncUnit> <Opcode : 'select'> <InPorts = 3> <OutPorts = 1>
+ST_4 : Operation 39 [1/1] (0.00ns)   --->   "%se_mul_q_addr = getelementptr i8 %se_mul_q, i64 0, i64 %zext_ln269" [awn_int8.cpp:271]   --->   Operation 39 'getelementptr' 'se_mul_q_addr' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 40 [1/1] (1.23ns)   --->   "%store_ln271 = store i8 %select_ln24_5, i7 %se_mul_q_addr" [awn_int8.cpp:271]   --->   Operation 40 'store' 'store_ln271' <Predicate = true> <Delay = 1.23> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 1.23> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 8> <Depth = 128> <RAM>
+ST_4 : Operation 41 [1/1] (0.00ns)   --->   "%br_ln269 = br void %for.inc165" [awn_int8.cpp:269]   --->   Operation 41 'br' 'br_ln269' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 5.000ns, clock uncertainty: 1.350ns.
+
+ <State 1>: 1.664ns
+The critical path consists of the following:
+	'store' operation 0 bit ('store_ln269', awn_int8.cpp:269) of constant 0 on local variable 'i', awn_int8.cpp:269 [5]  (0.427 ns)
+	'load' operation 8 bit ('i', awn_int8.cpp:269) on local variable 'i', awn_int8.cpp:269 [8]  (0.000 ns)
+	'getelementptr' operation 7 bit ('cat_q_addr', awn_int8.cpp:270) [20]  (0.000 ns)
+	'load' operation 8 bit ('cat_q_load', awn_int8.cpp:270) on array 'cat_q' [21]  (1.237 ns)
+
+ <State 2>: 2.887ns
+The critical path consists of the following:
+	'load' operation 8 bit ('cat_q_load', awn_int8.cpp:270) on array 'cat_q' [21]  (1.237 ns)
+	'mul' operation 15 bit ('prod', awn_int8.cpp:270) [23]  (1.650 ns)
+
+ <State 3>: 3.420ns
+The critical path consists of the following:
+	'mul' operation 46 bit ('mul_ln17', awn_int8.cpp:17->awn_int8.cpp:30->awn_int8.cpp:271) [25]  (3.420 ns)
+
+ <State 4>: 3.482ns
+The critical path consists of the following:
+	'add' operation 46 bit ('sum', awn_int8.cpp:19->awn_int8.cpp:30->awn_int8.cpp:271) [26]  (1.076 ns)
+	'icmp' operation 1 bit ('icmp_ln25', awn_int8.cpp:25->awn_int8.cpp:30->awn_int8.cpp:271) [30]  (0.776 ns)
+	'or' operation 1 bit ('or_ln24', awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271) [33]  (0.000 ns)
+	'select' operation 8 bit ('select_ln24_5', awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271) [34]  (0.393 ns)
+	'store' operation 0 bit ('store_ln271', awn_int8.cpp:271) of variable 'select_ln24_5', awn_int8.cpp:24->awn_int8.cpp:30->awn_int8.cpp:271 on array 'se_mul_q' [36]  (1.237 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

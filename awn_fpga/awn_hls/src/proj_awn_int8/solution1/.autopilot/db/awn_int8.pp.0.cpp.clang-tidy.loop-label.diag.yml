@@ -1,0 +1,364 @@
+---
+MainSourceFile:  /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+Diagnostics:     
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_53_1:  '
+    FileOffset:      53
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          583901
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_53_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_54_2:  '
+    FileOffset:      54
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          583943
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_54_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_57_3:  '
+    FileOffset:      57
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584036
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_57_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_58_4:  '
+    FileOffset:      58
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584082
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_58_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_76_1:  '
+    FileOffset:      76
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584708
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_76_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_77_2:  '
+    FileOffset:      77
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584750
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_77_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_80_3:  '
+    FileOffset:      80
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584843
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_80_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_81_4:  '
+    FileOffset:      81
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          584893
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_81_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_100_1:  '
+    FileOffset:      100
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          585538
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_100_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_101_2:  '
+    FileOffset:      101
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          585580
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_101_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_104_3:  '
+    FileOffset:      104
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          585673
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_104_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_105_4:  '
+    FileOffset:      105
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          585723
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_105_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_116_5:  '
+    FileOffset:      116
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586132
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_116_5: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_117_6:  '
+    FileOffset:      117
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586174
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_117_6: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_120_7:  '
+    FileOffset:      120
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586267
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_120_7: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_121_8:  '
+    FileOffset:      121
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586317
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_121_8: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_137_1:  '
+    FileOffset:      137
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586823
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_137_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_138_2:  '
+    FileOffset:      138
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586865
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_138_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_141_3:  '
+    FileOffset:      141
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          586958
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_141_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_142_4:  '
+    FileOffset:      142
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          587008
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_142_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_153_5:  '
+    FileOffset:      153
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          587415
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_153_5: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_154_6:  '
+    FileOffset:      154
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          587457
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_154_6: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_157_7:  '
+    FileOffset:      157
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          587550
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_157_7: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_158_8:  '
+    FileOffset:      158
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          587600
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_158_8: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_172_1:  '
+    FileOffset:      172
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          588023
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_172_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_175_2:  '
+    FileOffset:      175
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          588106
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_175_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_186_1:  '
+    FileOffset:      186
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          588420
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_186_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_189_2:  '
+    FileOffset:      189
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          588535
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_189_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_210_1:  '
+    FileOffset:      210
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589103
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_210_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_211_2:  '
+    FileOffset:      211
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589142
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_211_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_221_3:  '
+    FileOffset:      221
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589361
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_221_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_222_4:  '
+    FileOffset:      222
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589403
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_222_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_232_5:  '
+    FileOffset:      232
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589679
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_232_5: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_233_6:  '
+    FileOffset:      233
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          589721
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_233_6: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_245_7:  '
+    FileOffset:      245
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          590083
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_245_7: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_255_8:  '
+    FileOffset:      255
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          590461
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_255_8: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_263_9:  '
+    FileOffset:      263
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          590708
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_263_9: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_269_10:  '
+    FileOffset:      269
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          590879
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_269_10: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_277_11:  '
+    FileOffset:      277
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          591146
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_277_11: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_284_12:  '
+    FileOffset:      284
+    FilePath:        awn_int8.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/proj_awn_int8/solution1/.autopilot/db/awn_int8.pp.0.cpp
+        Offset:          591363
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_284_12: '
+...

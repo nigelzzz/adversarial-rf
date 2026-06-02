@@ -1,0 +1,22 @@
+<pragmas>
+<pragma file="awn_int8.cpp" line="187" pragmaType="pipeline" parentfunction="linear_acc" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="187" pragmaType="pipeline" parentfunction="linear_acc" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="187" pragmaType="pipeline" parentfunction="linear_acc" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="155" pragmaType="pipeline" parentfunction="p_branch" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="139" pragmaType="pipeline" parentfunction="p_branch" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="134" pragmaType="array_partition" parentfunction="p_branch" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL3Wp1"/>
+<pragma file="awn_int8.cpp" line="135" pragmaType="array_partition" parentfunction="p_branch" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL3Wp4"/>
+<pragma file="awn_int8.cpp" line="173" pragmaType="pipeline" parentfunction="avgpool_64" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="187" pragmaType="pipeline" parentfunction="linear_acc" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="118" pragmaType="pipeline" parentfunction="u_branch" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="102" pragmaType="pipeline" parentfunction="u_branch" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="97" pragmaType="array_partition" parentfunction="u_branch" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL3Wu1"/>
+<pragma file="awn_int8.cpp" line="98" pragmaType="array_partition" parentfunction="u_branch" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL3Wu4"/>
+<pragma file="awn_int8.cpp" line="55" pragmaType="pipeline" parentfunction="conv1_block" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="50" pragmaType="array_partition" parentfunction="conv1_block" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL2W1"/>
+<pragma file="awn_int8.cpp" line="51" pragmaType="array_partition" parentfunction="conv1_block" dim="4" factor="0" mode="complete" dynamic="0" variable="_ZL2W1"/>
+<pragma file="awn_int8.cpp" line="52" pragmaType="array_partition" parentfunction="conv1_block" dim="1" factor="0" mode="complete" dynamic="0" variable="x"/>
+<pragma file="awn_int8.cpp" line="78" pragmaType="pipeline" parentfunction="conv2_block" off="0" ii="1" rewind="0" style=""/>
+<pragma file="awn_int8.cpp" line="74" pragmaType="array_partition" parentfunction="conv2_block" dim="3" factor="0" mode="complete" dynamic="0" variable="_ZL2W2"/>
+<pragma file="awn_int8.cpp" line="75" pragmaType="array_partition" parentfunction="conv2_block" dim="2" factor="5" mode="cyclic" dynamic="0" variable="x"/>
+</pragmas>

@@ -1,0 +1,106 @@
+<design_size title="Design Size Report">
+    <item name="Total Instructions per Compilation Phase">
+        <table>
+            <keys size="4">Phase, Step, Instructions, Description</keys>
+            <column name="Compile/Link">,   1746, After all functions are compiled and linked into a single design</column>
+            <column name="">, , </column>
+            <column name="Unroll/Inline">, , After user unroll and inline pragmas are applied</column>
+            <column name="">(1) unroll,  23783, user unroll pragmas are applied</column>
+            <column name="">(2) simplification,  18600, simplification of applied user unroll pragmas</column>
+            <column name="">(3) inline,  17193, user inline pragmas are applied</column>
+            <column name="">(4) simplification,  17182, simplification of applied user inline pragmas</column>
+            <column name="">, , </column>
+            <column name="Array/Struct">, , After user array partition and struct aggregate/disaggregate pragmas are applied</column>
+            <column name="">(1) array partition,  23606, user array partition pragmas are applied</column>
+            <column name="">(2) simplification,  18745, simplification of applied user array partition &amp; struct aggregate/disaggregate pragmas</column>
+            <column name="">(3) aggregate/disaggregate ,  18745, user struct aggregate/disaggregate pragmas are applied</column>
+            <column name="">(4) array reshape,  18745, apply array reshape pragmas</column>
+            <column name="">(5) access patterns,  18709, array access pattern optmizations</column>
+            <column name="">, , </column>
+            <column name="Performance">, , After transformations are applied to meet performance pragma targets</column>
+            <column name="">(1) loop simplification,  18709, loop and instruction simplification</column>
+            <column name="">(2) parallelization,  18709, loops are unrolled or pipelined to meet performance targets</column>
+            <column name="">(3) array partition, 393412 *, arrays are partitioned to meet performance targets</column>
+            <column name="">(4) simplification,  61600, simplification of design after performance transformations</column>
+            <column name="">, , </column>
+            <column name="HW Transforms">, , After hardware transfomations</column>
+            <column name="">(1) lowering,  57434, initial conversion to HW specific instructions</column>
+            <column name="">(2) optimizations,  49192, high level synthesis optimizations</column>
+        </table>
+    </item>
+    <item name="Instructions per Function for each Compilation Phase">
+        <hiertable>
+            <header size="7" col0="Function" col1="Location" col2="Compile/Link" col3="Unroll/Inline" col4="Array/Struct" col5="Performance" col6="HW Transforms"/>
+            <rows>
+                <row id="0" col0="awn_forward" col1="awn_int8.cpp:200" col2="1746" col3="17182" col4="18709" col5="61600" col6="49192">
+                    <row id="15" col0="conv1_block" col1="awn_int8.cpp:48" col2="132" col3="199" col4="239" col5="1830" col6="1832">
+                        <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="32" col3="" col4="" col5="" col6="">
+                            <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="19" col3="" col4="" col5="" col6=""/>
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="9" col0="leaky_relu_s8" col1="awn_int8.cpp:34" col2="22" col3="" col4="" col5="" col6="">
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                    </row>
+                    <row id="11" col0="conv2_block" col1="awn_int8.cpp:72" col2="130" col3="3374" col4="6264" col5="6264" col6="6272">
+                        <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="32" col3="" col4="" col5="" col6="">
+                            <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="19" col3="" col4="" col5="" col6=""/>
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="9" col0="leaky_relu_s8" col1="awn_int8.cpp:34" col2="22" col3="" col4="" col5="" col6="">
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                    </row>
+                    <row id="4" col0="u_branch" col1="awn_int8.cpp:95" col2="242" col3="3863" col4="3174" col5="5932" col6="5947">
+                        <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="64" col2_disp="  64 (2 calls)" col3="" col4="" col5="" col6="">
+                            <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="38" col2_disp="  38 (2 calls)" col3="" col4="" col5="" col6=""/>
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="20" col2_disp="  20 (2 calls)" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="9" col0="leaky_relu_s8" col1="awn_int8.cpp:34" col2="22" col3="" col4="" col5="" col6="">
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="1" col0="lut_s8" col1="awn_int8.cpp:42" col2="6" col3="" col4="" col5="" col6=""/>
+                    </row>
+                    <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="288" col2_disp=" 288 (9 calls)" col3="189" col3_disp="  189 (9 calls)" col4="153" col4_disp="  153 (9 calls)" col5="153" col5_disp="  153 (9 calls)" col6="153" col6_disp="  153 (9 calls)">
+                        <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="171" col2_disp=" 171 (9 calls)" col3="" col4="" col5="" col6=""/>
+                        <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="90" col2_disp="  90 (9 calls)" col3="" col4="" col5="" col6=""/>
+                    </row>
+                    <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="20" col2_disp="  20 (2 calls)" col3="" col4="" col5="" col6=""/>
+                    <row id="6" col0="p_branch" col1="awn_int8.cpp:132" col2="242" col3="3863" col4="3174" col5="13932" col6="9851">
+                        <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="64" col2_disp="  64 (2 calls)" col3="" col4="" col5="" col6="">
+                            <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="38" col2_disp="  38 (2 calls)" col3="" col4="" col5="" col6=""/>
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="20" col2_disp="  20 (2 calls)" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="9" col0="leaky_relu_s8" col1="awn_int8.cpp:34" col2="22" col3="" col4="" col5="" col6="">
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                        </row>
+                        <row id="1" col0="lut_s8" col1="awn_int8.cpp:42" col2="6" col3="" col4="" col5="" col6=""/>
+                    </row>
+                    <row id="2" col0="avgpool_64" col1="awn_int8.cpp:169" col2="126" col2_disp=" 126 (2 calls)" col3="548" col3_disp="  548 (2 calls)" col4="548" col4_disp="  548 (2 calls)" col5="4581" col5_disp="4,581 (2 calls)" col6="4587" col6_disp="4,587 (2 calls)">
+                        <row id="8" col0="requant_s8" col1="awn_int8.cpp:29" col2="64" col2_disp="  64 (2 calls)" col3="" col4="" col5="" col6="">
+                            <row id="5" col0="srdhm" col1="awn_int8.cpp:16" col2="38" col2_disp="  38 (2 calls)" col3="" col4="" col5="" col6=""/>
+                            <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="20" col2_disp="  20 (2 calls)" col3="" col4="" col5="" col6=""/>
+                        </row>
+                    </row>
+                    <row id="14" col0="linear_acc&lt;32, 128&gt;" col1="awn_int8.cpp:182" col2="43" col3="1030" col4="1031" col5="1031" col6="1035"/>
+                    <row id="13" col0="relu_s8" col1="awn_int8.cpp:40" col2="7" col3="" col4="" col5="" col6=""/>
+                    <row id="12" col0="linear_acc&lt;128, 32&gt;" col1="awn_int8.cpp:182" col2="43" col3="262" col4="263" col5="263" col6="267"/>
+                    <row id="1" col0="lut_s8" col1="awn_int8.cpp:42" col2="6" col3="" col4="" col5="" col6=""/>
+                    <row id="3" col0="linear_acc&lt;320, 128&gt;" col1="awn_int8.cpp:182" col2="43" col3="1033" col4="1034" col5="1034" col6="1038"/>
+                    <row id="9" col0="leaky_relu_s8" col1="awn_int8.cpp:34" col2="22" col3="" col4="" col5="" col6="">
+                        <row id="10" col0="sat8" col1="awn_int8.cpp:23" col2="10" col3="" col4="" col5="" col6=""/>
+                    </row>
+                    <row id="7" col0="linear_acc&lt;11, 320&gt;" col1="awn_int8.cpp:182" col2="43" col3="2569" col4="2570" col5="2570" col6="2574"/>
+                </row>
+            </rows>
+            <notes/>
+        </hiertable>
+    </item>
+    <item name="Design Size Message Settings">
+        <table>
+            <keys size="3">Message Setting, Value, Description</keys>
+            <column name="config_compile -design_size_maximum_warning">100000, Show a warning when total design instructions exceeds this value</column>
+        </table>
+    </item>
+</design_size>
+

@@ -1,0 +1,23 @@
+[
+  {
+    "functionLabel": "",
+    "functionName": "awn_forward",
+    "id": 0,
+    "ifcond": "",
+    "insert_position": "",
+    "label": "",
+    "pragma": {
+      "name": "TOP",
+      "option": [
+        {
+          "name": "name",
+          "value": "awn_forward"
+        }
+      ]
+    },
+    "slx": false,
+    "sourceFile": "/home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/run_hls.tcl",
+    "sourceLine": 35,
+    "success": true
+  }
+]

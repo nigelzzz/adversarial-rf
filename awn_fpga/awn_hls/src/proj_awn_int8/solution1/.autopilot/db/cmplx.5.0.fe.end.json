@@ -1,0 +1,467 @@
+{
+    "1": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_210_1_VITIS_LOOP_211_2",
+        "file": "awn_int8.cpp",
+        "fileloc": "210",
+        "instructions": "238",
+        "total_instructions": "238",
+        "calls": "",
+        "basicblocks": "69",
+        "loads": {
+            "L": "5"
+        },
+        "stores": {
+            "L": "71"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "2": {
+        "name": "p_branch",
+        "file": "awn_int8.cpp",
+        "fileloc": "133",
+        "instructions": "26",
+        "total_instructions": "45",
+        "calls": "3",
+        "basicblocks": "7",
+        "loads": {
+            "L": "2"
+        },
+        "stores": {
+            "L": "4"
+        },
+        "loops": {
+            "L": "2"
+        }
+    },
+    "3": {
+        "name": "p_branch_Pipeline_VITIS_LOOP_154_6",
+        "file": "awn_int8.cpp",
+        "fileloc": "154",
+        "instructions": "19",
+        "total_instructions": "19",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "4": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_232_5_VITIS_LOOP_233_6",
+        "file": "awn_int8.cpp",
+        "fileloc": "232",
+        "instructions": "372",
+        "total_instructions": "372",
+        "calls": "",
+        "basicblocks": "69",
+        "loads": {
+            "L": "68"
+        },
+        "stores": {
+            "L": "70"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "5": {
+        "name": "linear_acc<11, 320>",
+        "file": "awn_int8.cpp",
+        "fileloc": "182",
+        "instructions": "642",
+        "total_instructions": "3248",
+        "calls": "19",
+        "basicblocks": "1",
+        "loads": {
+            "L": "320"
+        }
+    },
+    "6": {
+        "name": "linear_acc<320, 128>_Pipeline_VITIS_LOOP_186_1",
+        "file": "awn_int8.cpp",
+        "fileloc": "186",
+        "instructions": "1039",
+        "total_instructions": "1039",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "G": "129",
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "7": {
+        "name": "linear_acc<128, 32>",
+        "file": "awn_int8.cpp",
+        "fileloc": "182",
+        "instructions": "66",
+        "total_instructions": "365",
+        "calls": "12",
+        "basicblocks": "1",
+        "loads": {
+            "L": "32"
+        }
+    },
+    "8": {
+        "name": "conv2_block",
+        "file": "awn_int8.cpp",
+        "fileloc": "72",
+        "instructions": "658",
+        "total_instructions": "6476",
+        "calls": "9",
+        "basicblocks": "4",
+        "loads": {
+            "G": "321",
+            "L": "1"
+        },
+        "stores": {
+            "L": "2"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "0": {
+        "name": "awn_forward",
+        "file": "awn_int8.cpp",
+        "fileloc": "200",
+        "instructions": "8682",
+        "total_instructions": "48832",
+        "calls": "20 8 1 11 10 2 4 21 25 15 26 18 7 24 17 16 14 5 13",
+        "basicblocks": "1",
+        "loads": {
+            "L": "4096"
+        }
+    },
+    "9": {
+        "name": "conv2_block_Pipeline_VITIS_LOOP_77_2",
+        "file": "awn_int8.cpp",
+        "fileloc": "77",
+        "instructions": "5818",
+        "total_instructions": "5818",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "1603"
+        },
+        "stores": {
+            "L": "7"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "10": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_221_3_VITIS_LOOP_222_4",
+        "file": "awn_int8.cpp",
+        "fileloc": "221",
+        "instructions": "20665",
+        "total_instructions": "20665",
+        "calls": "",
+        "basicblocks": "4228",
+        "loads": {
+            "L": "4101"
+        },
+        "stores": {
+            "L": "4102"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "11": {
+        "name": "u_branch",
+        "file": "awn_int8.cpp",
+        "fileloc": "96",
+        "instructions": "26",
+        "total_instructions": "45",
+        "calls": "22",
+        "basicblocks": "7",
+        "loads": {
+            "L": "2"
+        },
+        "stores": {
+            "L": "4"
+        },
+        "loops": {
+            "L": "2"
+        }
+    },
+    "12": {
+        "name": "linear_acc<128, 32>_Pipeline_VITIS_LOOP_186_1",
+        "file": "awn_int8.cpp",
+        "fileloc": "186",
+        "instructions": "299",
+        "total_instructions": "299",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "G": "32",
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "13": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_284_12",
+        "file": "awn_int8.cpp",
+        "fileloc": "284",
+        "instructions": "30",
+        "total_instructions": "30",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "2"
+        },
+        "stores": {
+            "L": "2",
+            "T": "1"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "14": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_277_11",
+        "file": "awn_int8.cpp",
+        "fileloc": "277",
+        "instructions": "36",
+        "total_instructions": "36",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "2"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "15": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_245_7",
+        "file": "awn_int8.cpp",
+        "fileloc": "245",
+        "instructions": "28",
+        "total_instructions": "28",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "3"
+        },
+        "stores": {
+            "L": "4"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "16": {
+        "name": "linear_acc<320, 128>",
+        "file": "awn_int8.cpp",
+        "fileloc": "182",
+        "instructions": "258",
+        "total_instructions": "1297",
+        "calls": "6",
+        "basicblocks": "1",
+        "loads": {
+            "L": "128"
+        }
+    },
+    "17": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_269_10",
+        "file": "awn_int8.cpp",
+        "fileloc": "269",
+        "instructions": "34",
+        "total_instructions": "34",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "3"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "18": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_255_8",
+        "file": "awn_int8.cpp",
+        "fileloc": "255",
+        "instructions": "32",
+        "total_instructions": "32",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "2"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "19": {
+        "name": "linear_acc<11, 320>_Pipeline_VITIS_LOOP_186_1",
+        "file": "awn_int8.cpp",
+        "fileloc": "186",
+        "instructions": "2606",
+        "total_instructions": "2606",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "G": "321",
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "20": {
+        "name": "conv1_block",
+        "file": "awn_int8.cpp",
+        "fileloc": "48",
+        "instructions": "1183",
+        "total_instructions": "1183",
+        "calls": "",
+        "basicblocks": "335",
+        "loads": {
+            "G": "15",
+            "L": "3",
+            "T": "14"
+        },
+        "stores": {
+            "L": "326"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "21": {
+        "name": "avgpool_64",
+        "file": "awn_int8.cpp",
+        "fileloc": "169",
+        "instructions": "344",
+        "total_instructions": "344",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "65"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "22": {
+        "name": "u_branch_Pipeline_VITIS_LOOP_117_6",
+        "file": "awn_int8.cpp",
+        "fileloc": "117",
+        "instructions": "19",
+        "total_instructions": "19",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "23": {
+        "name": "linear_acc<32, 128>_Pipeline_VITIS_LOOP_186_1",
+        "file": "awn_int8.cpp",
+        "fileloc": "186",
+        "instructions": "1044",
+        "total_instructions": "1044",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "G": "128",
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "24": {
+        "name": "awn_forward_Pipeline_VITIS_LOOP_263_9",
+        "file": "awn_int8.cpp",
+        "fileloc": "263",
+        "instructions": "33",
+        "total_instructions": "33",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "G": "1",
+            "L": "2"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "25": {
+        "name": "avgpool_64.1",
+        "file": "awn_int8.cpp",
+        "fileloc": "172",
+        "instructions": "4377",
+        "total_instructions": "4377",
+        "calls": "",
+        "basicblocks": "4",
+        "loads": {
+            "L": "1"
+        },
+        "stores": {
+            "L": "3"
+        },
+        "loops": {
+            "L": "1"
+        }
+    },
+    "26": {
+        "name": "linear_acc<32, 128>",
+        "file": "awn_int8.cpp",
+        "fileloc": "182",
+        "instructions": "258",
+        "total_instructions": "1302",
+        "calls": "23",
+        "basicblocks": "1",
+        "loads": {
+            "L": "128"
+        }
+    }
+}

@@ -1,0 +1,58 @@
+---
+MainSourceFile:  /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+Diagnostics:     
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_1207_1:  '
+    FileOffset:      1207
+    FilePath:        /home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_int_base.h
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          55772
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_1207_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_676_1:  '
+    FileOffset:      676
+    FilePath:        /home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_int_ref.h
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          283712
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_676_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_690_1:  '
+    FileOffset:      690
+    FilePath:        /home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_int_ref.h
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          284180
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_690_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_704_1:  '
+    FileOffset:      704
+    FilePath:        /home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_int_ref.h
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          284649
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_704_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_1247_1:  '
+    FileOffset:      1247
+    FilePath:        /home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_fixed_base.h
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          568744
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_1247_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_9_1:  '
+    FileOffset:      9
+    FilePath:        simple_add.cpp
+    Replacements:    
+      - FilePath:        /home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/proj_simple_add/solution1/.autopilot/db/simple_add.pp.0.cpp
+        Offset:          937615
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_9_1: '
+...

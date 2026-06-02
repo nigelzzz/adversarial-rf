@@ -1,0 +1,186 @@
+{
+  "0": {
+    "basicblocks": 4382,
+    "calls": "6 8 3 1 9 1 4 2 1 1 5 1 7 1 1 11 1 10 1",
+    "file": "awn_int8.cpp",
+    "fileloc": 200,
+    "instructions": 24332,
+    "loads": {
+      "G": 1,
+      "L": 77
+    },
+    "name": "awn_forward",
+    "stores": {
+      "L": 4231,
+      "T": 1
+    },
+    "total_instructions": 393412
+  },
+  "1": {
+    "basicblocks": 1,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 29,
+    "instructions": 17,
+    "name": "requant_s8",
+    "total_instructions": 17
+  },
+  "10": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 182,
+    "instructions": 104650,
+    "loads": {
+      "G": 321,
+      "L": 320
+    },
+    "name": "linear_acc<11, 320>",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 104650
+  },
+  "11": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 182,
+    "instructions": 17290,
+    "loads": {
+      "G": 129,
+      "L": 128
+    },
+    "name": "linear_acc<320, 128>",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 17290
+  },
+  "2": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 169,
+    "instructions": 4370,
+    "loads": {
+      "L": 4096
+    },
+    "name": "avgpool_64",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 4370
+  },
+  "3": {
+    "basicblocks": 335,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 95,
+    "instructions": 55337,
+    "loads": {
+      "G": 387,
+      "L": 768
+    },
+    "name": "u_branch",
+    "stores": {
+      "L": 193
+    },
+    "total_instructions": 55337
+  },
+  "4": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 169,
+    "instructions": 4306,
+    "loads": {
+      "L": 64
+    },
+    "name": "avgpool_64",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 4306
+  },
+  "5": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 182,
+    "instructions": 17287,
+    "loads": {
+      "G": 128,
+      "L": 128
+    },
+    "name": "linear_acc<32, 128>",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 17287
+  },
+  "6": {
+    "basicblocks": 362,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 48,
+    "instructions": 1839,
+    "loads": {
+      "G": 15,
+      "L": 14
+    },
+    "name": "conv1_block",
+    "stores": {
+      "L": 320
+    },
+    "total_instructions": 1839
+  },
+  "7": {
+    "basicblocks": 3,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 182,
+    "instructions": 1255,
+    "loads": {
+      "G": 32,
+      "L": 32
+    },
+    "name": "linear_acc<128, 32>",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 1255
+  },
+  "8": {
+    "basicblocks": 519,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 72,
+    "instructions": 107064,
+    "loads": {
+      "G": 321,
+      "L": 1600
+    },
+    "name": "conv2_block",
+    "stores": {
+      "L": 1
+    },
+    "total_instructions": 107064
+  },
+  "9": {
+    "basicblocks": 335,
+    "calls": "",
+    "file": "awn_int8.cpp",
+    "fileloc": 132,
+    "instructions": 55529,
+    "loads": {
+      "G": 387,
+      "L": 12864
+    },
+    "name": "p_branch",
+    "stores": {
+      "L": 193
+    },
+    "total_instructions": 55529
+  }
+}

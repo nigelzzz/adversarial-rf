@@ -1,0 +1,372 @@
+<xilinx:hls_fe_msgs>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:50:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=W1 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:51:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=W1 dim=4 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:52:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=x dim=1 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:55:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv1_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:74:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=W2 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:75:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=x dim=2 cyclic factor=5" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:78:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="conv2_block" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:97:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="u_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=Wu1 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:98:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="u_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=Wu4 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:102:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="u_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:118:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="u_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:134:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="p_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=Wp1 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:135:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="p_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="variable=Wp4 dim=3 complete" ARG_PragmaType="array_partition" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:139:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="p_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:155:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="p_branch" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:173:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="avgpool_64" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="awn_int8.cpp:187:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaFunction="linear_acc" ARG_PragmaIsValid="1" ARG_PragmaOptions="II=1" ARG_PragmaType="pipeline" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_VERBOSE_DUMP" msg_id="207-5471" msg_severity="WARNING" msg_loc="/home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/src/run_hls.tcl:35:9" msg_body="HLS pragma dump">
+        <args ARG_PragmaContext="directive" ARG_PragmaFunction="awn_forward" ARG_PragmaIsValid="1" ARG_PragmaOptions="name=awn_forward" ARG_PragmaType="top" ClangWarningOption="dump-hls-pragmas"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:189:27" msg_body="Loop 'VITIS_LOOP_189_2' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_189_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:175:27" msg_body="Loop 'VITIS_LOOP_175_2' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_175_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:157:31" msg_body="Loop 'VITIS_LOOP_157_7' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_157_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:158:35" msg_body="Loop 'VITIS_LOOP_158_8' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_158_8"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:141:31" msg_body="Loop 'VITIS_LOOP_141_3' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_141_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:142:35" msg_body="Loop 'VITIS_LOOP_142_4' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_142_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:120:31" msg_body="Loop 'VITIS_LOOP_120_7' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_120_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:121:35" msg_body="Loop 'VITIS_LOOP_121_8' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_121_8"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:104:31" msg_body="Loop 'VITIS_LOOP_104_3' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_104_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:105:35" msg_body="Loop 'VITIS_LOOP_105_4' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_105_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:80:30" msg_body="Loop 'VITIS_LOOP_80_3' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_80_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:81:34" msg_body="Loop 'VITIS_LOOP_81_4' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_81_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:57:30" msg_body="Loop 'VITIS_LOOP_57_3' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_57_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-291" msg_severity="INFO" msg_loc="awn_int8.cpp:58:34" msg_body="Loop 'VITIS_LOOP_58_4' is marked as complete unroll implied by the pipeline pragma">
+        <args LoopName="VITIS_LOOP_58_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:185:0" msg_body="Unrolling loop 'VITIS_LOOP_189_2' (awn_int8.cpp:189:27) in function 'linear_acc&lt;11, 320&gt;' completely with a factor of 320">
+        <args Factor="320" LoopLoc="awn_int8.cpp:189:27" LoopName="VITIS_LOOP_189_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:185:0" msg_body="Unrolling loop 'VITIS_LOOP_189_2' (awn_int8.cpp:189:27) in function 'linear_acc&lt;320, 128&gt;' completely with a factor of 128">
+        <args Factor="128" LoopLoc="awn_int8.cpp:189:27" LoopName="VITIS_LOOP_189_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:185:0" msg_body="Unrolling loop 'VITIS_LOOP_189_2' (awn_int8.cpp:189:27) in function 'linear_acc&lt;128, 32&gt;' completely with a factor of 32">
+        <args Factor="32" LoopLoc="awn_int8.cpp:189:27" LoopName="VITIS_LOOP_189_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:185:0" msg_body="Unrolling loop 'VITIS_LOOP_189_2' (awn_int8.cpp:189:27) in function 'linear_acc&lt;32, 128&gt;' completely with a factor of 128">
+        <args Factor="128" LoopLoc="awn_int8.cpp:189:27" LoopName="VITIS_LOOP_189_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:171:0" msg_body="Unrolling loop 'VITIS_LOOP_175_2' (awn_int8.cpp:175:27) in function 'avgpool_64' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:175:27" LoopName="VITIS_LOOP_175_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Unrolling loop 'VITIS_LOOP_157_7' (awn_int8.cpp:157:31) in function 'p_branch' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:157:31" LoopName="VITIS_LOOP_157_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Unrolling loop 'VITIS_LOOP_158_8' (awn_int8.cpp:158:35) in function 'p_branch' completely with a factor of 3">
+        <args Factor="3" LoopLoc="awn_int8.cpp:158:35" LoopName="VITIS_LOOP_158_8"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Unrolling loop 'VITIS_LOOP_141_3' (awn_int8.cpp:141:31) in function 'p_branch' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:141:31" LoopName="VITIS_LOOP_141_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Unrolling loop 'VITIS_LOOP_142_4' (awn_int8.cpp:142:35) in function 'p_branch' completely with a factor of 3">
+        <args Factor="3" LoopLoc="awn_int8.cpp:142:35" LoopName="VITIS_LOOP_142_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Unrolling loop 'VITIS_LOOP_120_7' (awn_int8.cpp:120:31) in function 'u_branch' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:120:31" LoopName="VITIS_LOOP_120_7"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Unrolling loop 'VITIS_LOOP_121_8' (awn_int8.cpp:121:35) in function 'u_branch' completely with a factor of 3">
+        <args Factor="3" LoopLoc="awn_int8.cpp:121:35" LoopName="VITIS_LOOP_121_8"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Unrolling loop 'VITIS_LOOP_104_3' (awn_int8.cpp:104:31) in function 'u_branch' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:104:31" LoopName="VITIS_LOOP_104_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Unrolling loop 'VITIS_LOOP_105_4' (awn_int8.cpp:105:35) in function 'u_branch' completely with a factor of 3">
+        <args Factor="3" LoopLoc="awn_int8.cpp:105:35" LoopName="VITIS_LOOP_105_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:73:0" msg_body="Unrolling loop 'VITIS_LOOP_80_3' (awn_int8.cpp:80:30) in function 'conv2_block' completely with a factor of 64">
+        <args Factor="64" LoopLoc="awn_int8.cpp:80:30" LoopName="VITIS_LOOP_80_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:73:0" msg_body="Unrolling loop 'VITIS_LOOP_81_4' (awn_int8.cpp:81:34) in function 'conv2_block' completely with a factor of 5">
+        <args Factor="5" LoopLoc="awn_int8.cpp:81:34" LoopName="VITIS_LOOP_81_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:49:0" msg_body="Unrolling loop 'VITIS_LOOP_57_3' (awn_int8.cpp:57:30) in function 'conv1_block' completely with a factor of 2">
+        <args Factor="2" LoopLoc="awn_int8.cpp:57:30" LoopName="VITIS_LOOP_57_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_UNROLL" msg_id="214-186" msg_severity="INFO" msg_loc="awn_int8.cpp:49:0" msg_body="Unrolling loop 'VITIS_LOOP_58_4' (awn_int8.cpp:58:34) in function 'conv1_block' completely with a factor of 7">
+        <args Factor="7" LoopLoc="awn_int8.cpp:58:34" LoopName="VITIS_LOOP_58_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:29:0" msg_body="Inlining function 'srdhm(int, int, signed char)' into 'requant_s8(int, int, signed char)'">
+        <args Callee="srdhm(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 16 Column 0" Caller="requant_s8(int, int, signed char)" Caller-DebugLoc="File awn_int8.cpp Line 29 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:29:0" msg_body="Inlining function 'sat8(int)' into 'requant_s8(int, int, signed char)'">
+        <args Callee="sat8(int)" Callee-DebugLoc="File awn_int8.cpp Line 23 Column 0" Caller="requant_s8(int, int, signed char)" Caller-DebugLoc="File awn_int8.cpp Line 29 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:34:0" msg_body="Inlining function 'sat8(int)' into 'leaky_relu_s8(signed char)'">
+        <args Callee="sat8(int)" Callee-DebugLoc="File awn_int8.cpp Line 23 Column 0" Caller="leaky_relu_s8(signed char)" Caller-DebugLoc="File awn_int8.cpp Line 34 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:49:0" msg_body="Inlining function 'requant_s8(int, int, signed char)' into 'conv1_block(signed char const (*) [128], signed char (*) [128])'">
+        <args Callee="requant_s8(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 29 Column 0" Caller="conv1_block(signed char const (*) [128], signed char (*) [128])" Caller-DebugLoc="File awn_int8.cpp Line 49 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:49:0" msg_body="Inlining function 'leaky_relu_s8(signed char)' into 'conv1_block(signed char const (*) [128], signed char (*) [128])'">
+        <args Callee="leaky_relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 34 Column 0" Caller="conv1_block(signed char const (*) [128], signed char (*) [128])" Caller-DebugLoc="File awn_int8.cpp Line 49 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:73:0" msg_body="Inlining function 'requant_s8(int, int, signed char)' into 'conv2_block(signed char const (*) [128], signed char (*) [128])'">
+        <args Callee="requant_s8(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 29 Column 0" Caller="conv2_block(signed char const (*) [128], signed char (*) [128])" Caller-DebugLoc="File awn_int8.cpp Line 73 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:73:0" msg_body="Inlining function 'leaky_relu_s8(signed char)' into 'conv2_block(signed char const (*) [128], signed char (*) [128])'">
+        <args Callee="leaky_relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 34 Column 0" Caller="conv2_block(signed char const (*) [128], signed char (*) [128])" Caller-DebugLoc="File awn_int8.cpp Line 73 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Inlining function 'requant_s8(int, int, signed char)' into 'u_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="requant_s8(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 29 Column 0" Caller="u_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 96 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Inlining function 'lut_s8(signed char, signed char const*)' into 'u_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="lut_s8(signed char, signed char const*)" Callee-DebugLoc="File awn_int8.cpp Line 42 Column 0" Caller="u_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 96 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:96:0" msg_body="Inlining function 'leaky_relu_s8(signed char)' into 'u_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="leaky_relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 34 Column 0" Caller="u_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 96 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Inlining function 'requant_s8(int, int, signed char)' into 'p_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="requant_s8(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 29 Column 0" Caller="p_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 133 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Inlining function 'lut_s8(signed char, signed char const*)' into 'p_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="lut_s8(signed char, signed char const*)" Callee-DebugLoc="File awn_int8.cpp Line 42 Column 0" Caller="p_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 133 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:133:0" msg_body="Inlining function 'leaky_relu_s8(signed char)' into 'p_branch(signed char const (*) [64], signed char (*) [64])'">
+        <args Callee="leaky_relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 34 Column 0" Caller="p_branch(signed char const (*) [64], signed char (*) [64])" Caller-DebugLoc="File awn_int8.cpp Line 133 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:171:0" msg_body="Inlining function 'requant_s8(int, int, signed char)' into 'avgpool_64(signed char const (*) [64], signed char*, int, signed char)'">
+        <args Callee="requant_s8(int, int, signed char)" Callee-DebugLoc="File awn_int8.cpp Line 29 Column 0" Caller="avgpool_64(signed char const (*) [64], signed char*, int, signed char)" Caller-DebugLoc="File awn_int8.cpp Line 171 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:201:0" msg_body="Inlining function 'sat8(int)' into 'awn_forward(signed char const (*) [128], signed char*)'">
+        <args Callee="sat8(int)" Callee-DebugLoc="File awn_int8.cpp Line 23 Column 0" Caller="awn_forward(signed char const (*) [128], signed char*)" Caller-DebugLoc="File awn_int8.cpp Line 201 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:201:0" msg_body="Inlining function 'relu_s8(signed char)' into 'awn_forward(signed char const (*) [128], signed char*)'">
+        <args Callee="relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 40 Column 0" Caller="awn_forward(signed char const (*) [128], signed char*)" Caller-DebugLoc="File awn_int8.cpp Line 201 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:201:0" msg_body="Inlining function 'lut_s8(signed char, signed char const*)' into 'awn_forward(signed char const (*) [128], signed char*)'">
+        <args Callee="lut_s8(signed char, signed char const*)" Callee-DebugLoc="File awn_int8.cpp Line 42 Column 0" Caller="awn_forward(signed char const (*) [128], signed char*)" Caller-DebugLoc="File awn_int8.cpp Line 201 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_INLINE" msg_id="214-178" msg_severity="INFO" msg_loc="awn_int8.cpp:201:0" msg_body="Inlining function 'leaky_relu_s8(signed char)' into 'awn_forward(signed char const (*) [128], signed char*)'">
+        <args Callee="leaky_relu_s8(signed char)" Callee-DebugLoc="File awn_int8.cpp Line 34 Column 0" Caller="awn_forward(signed char const (*) [128], signed char*)" Caller-DebugLoc="File awn_int8.cpp Line 201 Column 0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:3662:0" msg_body="Applying array_partition to '_ZL3Wp4': Complete partitioning on dimension 3.">
+        <args Dim="3" Mode="Complete" UOName="_ZL3Wp4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:2891:0" msg_body="Applying array_partition to '_ZL3Wp1': Complete partitioning on dimension 3.">
+        <args Dim="3" Mode="Complete" UOName="_ZL3Wp1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:2120:0" msg_body="Applying array_partition to '_ZL3Wu4': Complete partitioning on dimension 3.">
+        <args Dim="3" Mode="Complete" UOName="_ZL3Wu4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:1349:0" msg_body="Applying array_partition to '_ZL3Wu1': Complete partitioning on dimension 3.">
+        <args Dim="3" Mode="Complete" UOName="_ZL3Wu1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:66:0" msg_body="Applying array_partition to '_ZL2W2': Complete partitioning on dimension 3.">
+        <args Dim="3" Mode="Complete" UOName="_ZL2W2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:7:0" msg_body="Applying array_partition to '_ZL2W1': Complete partitioning on dimension 3. Complete partitioning on dimension 4.">
+        <args Dim="islist 3 4" Mode="islist Complete Complete" UOName="_ZL2W1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1': Cyclic partitioning with factor 5 on dimension 2.">
+        <args Dim="2" Factor="5" Mode="Cyclic" UOName="y1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:201:0" msg_body="Applying array_partition to 'x_q': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="x_q"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4951:0" msg_body="array_partition dim=2 type=complete  variable=_ZL4Wfc0 1 awn_forward ../golden/awn_weights.h:4951:0 awn_int8.cpp:187:9Wfc0">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=_ZL4Wfc0" PragmaSrcLoc="awn_int8.cpp:187:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 187 Column 9" PragmaType="array_partition" VarName="Wfc0" varLoc="../golden/awn_weights.h:4951:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:187:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'Wfc0' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="Wfc0" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="../golden/awn_weights.h:7514:0" msg_body="array_partition dim=2 type=complete  variable=_ZL4Wfc2 1 awn_forward ../golden/awn_weights.h:7514:0 awn_int8.cpp:187:9Wfc2">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=_ZL4Wfc2" PragmaSrcLoc="awn_int8.cpp:187:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 187 Column 9" PragmaType="array_partition" VarName="Wfc2" varLoc="../golden/awn_weights.h:7514:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:187:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'Wfc2' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="Wfc2" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4433:0" msg_body="array_partition dim=2 type=complete  variable=_ZL4Wse0 1 awn_forward ../golden/awn_weights.h:4433:0 awn_int8.cpp:187:9Wse0">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=_ZL4Wse0" PragmaSrcLoc="awn_int8.cpp:187:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 187 Column 9" PragmaType="array_partition" VarName="Wse0" varLoc="../golden/awn_weights.h:4433:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:187:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'Wse0' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="Wse0" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4692:0" msg_body="array_partition dim=2 type=complete  variable=_ZL4Wse3 1 awn_forward ../golden/awn_weights.h:4692:0 awn_int8.cpp:187:9Wse3">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=_ZL4Wse3" PragmaSrcLoc="awn_int8.cpp:187:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 187 Column 9" PragmaType="array_partition" VarName="Wse3" varLoc="../golden/awn_weights.h:4692:0"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:187:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'Wse3' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="Wse3" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:99:9" msg_body="array_partition dim=1 type=complete  variable=u1 1 u_branch awn_int8.cpp:99:9 awn_int8.cpp:118:9u1">
+        <args PragmaFunction="u_branch" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=u1" PragmaSrcLoc="awn_int8.cpp:118:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 118 Column 9" PragmaType="array_partition" VarName="u1" varLoc="awn_int8.cpp:99:9"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:118:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'u1' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="u1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:99:9" msg_body="array_partition dim=2 type=cyclic factor=3 variable=u1 1 u_branch awn_int8.cpp:99:9 awn_int8.cpp:118:9u1">
+        <args PragmaFunction="u_branch" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=3 variable=u1" PragmaSrcLoc="awn_int8.cpp:118:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 118 Column 9" PragmaType="array_partition" VarName="u1" varLoc="awn_int8.cpp:99:9"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:118:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=2' for array 'u1' due to pipeline pragma">
+        <args Dim="2" Factor="3" Mode="cyclic" Name="u1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:136:9" msg_body="array_partition dim=1 type=complete  variable=p1 1 p_branch awn_int8.cpp:136:9 awn_int8.cpp:155:9p1">
+        <args PragmaFunction="p_branch" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=p1" PragmaSrcLoc="awn_int8.cpp:155:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 155 Column 9" PragmaType="array_partition" VarName="p1" varLoc="awn_int8.cpp:136:9"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:155:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'p1' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="p1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:136:9" msg_body="array_partition dim=2 type=cyclic factor=3 variable=p1 1 p_branch awn_int8.cpp:136:9 awn_int8.cpp:155:9p1">
+        <args PragmaFunction="p_branch" PragmaIsAuto="1" PragmaOptions="dim=2 type=cyclic factor=3 variable=p1" PragmaSrcLoc="awn_int8.cpp:155:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 155 Column 9" PragmaType="array_partition" VarName="p1" varLoc="awn_int8.cpp:136:9"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:155:9" msg_body="Inferring pragma 'array_partition type=cyclic factor=3 dim=2' for array 'p1' due to pipeline pragma">
+        <args Dim="2" Factor="3" Mode="cyclic" Name="p1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="array_partition dim=1 type=complete  variable=y1_0 1 awn_forward awn_int8.cpp:202:12 awn_int8.cpp:78:9y1_0">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=y1_0" PragmaSrcLoc="awn_int8.cpp:78:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 78 Column 9" PragmaType="array_partition" VarName="y1_0" varLoc="awn_int8.cpp:202:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:78:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'y1_0' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="y1_0" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="array_partition dim=1 type=complete  variable=y1_1 1 awn_forward awn_int8.cpp:202:12 awn_int8.cpp:78:9y1_1">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=y1_1" PragmaSrcLoc="awn_int8.cpp:78:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 78 Column 9" PragmaType="array_partition" VarName="y1_1" varLoc="awn_int8.cpp:202:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:78:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'y1_1' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="y1_1" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="array_partition dim=1 type=complete  variable=y1_2 1 awn_forward awn_int8.cpp:202:12 awn_int8.cpp:78:9y1_2">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=y1_2" PragmaSrcLoc="awn_int8.cpp:78:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 78 Column 9" PragmaType="array_partition" VarName="y1_2" varLoc="awn_int8.cpp:202:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:78:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'y1_2' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="y1_2" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="array_partition dim=1 type=complete  variable=y1_3 1 awn_forward awn_int8.cpp:202:12 awn_int8.cpp:78:9y1_3">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=y1_3" PragmaSrcLoc="awn_int8.cpp:78:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 78 Column 9" PragmaType="array_partition" VarName="y1_3" varLoc="awn_int8.cpp:202:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:78:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'y1_3' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="y1_3" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="array_partition dim=1 type=complete  variable=y1_4 1 awn_forward awn_int8.cpp:202:12 awn_int8.cpp:78:9y1_4">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=y1_4" PragmaSrcLoc="awn_int8.cpp:78:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 78 Column 9" PragmaType="array_partition" VarName="y1_4" varLoc="awn_int8.cpp:202:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:78:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'y1_4' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="y1_4" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:209:12" msg_body="array_partition dim=1 type=complete  variable=odd_q 1 awn_forward awn_int8.cpp:209:12 awn_int8.cpp:102:9odd_q">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=odd_q" PragmaSrcLoc="awn_int8.cpp:102:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 102 Column 9" PragmaType="array_partition" VarName="odd_q" varLoc="awn_int8.cpp:209:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:102:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'odd_q' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="odd_q" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:220:12" msg_body="array_partition dim=1 type=complete  variable=c_q 1 awn_forward awn_int8.cpp:220:12 awn_int8.cpp:173:9c_q">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=1 type=complete  variable=c_q" PragmaSrcLoc="awn_int8.cpp:173:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 173 Column 9" PragmaType="array_partition" VarName="c_q" varLoc="awn_int8.cpp:220:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:173:9" msg_body="Inferring pragma 'array_partition type=complete dim=1' for array 'c_q' due to pipeline pragma">
+        <args Dim="1" Mode="complete" Name="c_q" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:220:12" msg_body="array_partition dim=2 type=complete  variable=c_q 1 awn_forward awn_int8.cpp:220:12 awn_int8.cpp:173:9c_q">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=c_q" PragmaSrcLoc="awn_int8.cpp:173:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 173 Column 9" PragmaType="array_partition" VarName="c_q" varLoc="awn_int8.cpp:220:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:173:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'c_q' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="c_q" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="AUTOMATION_VERBOSE_PASSED" msg_id="214-335" msg_severity="INFO" msg_loc="awn_int8.cpp:231:12" msg_body="array_partition dim=2 type=complete  variable=d_q 1 awn_forward awn_int8.cpp:231:12 awn_int8.cpp:173:9d_q">
+        <args PragmaFunction="awn_forward" PragmaIsAuto="1" PragmaOptions="dim=2 type=complete  variable=d_q" PragmaSrcLoc="awn_int8.cpp:173:9" PragmaSrcLoc-DebugLoc="File awn_int8.cpp Line 173 Column 9" PragmaType="array_partition" VarName="d_q" varLoc="awn_int8.cpp:231:12"/>
+    </msg>
+    <msg msg_groups="AUTOMATION PRAGMA_MISC" msg_id="214-270" msg_severity="INFO" msg_loc="awn_int8.cpp:173:9" msg_body="Inferring pragma 'array_partition type=complete dim=2' for array 'd_q' due to pipeline pragma">
+        <args Dim="2" Mode="complete" Name="d_q" PragmaType="array_partition"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4692:0" msg_body="Applying array_partition to '_ZL4Wse3': Complete partitioning on dimension 2.">
+        <args Dim="2" Mode="Complete" UOName="_ZL4Wse3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4433:0" msg_body="Applying array_partition to '_ZL4Wse0': Complete partitioning on dimension 2.">
+        <args Dim="2" Mode="Complete" UOName="_ZL4Wse0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:7514:0" msg_body="Applying array_partition to '_ZL4Wfc2': Complete partitioning on dimension 2.">
+        <args Dim="2" Mode="Complete" UOName="_ZL4Wfc2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="../golden/awn_weights.h:4951:0" msg_body="Applying array_partition to '_ZL4Wfc0': Complete partitioning on dimension 2.">
+        <args Dim="2" Mode="Complete" UOName="_ZL4Wfc0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:99:9" msg_body="Applying array_partition to 'u1': Complete partitioning on dimension 1. Cyclic partitioning with factor 3 on dimension 2.">
+        <args Dim="islist 1 2" Factor="3" Mode="islist Complete Cyclic" UOName="u1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:136:9" msg_body="Applying array_partition to 'p1': Complete partitioning on dimension 1. Cyclic partitioning with factor 3 on dimension 2.">
+        <args Dim="islist 1 2" Factor="3" Mode="islist Complete Cyclic" UOName="p1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1_0': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="y1_0"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1_1': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="y1_1"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1_2': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="y1_2"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1_3': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="y1_3"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:202:12" msg_body="Applying array_partition to 'y1_4': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="y1_4"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:209:12" msg_body="Applying array_partition to 'odd_q': Complete partitioning on dimension 1.">
+        <args Dim="1" Mode="Complete" UOName="odd_q"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:220:12" msg_body="Applying array_partition to 'c_q': Complete partitioning on dimension 1. Complete partitioning on dimension 2.">
+        <args Dim="islist 1 2" Mode="islist Complete Complete" UOName="c_q"/>
+    </msg>
+    <msg msg_groups="PRAGMA_MISC" msg_id="214-248" msg_severity="INFO" msg_loc="awn_int8.cpp:231:12" msg_body="Applying array_partition to 'd_q': Complete partitioning on dimension 2.">
+        <args Dim="2" Mode="Complete" UOName="d_q"/>
+    </msg>
+</xilinx:hls_fe_msgs>
+

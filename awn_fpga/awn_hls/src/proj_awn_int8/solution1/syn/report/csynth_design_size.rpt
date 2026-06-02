@@ -1,0 +1,92 @@
+================================================================
+== Design Size Report
+================================================================
+
+* Total Instructions per Compilation Phase
++---------------+-----------------------------+--------------+----------------------------------------------------------------------------------------+
+| Phase         | Step                        | Instructions | Description                                                                            |
++---------------+-----------------------------+--------------+----------------------------------------------------------------------------------------+
+| Compile/Link  |                             |   1,746      | After all functions are compiled and linked into a single design                       |
+|               |                             |              |                                                                                        |
+| Unroll/Inline |                             |              | After user unroll and inline pragmas are applied                                       |
+|               | (1) unroll                  |  23,783      | user unroll pragmas are applied                                                        |
+|               | (2) simplification          |  18,600      | simplification of applied user unroll pragmas                                          |
+|               | (3) inline                  |  17,193      | user inline pragmas are applied                                                        |
+|               | (4) simplification          |  17,182      | simplification of applied user inline pragmas                                          |
+|               |                             |              |                                                                                        |
+| Array/Struct  |                             |              | After user array partition and struct aggregate/disaggregate pragmas are applied       |
+|               | (1) array partition         |  23,606      | user array partition pragmas are applied                                               |
+|               | (2) simplification          |  18,745      | simplification of applied user array partition & struct aggregate/disaggregate pragmas |
+|               | (3) aggregate/disaggregate  |  18,745      | user struct aggregate/disaggregate pragmas are applied                                 |
+|               | (4) array reshape           |  18,745      | apply array reshape pragmas                                                            |
+|               | (5) access patterns         |  18,709      | array access pattern optmizations                                                      |
+|               |                             |              |                                                                                        |
+| Performance   |                             |              | After transformations are applied to meet performance pragma targets                   |
+|               | (1) loop simplification     |  18,709      | loop and instruction simplification                                                    |
+|               | (2) parallelization         |  18,709      | loops are unrolled or pipelined to meet performance targets                            |
+|               | (3) array partition         | 393,412 *    | arrays are partitioned to meet performance targets                                     |
+|               | (4) simplification          |  61,600      | simplification of design after performance transformations                             |
+|               |                             |              |                                                                                        |
+| HW Transforms |                             |              | After hardware transfomations                                                          |
+|               | (1) lowering                |  57,434      | initial conversion to HW specific instructions                                         |
+|               | (2) optimizations           |  49,192      | high level synthesis optimizations                                                     |
++---------------+-----------------------------+--------------+----------------------------------------------------------------------------------------+
+    * - Exceeded design size warning message threshold
+
+* Instructions per Function for each Compilation Phase
++-------------------------+------------------+----------------+-----------------+-----------------+-----------------+-----------------+
+| Function                | Location         | Compile/Link   | Unroll/Inline   | Array/Struct    | Performance     | HW Transforms   |
++-------------------------+------------------+----------------+-----------------+-----------------+-----------------+-----------------+
+| + awn_forward           | awn_int8.cpp:200 | 1,746          | 17,182          | 18,709          | 61,600          | 49,192          |
+|  + conv1_block          | awn_int8.cpp:48  |  132           |   199           |   239           | 1,830           | 1,832           |
+|   + requant_s8          | awn_int8.cpp:29  |   32           |                 |                 |                 |                 |
+|      srdhm              | awn_int8.cpp:16  |   19           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|   + leaky_relu_s8       | awn_int8.cpp:34  |   22           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|  + conv2_block          | awn_int8.cpp:72  |  130           | 3,374           | 6,264           | 6,264           | 6,272           |
+|   + requant_s8          | awn_int8.cpp:29  |   32           |                 |                 |                 |                 |
+|      srdhm              | awn_int8.cpp:16  |   19           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|   + leaky_relu_s8       | awn_int8.cpp:34  |   22           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|  + u_branch             | awn_int8.cpp:95  |  242           | 3,863           | 3,174           | 5,932           | 5,947           |
+|   + requant_s8          | awn_int8.cpp:29  |   64 (2 calls) |                 |                 |                 |                 |
+|      srdhm              | awn_int8.cpp:16  |   38 (2 calls) |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   20 (2 calls) |                 |                 |                 |                 |
+|   + leaky_relu_s8       | awn_int8.cpp:34  |   22           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|     lut_s8              | awn_int8.cpp:42  |    6           |                 |                 |                 |                 |
+|  + requant_s8           | awn_int8.cpp:29  |  288 (9 calls) |   189 (9 calls) |   153 (9 calls) |   153 (9 calls) |   153 (9 calls) |
+|     srdhm               | awn_int8.cpp:16  |  171 (9 calls) |                 |                 |                 |                 |
+|     sat8                | awn_int8.cpp:23  |   90 (9 calls) |                 |                 |                 |                 |
+|    sat8                 | awn_int8.cpp:23  |   20 (2 calls) |                 |                 |                 |                 |
+|  + p_branch             | awn_int8.cpp:132 |  242           | 3,863           | 3,174           | 13,932          | 9,851           |
+|   + requant_s8          | awn_int8.cpp:29  |   64 (2 calls) |                 |                 |                 |                 |
+|      srdhm              | awn_int8.cpp:16  |   38 (2 calls) |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   20 (2 calls) |                 |                 |                 |                 |
+|   + leaky_relu_s8       | awn_int8.cpp:34  |   22           |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|     lut_s8              | awn_int8.cpp:42  |    6           |                 |                 |                 |                 |
+|  + avgpool_64           | awn_int8.cpp:169 |  126 (2 calls) |   548 (2 calls) |   548 (2 calls) | 4,581 (2 calls) | 4,587 (2 calls) |
+|   + requant_s8          | awn_int8.cpp:29  |   64 (2 calls) |                 |                 |                 |                 |
+|      srdhm              | awn_int8.cpp:16  |   38 (2 calls) |                 |                 |                 |                 |
+|      sat8               | awn_int8.cpp:23  |   20 (2 calls) |                 |                 |                 |                 |
+|    linear_acc<32, 128>  | awn_int8.cpp:182 |   43           | 1,030           | 1,031           | 1,031           | 1,035           |
+|    relu_s8              | awn_int8.cpp:40  |    7           |                 |                 |                 |                 |
+|    linear_acc<128, 32>  | awn_int8.cpp:182 |   43           |   262           |   263           |   263           |   267           |
+|    lut_s8               | awn_int8.cpp:42  |    6           |                 |                 |                 |                 |
+|    linear_acc<320, 128> | awn_int8.cpp:182 |   43           | 1,033           | 1,034           | 1,034           | 1,038           |
+|  + leaky_relu_s8        | awn_int8.cpp:34  |   22           |                 |                 |                 |                 |
+|     sat8                | awn_int8.cpp:23  |   10           |                 |                 |                 |                 |
+|    linear_acc<11, 320>  | awn_int8.cpp:182 |   43           | 2,569           | 2,570           | 2,570           | 2,574           |
++-------------------------+------------------+----------------+-----------------+-----------------+-----------------+-----------------+
+
+* Design Size Message Settings
++---------------------------------------------+--------+------------------------------------------------------------------+
+| Message Setting                             | Value  | Description                                                      |
++---------------------------------------------+--------+------------------------------------------------------------------+
+| config_compile -design_size_maximum_warning | 100000 | Show a warning when total design instructions exceeds this value |
++---------------------------------------------+--------+------------------------------------------------------------------+
+
+

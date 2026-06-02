@@ -1,0 +1,23 @@
+[
+  {
+    "functionLabel": "",
+    "functionName": "simple_add",
+    "id": 0,
+    "ifcond": "",
+    "insert_position": "",
+    "label": "",
+    "pragma": {
+      "name": "TOP",
+      "option": [
+        {
+          "name": "name",
+          "value": "simple_add"
+        }
+      ]
+    },
+    "slx": false,
+    "sourceFile": "/home/nigel/opensource/adversarial-rf/awn_fpga/awn_hls/hello_world/run_hls.tcl",
+    "sourceLine": 34,
+    "success": true
+  }
+]

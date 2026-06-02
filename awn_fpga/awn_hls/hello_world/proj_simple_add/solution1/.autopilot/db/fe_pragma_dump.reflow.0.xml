@@ -1,0 +1,19 @@
+<pragmas>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int_base<16, true>::ap_int_base<8, true>(ap_int_base<8, true> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int_base<17, true>::ap_int_base(int)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int<17>::ap_int<17, true>(ap_int_base<17, true> const&)" off="0" region="0" recursive="0"/>
+<pragma file="/home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_common.h" line="515" pragmaType="inline" parentfunction="_ZN8ssdm_intILi17ELb1EEC2EDq17_i" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int_base<17, true>::ap_int_base<16, true>(ap_int_base<16, true> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int_base<16, true>::ap_int_base<17, true>(ap_int_base<17, true> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="checkOverflowCsim" off="0" region="0" recursive="0"/>
+<pragma file="/home/nigel/vitas/Vitis_HLS/2023.2/common/technology/autopilot/etc/ap_common.h" line="515" pragmaType="inline" parentfunction="ssdm_int<16, true>::ssdm_int(short)" off="0" region="0" recursive="0"/>
+<pragma file="simple_add.cpp" line="10" pragmaType="pipeline" parentfunction="simple_add" off="0" ii="1" rewind="0" style=""/>
+<pragma file="simple_add.cpp" line="4" pragmaType="interface" parentfunction="simple_add" mode="ap_ctrl_hs" port="return" name=""/>
+<pragma file="simple_add.cpp" line="5" pragmaType="interface" parentfunction="simple_add" mode="ap_memory" port="a" storage_type="-1" impl="-1" latency="-1" name="" depth="-1"/>
+<pragma file="simple_add.cpp" line="6" pragmaType="interface" parentfunction="simple_add" mode="ap_memory" port="b" storage_type="-1" impl="-1" latency="-1" name="" depth="-1"/>
+<pragma file="simple_add.cpp" line="7" pragmaType="interface" parentfunction="simple_add" mode="ap_memory" port="c" storage_type="-1" impl="-1" latency="-1" name="" depth="-1"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int<16>::ap_int<8>(ap_int<8> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int_base<16, true>::RType<16, true>::plus operator+<16, true, 16, true>(ap_int_base<16, true> const&, ap_int_base<16, true> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="ap_int<16>::ap_int<17>(ap_int<17> const&)" off="0" region="0" recursive="0"/>
+<pragma file="" line="0" pragmaType="inline" parentfunction="checkOverflowCsim" off="0" region="0" recursive="0"/>
+</pragmas>
