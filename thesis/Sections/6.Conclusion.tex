@@ -1,4 +1,95 @@
+%!TEX root = ../main.tex
 \chapter{Conclusions}
 \label{ch:conclusion}
-Write your conclusion here.
- 
+
+We presented Adaptive-$K$, a unified frequency-domain defense for
+protecting deep-learning-based automatic modulation classifiers against
+adversarial attacks. The method combines spectral-flatness routing,
+SNR-adaptive K-cap, and per-sample magnitude-knee estimation in a single
+shared-FFT pass, requires no classifier retraining, and adds
+sub-millisecond overhead per batch of 64 samples in our GPU implementation,
+making it compatible with
+low-latency receiver-side preprocessing for spectrum monitoring and
+cognitive radio applications.
+
+Through systematic evaluation on RML2016.10a against five attacks (CW,
+EAD-L1, EAD-EN, FGSM, PGD) and comparison with five per-SNR-calibrated
+classical signal-processing baselines and an empirical
+randomized-smoothing baseline ($k = 20$ noisy copies at $\sigma = 0.01$;
+no formal certificate), we established four principal findings:
+
+\begin{enumerate}
+\item \textbf{Adversarial attacks on AMC behave as control-plane attacks.}
+  A two-track CRC analysis on the strongest optimization-based attack
+  (CW) shows that adversarial perturbations collapse AMC accuracy to
+  near zero while leaving the underlying signal data largely decodable
+  (CRC pass rate $> 71\%$ with oracle demodulation) at SNR 18\,dB
+  across eight digital modulations. This characterization motivates
+  recovery as the correct defense strategy: the perturbation need only be
+  attenuated for correct classification to be restored. Extending this
+  CRC analysis to EAD, FGSM, and PGD is future work.
+
+\item \textbf{Adaptive-$K$ outperforms all classical baselines across
+  attack families.} The unified method achieves the highest recovery
+  accuracy on four of five attacks (all gains reported over undefended
+  and over the best classical baseline on that attack): 71.3\% on CW
+  (+35.9\,pp / +6.2\,pp over Kalman), 70.8\% on EAD-L1
+  (+64.2\,pp / +8.5\,pp over Kalman), 67.5\% on EAD-EN
+  (+64.1\,pp / +7.3\,pp over Kalman), and 43.4\% on PGD
+  (+10.9\,pp / +4.6\,pp over FIR). The SNR-adaptive K-cap ensures
+  robust performance across the full SNR range by automatically adjusting
+  filtering aggressiveness to estimated signal quality.
+
+\item \textbf{Classical signal-processing filters are counterproductive
+  on gradient attacks.} On FGSM, all five classical filters reduce
+  accuracy below the undefended baseline (48.1\%) despite per-SNR
+  calibration. This negative result indicates that deploying conventional
+  filtering as a security measure can provide a false sense of protection:
+  gradient-sign perturbations are spectrally correlated with the signal,
+  so time-domain smoothing removes signal energy alongside perturbation
+  energy.
+
+\item \textbf{Wideband routing is essential for universal defense.}
+  Without spectral-flatness routing, Top-$K$ filtering destroys AM-SSB
+  signals. The flatness-based routing in Adaptive-$K$ correctly
+  identifies wideband samples and applies per-sample quantization instead,
+  recovering AM-SSB accuracy to 94\%.
+\end{enumerate}
+
+Several directions remain open for future work.
+
+\textbf{Adaptive defense-aware attacks.}
+The evaluation in this thesis assumes a defense-unaware attacker. A
+white-box adversary with knowledge of the Top-$K$ operator could craft
+perturbations that survive the frequency mask. Evaluating such
+\emph{adaptive defense-aware attacks}---in which the attack optimization
+incorporates the defense---is an important robustness validation that we
+explicitly do not claim coverage of in this work, and is the most
+important next step.
+
+\textbf{Generalization to longer and richer signals.}
+Extending the evaluation to RML2018.01a (1024-sample signals, 24 classes)
+would establish the generality of the proposed defense across longer
+signals and a richer modulation set, and would test whether the
+SNR-adaptive K-cap continues to hold without retuning at the longer
+$T = 1024$ FFT length.
+
+\textbf{Combination with adversarial training.}
+Combining Adaptive-$K$ with adversarial training could provide
+complementary robustness: training-time regularization hardens the
+classifier's decision boundaries while inference-time spectral filtering
+removes perturbation energy before the signal reaches the network. A
+particularly interesting question is whether such a hybrid pipeline
+remains effective against adaptive defense-aware attacks.
+
+\textbf{Certified randomized smoothing.}
+The randomized-smoothing baseline used in this thesis is empirical:
+it runs the Cohen et al.\ majority-vote rule over $k = 20$ noisy
+copies at $\sigma = 0.01$ (via either the in-tree implementation or
+the IBM ART~\cite{art2018} wrapper, which are numerically
+equivalent), and does not compute the Clopper--Pearson lower bound on
+$p_A$ required for a certified $L_2$ radius. Evaluating
+a fully certified configuration (hundreds to thousands of noisy copies
+per sample, with formal certificates) would clarify the trade-off
+between certified and empirical defenses for AMC and quantify the
+throughput cost of certification relative to Adaptive-$K$.

@@ -1,3 +1,4 @@
+%!TEX root = ../main.tex
 \begin{center}
     \large
     \begin{singlespace}    
@@ -25,9 +26,43 @@
 
 \normalsize 
 
-\textbf{中文}摘要就從這邊開始寫.
+基於深度學習的自動調變分類器（Automatic Modulation Classification, AMC）
+在良好通道條件下可達到高分類準確率，但對於對抗式擾動（adversarial
+perturbations）卻極為脆弱。以最佳化為基礎的攻擊方法，如
+Carlini--Wagner（$L_2$）攻擊（CW）與彈性網路攻擊
+（Elastic-Net Attack on Deep Neural Networks, EAD），
+即使在原始波形大致仍可被解調的情況下，仍能顯著降低自適應小波網路
+（Adaptive Wavelet Network, AWN）分類器於 RML2016.10a 資料集上的
+準確率。本論文提出 \emph{Adaptive-K}，一種於接收端進行、
+以頻域輸入轉換為基礎的防禦方法，可在不需重新訓練分類器的情況下
+恢復其分類準確率。
+
+Adaptive-K 在單次共用之快速傅立葉轉換（FFT）流程中，
+整合三項機制：針對寬頻訊號的頻譜平坦度路由
+（spectral-flatness routing）、可依訊噪比（SNR）自適應調整之
+$K$ 值上限（K-cap）以平衡擾動抑制與訊號保留，
+以及以每筆樣本之幅度轉折點（magnitude knee）估計所保留頻譜成分數量之方法。
+本方法能保留主要承載調變資訊之頻譜成分，同時抑制由攻擊所引入之非主要頻譜雜訊。
+
+我們針對 CW、EAD-L1、EAD-EN、FGSM 與 PGD 共五種攻擊，
+於 RML2016.10a 資料集上以預訓練之 AWN 分類器評估 Adaptive-K 之效能，
+並與五種依訊噪比逐一校正之傳統濾波器（Kalman、Wiener、Savitzky-Golay、
+Gaussian、FIR）以及一項經驗性隨機平滑
+（randomized smoothing）基準（$k = 20$ 份雜訊副本、$\sigma = 0.01$；
+未提供形式化認證）進行比較。於 SNR $\geq 0$\,dB 之條件下，
+CW 攻擊將加權平均準確率降至 35.4\%，EAD-L1 降至 6.6\%；
+Adaptive-K 則將 CW 之準確率恢復至 71.3\%，EAD-L1 恢復至 70.8\%，
+分別較最強之傳統濾波基準高出 6.2 與 8.5 個百分點。
+對於 PGD 攻擊，其準確率由 32.6\% 提升至 43.4\%。
+在乾淨訊號上之準確率下降不超過 0.5 個百分點，
+且於本文之 GPU 實作中，每批 64 筆樣本之額外延遲低於 0.1\,ms。
+
+以上結果顯示，自適應頻譜濾波為一種輕量且有效之防禦方法，
+可於未知防禦資訊之對抗式攻擊下恢復 AMC 之分類效能。
+本研究之評估並未主張可抵禦已知防禦資訊之自適應攻擊
+（adaptive defense-aware attacks），此類攻擊之評估將為未來重要之研究方向。
 
 \vspace{1cm}
 
-% 中文摘要及關鍵詞 5-7 個 
-\textbf{關鍵字：}中文, 摘要, 關鍵詞, 5-7個, 不要多, 也不要少
+% 中文摘要及關鍵詞 5-7 個
+\textbf{關鍵字：}自動調變分類, 對抗式強健性, 頻譜防禦, FFT Top-$K$, RML2016.10a, 訊號處理

@@ -1,32 +1,666 @@
-\chapter{Performance Evaluation}
+%!TEX root = ../main.tex
+\chapter{Experimental Setup and Performance Evaluation}
 \label{ch:evaluation}
 
-In this section, 整理效能評估.
+\section{Dataset and Model}
 
-下面是subfigure的範例 (其實我個人不常用這個語法, 我都直接在繪圖工具上把圖片整合在一起 XD)
+We evaluate on the RadioML 2016.10a dataset~\cite{otoole2016rml}, a widely
+used benchmark for automatic modulation classification comprising 220{,}000
+IQ signal frames spanning 11 modulation classes: eight digital (BPSK, QPSK,
+8PSK, QAM16, QAM64, PAM4, CPFSK, GFSK) and three analog (AM-DSB, AM-SSB,
+WBFM). Each frame consists of 128 complex-valued samples represented as a
+$2 \times 128$ real tensor of in-phase (I) and quadrature (Q) components.
+The dataset covers SNR values from $-20$\,dB to $+18$\,dB in 2\,dB
+increments, yielding 20 SNR levels and 1{,}000 frames per (modulation,
+SNR) cell.
 
-\begin{figure}
-     \centering
-     \begin{subfigure}[]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{img/fig1.png}
-         \caption{figure 1}
-         \label{fig:11111}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{img/fig2.png}
-         \caption{figure 2}
-         \label{fig:22222}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[]{0.3\textwidth}
-         \centering
-         \includegraphics[width=\textwidth]{img/fig3.png}
-         \caption{figure 3}
-         \label{fig:33333}
-     \end{subfigure}
-        \caption{Three simple graphs}
-        \label{fig:three graphs}
+We partition the data using stratified sampling that preserves the joint
+(modulation, SNR) distribution across splits: 70\% training, 15\%
+validation, and 15\% test. All reported accuracies are computed on the
+held-out test split.
+
+The classifier under attack is the Adaptive Wavelet Network
+(AWN)~\cite{li2023awn}, a pretrained model that achieves 92.6\%
+classification accuracy at SNR $\geq 0$\,dB on the clean test set. We use
+the publicly available pretrained checkpoint without any adversarial
+fine-tuning, so the model represents a realistic deployment target that has
+not been hardened against adversarial inputs.
+
+\section{Attack Configurations}
+
+We evaluate five attacks drawn from three families: a single-step
+gradient attack (FGSM), an iterative gradient attack (PGD), and
+optimization-based attacks (CW-$L_2$, EAD-L1, EAD-EN). All attacks are
+implemented via the \texttt{torchattacks}
+library~\cite{kim2020torchattacks} using a thin wrapper that maps IQ
+signals into the $[0, 1]$ range expected by the library and returns
+logits only. The mapping is the per-sample min--max normalization
+$\tilde{x} = (x - x_{\min})/(x_{\max} - x_{\min})$ defined in
+Chapter~\ref{ch:architecture}, so that $\varepsilon$ is expressed
+relative to each sample's own dynamic range---a natural choice for IQ
+signals whose peak-to-peak amplitude varies widely across modulations
+and SNR levels. This normalization is used consistently throughout
+the evaluation; we do not compare against alternative
+normalizations.
+
+\begin{table}[!ht]
+\caption{Attack configurations. All attacks target untargeted
+  misclassification in a white-box setting. Epsilon values are expressed
+  in the per-sample min--max-normalized $[0, 1]$ input space.}
+\label{tab:attacks}
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Attack & Norm & Key Parameters & Source \\
+\midrule
+FGSM   & $\ell_\infty$ & $\varepsilon = 0.03$                       & \cite{goodfellow2015fgsm} \\
+PGD    & $\ell_\infty$ & $\varepsilon = 0.03$, steps $= 10$, $\alpha = 0.01$ & \cite{madry2018pgd} \\
+CW     & $\ell_2$      & $c = 1.0$, steps $= 100$, lr $= 0.01$       & \cite{carlini2017towards} \\
+EAD-L1 & $\ell_1$      & $c_0 = 0.01$, $\beta = 0.01$, steps $= 100$ & \cite{chen2020ead} \\
+EAD-EN & elastic net   & $c_0 = 0.01$, $\beta = 0.01$, steps $= 100$ & \cite{chen2020ead} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:attacks} summarizes the attack hyperparameters. For FGSM and
+PGD, $\varepsilon = 0.03$ after min--max normalization corresponds to
+roughly 60\% of the average per-sample dynamic range at high SNR---a
+moderate threat that leaves the signal recognizable but is effective enough
+to reduce accuracy substantially. For CW and EAD, the optimization
+constants $c$ and $c_0$ control the trade-off between perturbation
+minimization and attack success.
+
+\section{Defense Configurations}
+
+We evaluate eight defense configurations: the proposed Adaptive-$K$
+and seven baselines (Kalman, Wiener, Savitzky-Golay, Gaussian, FIR, and
+an empirical randomized-smoothing baseline) plus the undefended baseline.
+The proposed method operates entirely in the frequency domain without
+retraining and requires no per-SNR calibration.
+
+\begin{table}[!ht]
+\caption{Defense configurations. Classical filter parameters are calibrated
+  per-SNR via grid search on the validation set; representative values at
+  SNR $= 10$\,dB are shown. Adaptive-$K$ requires no per-SNR
+  calibration. The randomized-smoothing baseline follows the Cohen et al.\
+  majority-vote procedure over $k = 20$ Gaussian-noised copies at
+  $\sigma = 0.01$; we do not compute the Clopper--Pearson lower bound on
+  $p_A$, so the reported row is empirical accuracy, not a certified
+  $L_2$ radius.}
+\label{tab:defenses}
+\centering
+\small
+\begin{tabular}{llp{4.5cm}}
+\toprule
+Defense & Type & Key Parameters (SNR $= 10$\,dB) \\
+\midrule
+Adaptive-$K$ & Proposed  & Per-sample $K$ via magnitude knee; SNR-adaptive cap $K_{\max}\in[20,35]$; wideband routing at flatness $>0.4$ \\
+Kalman          & Classical & $Q = 0.005$, $R = 0.001$; CPU sequential \\
+Wiener          & Classical & noise $= 0.01$, filter length $= 3$; frequency domain \\
+Savitzky-Golay  & Classical & window $= 5$, order $= 1$; time domain \\
+Gaussian        & Classical & $\sigma = 0.5$; GPU depthwise conv1d \\
+FIR             & Classical & cutoff $= 0.15$, taps $= 63$; GPU depthwise conv1d \\
+Rand.\ smoothing (empirical) & Baseline & $\sigma = 0.01$, $k = 20$ noisy copies; majority vote (no $p_A$ bound) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:defenses} summarizes the defense parameters. For the five
+classical filters we perform a grid search over the parameter space at
+each SNR level using the validation set with the CW attack; the
+best-performing parameter combination per SNR is stored in a calibration
+file (\texttt{calibration\_params.json}) and loaded at test time. CW is
+chosen for calibration because it is the strongest attack in our threat
+model, and we assume the defender does not know the attack type at
+deployment. The same CW-calibrated parameters are therefore reused
+unchanged against FGSM, PGD, EAD-L1, and EAD-EN; per-attack calibration
+is not assumed available in the deployment setting. Representative
+per-SNR calibrated values are listed in
+Appendix~\ref{app:calibration}. The
+randomized-smoothing baseline runs the majority-vote rule of
+Cohen et al.~\cite{cohen2019certified}: $k = 20$ Gaussian-noised
+copies at $\sigma = 0.01$ are pushed through the classifier and the
+smoothed prediction is the argmax of accumulated votes. The codebase
+provides two interchangeable back-ends for this rule---an in-tree
+implementation and a wrapper around IBM ART's
+\texttt{PyTorchRandomizedSmoothing}~\cite{art2018}---selectable via
+the \texttt{use\_art\_rs} configuration flag. Because we do not
+compute the Clopper--Pearson lower bound on the top-class probability
+$p_A$ and do not enable the abstain option, the corresponding row in
+Table~\ref{tab:main} reports the empirical accuracy of the smoothed
+classifier rather than a certified $L_2$ radius; obtaining such a
+certificate would require hundreds to thousands of noisy forward
+passes per sample, which we treat as outside our target latency
+budget.
+
+\section{Evaluation Metrics}
+
+We report the following metrics:
+
+\textbf{Per-SNR accuracy:} fraction of test samples correctly classified
+at each SNR level $s \in \{0, 2, \ldots, 18\}$\,dB. We focus on non-negative
+SNR because at SNR $< 0$\,dB the clean accuracy is below 50\% and
+adversarial perturbations are masked by channel noise.
+
+\textbf{Weighted-average accuracy:} the mean per-SNR accuracy weighted by
+the number of test samples at each SNR level. Because RML2016.10a is
+balanced, this reduces to the simple mean over the 10 SNR levels
+$\geq 0$\,dB evaluated.
+
+\textbf{Perturbation-budget curves:} accuracy as a function of attack
+strength ($\varepsilon$ for FGSM/PGD; optimization constant $c$ for
+CW/EAD) to assess defense robustness across the threat spectrum.
+
+\textbf{Confusion matrices:} per-class classification accuracy before and
+after defense at a fixed SNR (18\,dB) to identify which modulation classes
+benefit most from the proposed method.
+
+All evaluations use 200 samples per (SNR, modulation) cell from the test
+split, yielding 2{,}200 samples per SNR level
+(200 samples $\times$ 11 modulation classes).
+
+\section{Defense Comparison Overview}
+
+Table~\ref{tab:main} presents the primary result: weighted-average
+classification accuracy for nine defense configurations against all five
+attacks at SNR $\geq 0$\,dB. The proposed Adaptive-$K$ achieves the
+highest accuracy on four of five attacks, with particularly large margins
+on the optimization-based attacks CW, EAD-L1, and EAD-EN.
+
+\begin{table}[!ht]
+\caption{Weighted-average classification accuracy (\%) across SNR
+  $\in \{0, 2, \ldots, 18\}$\,dB for nine defenses against five attacks
+  on RML2016.10a. Attacks are generated in the min--max-normalized
+  input space defined in Chapter~\ref{ch:architecture}. \textbf{Bold}
+  indicates the best result per attack. ``No Defense'' is the
+  undefended accuracy under each attack. Clean (unattacked) accuracy
+  is 92.6\%.}
+\label{tab:main}
+\centering
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Defense                  & CW             & EAD-L1         & EAD-EN         & FGSM           & PGD            \\
+\midrule
+\textbf{Adaptive-$K$} & \textbf{71.34} & \textbf{70.81} & \textbf{67.48} & 51.96          & \textbf{43.43} \\
+\midrule
+Kalman                   & 65.18          & 62.30          & 60.20          & 46.77          & 36.77          \\
+FIR                      & 62.00          & 57.89          & 56.99          & 46.44          & 38.83          \\
+Wiener                   & 61.56          & 59.14          & 57.45          & 45.64          & 35.30          \\
+Gaussian                 & 60.31          & 57.73          & 53.71          & 45.95          & 34.00          \\
+Savitzky-Golay           & 60.27          & 56.72          & 55.67          & 45.64          & 37.55          \\
+\midrule
+No Defense               & 35.40          &  6.57          &  3.38          & \textbf{48.06} & 32.57          \\
+\midrule
+Rand.\ smoothing (emp.)  & 32.08          & 31.63          & 31.58          & 30.55          & 29.93          \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.95\textwidth]{img/defense_compare_overview.pdf}
+  \caption{Grouped bar chart of weighted-average accuracy for nine
+    defenses against five attacks on RML2016.10a (SNR $\geq 0$\,dB).
+    Adaptive-$K$ leads on four of five attacks. Classical filters
+    fall below the undefended baseline on FGSM. The empirical
+    randomized-smoothing baseline ($k = 20, \sigma = 0.01$, no
+    certificate) collapses accuracy across all attacks.}
+  \label{fig:defense_overview}
 \end{figure}
+
+Figure~\ref{fig:defense_overview} provides a visual overview of
+Table~\ref{tab:main}. Four key findings emerge.
+
+\textbf{Finding 1: optimization attacks are devastating without defense.}
+CW reduces accuracy from 92.6\% to 35.4\%, EAD-L1 to 6.6\%, and EAD-EN to
+3.4\%---near chance level for 11 classes. These norm-minimizing attacks
+produce perturbations that are difficult to detect in the time domain yet
+catastrophically effective.
+
+\textbf{Finding 2: Adaptive-$K$ achieves the largest recovery.}
+On CW, Adaptive-$K$ recovers accuracy from 35.4\% to 71.3\% (+35.9\,pp).
+On EAD-L1 the recovery is even larger: from 6.6\% to 70.8\% (+64.2\,pp).
+The margin over Kalman (the best classical filter) is 6.2\,pp on CW
+(71.3\% vs.\ 65.2\%) and 8.5\,pp on EAD-L1 (70.8\% vs.\ 62.3\%).
+
+\textbf{Finding 3: classical filters are counterproductive on FGSM.}
+On FGSM, the undefended baseline (48.1\%) exceeds every classical filter:
+Kalman (46.8\%), Gaussian (46.0\%), FIR (46.4\%), Wiener (45.6\%), and
+Savitzky-Golay (45.6\%). FGSM perturbations are spectrally diffuse and
+resemble the signal itself, so time-domain smoothing removes signal energy
+alongside perturbation energy. Adaptive-$K$ achieves 52.0\%, recovering
+3.9\,pp above the undefended baseline.
+
+\textbf{Finding 4: empirical randomized smoothing is unsuitable for AMC.}
+Even with a full $k = 20$-copy majority vote at $\sigma = 0.01$, the
+smoothed classifier collapses accuracy to $\sim 30\%$ across all attacks
+(both clean and adversarial), close to the 11-class chance rate. The
+additive Gaussian noise destroys the fine-grained IQ structure that AMC
+classifiers rely on, so the majority vote is dominated by noise rather
+than by the underlying modulation. Because we do not compute the
+Clopper--Pearson bound on $p_A$, this row is the empirical accuracy of
+the smoothed classifier and should not be interpreted as a certified
+$L_2$ radius; obtaining a certificate would require far more forward
+passes and would only lower the reported number.
+
+\section{Accuracy vs.\ SNR for Optimization Attacks}
+
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/acc_vs_snr_cw.pdf}
+    \caption{CW attack ($c = 1.0$, steps $= 100$).}
+    \label{fig:snr_cw}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/acc_vs_snr_eadl1.pdf}
+    \caption{EAD-L1 attack ($c_0 = 0.01$, steps $= 100$).}
+    \label{fig:snr_eadl1}
+  \end{subfigure}
+  \caption{Classification accuracy vs.\ SNR under optimization-based
+    attacks. Adaptive-$K$ consistently outperforms all baselines.
+    Classical filters partially recover but lag by 6--9\,pp. The
+    undefended baseline is devastated across the entire SNR range.}
+  \label{fig:snr_opt}
+\end{figure}
+
+Figure~\ref{fig:snr_opt} shows per-SNR accuracy for CW and EAD-L1.
+Three behavioral regimes are visible.
+
+\emph{Low-SNR regime (0--4\,dB).}
+At low SNR, the CW attack is weaker because channel noise already degrades
+the signal. The SNR-adaptive K-cap of Adaptive-$K$ detects this regime
+and reduces filtering aggressiveness, avoiding the accuracy degradation
+that fixed-$K$ methods suffer at low SNR.
+
+\emph{Moderate-SNR regime (6--14\,dB).}
+The defense advantage is most pronounced here. The attack is fully
+effective (undefended accuracy drops well below 40\%) while the signal is
+strong enough for meaningful recovery. Adaptive-$K$ maintains a
+consistent 6--9\,pp advantage over the best classical filter (Kalman).
+
+\emph{High-SNR regime (16--18\,dB).}
+Even at SNR $= 18$\,dB, CW still reduces undefended accuracy substantially,
+demonstrating that optimization attacks remain effective at high SNR.
+Adaptive-$K$ provides the largest absolute recovery here, as the
+stronger signal tolerates more aggressive spectral filtering.
+
+\section{Accuracy vs.\ SNR for Gradient Attacks}
+
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/acc_vs_snr_fgsm.pdf}
+    \caption{FGSM attack ($\varepsilon = 0.03$, single step).}
+    \label{fig:snr_fgsm}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/acc_vs_snr_pgd.pdf}
+    \caption{PGD attack ($\varepsilon = 0.03$, 10 steps).}
+    \label{fig:snr_pgd}
+  \end{subfigure}
+  \caption{Classification accuracy vs.\ SNR under gradient-based attacks.
+    Adaptive-$K$ leads on PGD across all SNR values. On FGSM, margins
+    are smaller due to the spectrally diffuse nature of gradient-sign
+    perturbations.}
+  \label{fig:snr_grad}
+\end{figure}
+
+Figure~\ref{fig:snr_grad} shows per-SNR results for FGSM and PGD. On
+gradient-based attacks, margins between defenses are smaller because
+FGSM and PGD distribute perturbation energy more uniformly across the
+spectrum.
+
+On FGSM, Adaptive-$K$ achieves 52.0\% weighted average vs.\ 48.1\%
+undefended (+3.9\,pp). All five classical filters \emph{reduce} accuracy
+below the undefended baseline, confirming that time-domain smoothing is
+counterproductive when the perturbation is spectrally correlated with the
+signal.
+
+On PGD, Adaptive-$K$ achieves 43.4\% vs.\ 32.6\% undefended (+10.9\,pp),
+the largest margin among gradient attacks. FIR is the strongest classical
+competitor at 38.8\%, still 4.6\,pp below Adaptive-$K$.
+
+\section{Per-Modulation Recovery Analysis}
+
+Table~\ref{tab:per_mod} presents per-modulation CW-attack accuracy
+before and after Adaptive-$K$ defense. The overall row does not
+exactly reproduce the Table~\ref{tab:main} CW numbers because this
+diagnostic is computed on a smaller test slice (50 samples per (SNR,
+modulation) cell, chosen so that every per-class number is estimated
+from a fixed sample count) while Table~\ref{tab:main} uses 200
+samples per cell for the full weighted average. The two are
+consistent qualitatively: Adaptive-$K$ substantially recovers
+accuracy over the undefended baseline for every modulation.
+
+\begin{table}[!ht]
+\caption{Per-modulation CW-attack accuracy (\%) before (No def) and
+  after Adaptive-$K$ defense (AK), averaged across SNR
+  $\in \{0, 2, \ldots, 18\}$\,dB with 50 samples per (SNR, mod) cell.
+  Attacks are generated in the same normalized input space as
+  Table~\ref{tab:main}. The overall row differs from
+  Table~\ref{tab:main} because a smaller per-cell sample count is used
+  to keep every per-class estimate on the same footing.}
+\label{tab:per_mod}
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+Modulation & No def & AK \\
+\midrule
+BPSK       &  40.0 & 64.0 \\
+QPSK       &  38.0 & 86.0 \\
+8PSK       &   2.0 & 34.0 \\
+QAM16      &   0.0 & 46.0 \\
+QAM64      &   0.0 & 90.0 \\
+PAM4       &  30.0 & 88.0 \\
+GFSK       &  24.0 & 90.0 \\
+CPFSK      &  64.0 & 88.0 \\
+AM-DSB     &  32.0 & 96.0 \\
+AM-SSB     &  54.0 & 94.0 \\
+WBFM       &  16.0 & 32.0 \\
+\midrule
+Overall    &  27.3 & 73.5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Four patterns emerge from Table~\ref{tab:per_mod}.
+
+\textbf{Undefended accuracy varies widely across modulations.}
+QAM16/QAM64/QPSK/8PSK collapse to $\leq 2\%$ under CW, but
+BPSK ($40\%$) and CPFSK ($64\%$) remain relatively high even
+without any defense. This is expected: BPSK has only two symbols
+with maximum inter-symbol distance, and CPFSK is a frequency
+modulation whose decision is not moved by small amplitude/phase
+perturbations. The recovery gain is smaller on these two rows
+because there is less accuracy to recover.
+
+\textbf{Narrowband digital modulations recover strongly.}
+QAM64 recovers from 0\% to 90\% and QPSK from 38\% to 86\%; PAM4
+($30\to88$\%) and GFSK ($24\to90$\%) follow the same pattern. Their
+concentrated spectral profiles are ideal for Top-$K$ filtering.
+
+\textbf{Wideband routing rescues AM-SSB.}
+Without wideband routing, Top-$K$ would destroy AM-SSB. The
+spectral-flatness routing in Adaptive-$K$ correctly identifies
+AM-SSB samples and applies quantization instead, recovering accuracy
+to 94\%.
+
+\textbf{AM-DSB benefits from the SNR-adaptive cap.}
+AM-DSB recovers to 96\% because its ultra-narrowband spectrum (most
+energy in DC) is well-fit by a very small number of FFT bins. The
+SNR-adaptive cap preserves this at low SNR as well, whereas a fixed
+aggressive cap would over-filter when the signal is weak.
+
+\section{Perturbation-Budget Curves}
+
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/budget_fgsm.pdf}
+    \caption{FGSM budget ($\varepsilon$).}
+    \label{fig:budget_fgsm}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\columnwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/budget_cw.pdf}
+    \caption{CW budget ($c$, log scale).}
+    \label{fig:budget_cw}
+  \end{subfigure}
+  \caption{Accuracy vs.\ perturbation budget. Adaptive-$K$ maintains
+    a consistent advantage. On CW, the gap over classical filters
+    \emph{widens} with increasing attack strength.}
+  \label{fig:budget}
+\end{figure}
+
+We sweep the CW constant $c$ from 0.01 to 10.0 and the FGSM epsilon from
+0.01 to 0.30 to evaluate defense robustness across the threat spectrum.
+For CW, as $c$ increases from 0.01 to 10.0, the undefended accuracy drops
+from 72.1\% to 41.7\%, while Adaptive-$K$ degrades more slowly from
+83.8\% to 76.4\%. The gap between Adaptive-$K$ and Kalman (the best
+classical filter) \emph{widens} from 0.7\,pp at $c = 0.01$ to 6.3\,pp at
+$c = 10.0$, confirming that the adaptive spectral method is particularly
+valuable in high-threat scenarios. For FGSM, at low epsilon ($= 0.01$)
+all defenses perform similarly ($\sim 76\%$) because the perturbation is
+too weak to significantly affect classification. At high epsilon
+($= 0.3$), all methods converge near 22\% as the signal is overwhelmed.
+Adaptive-$K$ maintains a small but consistent advantage in the moderate
+range ($\varepsilon = 0.03$--$0.1$).
+
+\section{Clean-Signal Degradation}
+
+A practical concern for any input-transformation defense is its effect on
+clean (unattacked) signals. On clean signals, Adaptive-$K$ reduces
+accuracy by less than 0.5\,pp from the baseline 92.6\%. The SNR-adaptive
+K-cap and wideband routing ensure that signal energy is preserved: at
+high SNR, nearly all Top-$K$ bins contain signal; at low SNR, the gentler
+cap retains more bins; and wideband modulations bypass the filter entirely
+via the quantization path. Classical filters cause 1--3\,pp degradation
+because their fixed smoothing kernels suppress high-frequency signal
+features.
+
+\section{Latency and Real-Time Feasibility}
+\label{sec:latency}
+
+Table~\ref{tab:latency} summarizes the measured latency budget for
+Adaptive-$K$ on our experimental setup (single GPU, batch size 64).
+The defense adds less than 0.1\,ms of preprocessing latency per batch
+relative to an AWN forward pass of approximately 2\,ms per batch of 64,
+corresponding to roughly a 5\% relative overhead and a sub-microsecond
+amortized cost per sample. We report ``per batch'' rather than ``per
+sample'' as the headline number because the defense and the AWN forward
+pass are both batched GPU operations in our implementation.
+
+\begin{table}[!ht]
+\caption{Adaptive-$K$ latency relative to the AWN forward pass on our
+  GPU implementation. The reported overhead is consistent with the
+  sub-millisecond per-sample budget assumed in
+  Chapter~\ref{ch:architecture}.}
+\label{tab:latency}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Method            & Batch size & Defense latency  & AWN latency      & Rel.\ overhead \\
+\midrule
+Adaptive-$K$   & 64         & $< 0.1$\,ms/batch & $\approx 2$\,ms/batch & $\sim 5\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Kalman baseline runs on CPU with $\mathcal{O}(T)$ sequential operations
+per sample and is measured to be roughly $5$--$10\times$ slower per batch
+than Adaptive-$K$, illustrating the GPU-amenability advantage of the
+proposed frequency-domain approach.
+
+\section{AWN FPGA Inference Latency Estimate}
+\label{sec:fpga}
+
+The GPU latency reported above assumes a server-class deployment. To assess
+feasibility on embedded receiver-side hardware we additionally evaluate the
+AWN classifier itself on an int8 Verilog implementation. Every arithmetic
+op of AWN's forward pass is implemented as a synthesizable Verilog module
+(\texttt{gemm\_s8}, \texttt{requantize\_s32\_s8}, \texttt{leaky\_relu\_s8},
+\texttt{relu\_s8}, \texttt{lut\_s8} for tanh and sigmoid,
+\texttt{eltwise\_addsub\_s8}, \texttt{mul\_s8}, \texttt{avgpool1d\_s8}) and
+chained by a Python orchestrator into a full int8 inference. Every op-level
+module is tested bit-exactly against a numpy fixed-point reference, and the
+end-to-end argmax of the int8 hardware path matches the fp32 PyTorch
+reference on the RML2016.10a checkpoint.
+
+\subsection{Operator Profile and Cycle Budget}
+
+Profiling the AWN forward pass yields 34 ops that collapse into 9 distinct
+int8 hardware primitives after BatchNorm folding (Dropout, padding, concat,
+and reshape are absorbed as software data movement). The total multiply-
+accumulate (MAC) count is $5.98\,\text{M}$, with the budget concentrated in
+convolutions. Two op groups dominate: the second front-end 1D convolution
+(\texttt{conv2}) and the four 1D convolutions inside the lifting scheme's
+Predictor and Updator chains.
+
+\begin{table}[!ht]
+\caption{AWN MAC budget for one inference of a $2 \times 128$ IQ burst,
+  derived from the per-op profile. The lifting scheme's Predictor (P) and
+  Updator (U) chains together account for $\sim 54\%$ of total MACs; the
+  front-end \texttt{conv2} alone accounts for $\sim 44\%$.}
+\label{tab:fpga_macs}
+\centering
+\small
+\begin{tabular}{llrr}
+\toprule
+Rank & Op (layer)                              & MACs       & \% of total \\
+\midrule
+1    & Conv1d 64$\to$64, $k=5$ (\texttt{conv2})   & 2{,}621{,}440 & 43.8 \\
+2    & Conv1d 64$\to$64, $k=3$ (\texttt{U.op.1}) &   811{,}008 & 13.6 \\
+3    & Conv1d 64$\to$64, $k=3$ (\texttt{P.op.1}) &   811{,}008 & 13.6 \\
+4    & Conv1d 64$\to$64, $k=3$ (\texttt{U.op.4}) &   786{,}432 & 13.1 \\
+5    & Conv1d 64$\to$64, $k=3$ (\texttt{P.op.4}) &   786{,}432 & 13.1 \\
+6    & Conv2d 1$\to$64, $k = (2,7)$ (\texttt{conv1}) & 114{,}688 & 1.9 \\
+7--10 & Linear $\times$ 4 (fc + SE attention)   &    52{,}672 & 0.9 \\
+\midrule
+     & GEMM subtotal                           & $\approx 5.98\,\text{M}$ & 100.0 \\
+     & Non-GEMM cycles (requantize, activation, pool, $\ldots$) & $\approx 0.16\,\text{M}$ & \multicolumn{1}{c}{---} \\
+\midrule
+     & \textbf{Total cycles per inference}     & \multicolumn{2}{r}{$\approx 6.15\,\text{M}$} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Adding the non-GEMM cycles (per-element requantize, LeakyReLU, tanh/sigmoid
+LUTs, eltwise add/sub, pooling, and multiply) and per-op FSM
+startup/teardown overhead gives a total cycle budget of approximately
+$6.15\,\text{M}$ cycles per inference under the current RTL, which is
+``one MAC per cycle'' in the GEMM datapath.
+
+\subsection{Latency vs.\ Clock Frequency and GEMM Parallelism}
+
+The end-to-end FPGA latency is dominated by the GEMM datapath:
+\begin{equation}
+  T_{\text{infer}} \approx \frac{\text{MACs}_{\text{total}}}
+                              {P \cdot f_{\text{clk}}}
+    + \frac{\text{cycles}_{\text{non-GEMM}}}{f_{\text{clk}}},
+\end{equation}
+where $P$ is the GEMM parallelism (number of MACs per cycle) and
+$f_{\text{clk}}$ is the system clock. Table~\ref{tab:fpga_latency} shows
+how the estimated per-sample inference latency scales jointly with clock
+frequency and $P$. With $P = 1$ at 100\,MHz, AWN inference takes
+approximately 61.5\,ms per sample; doubling the clock halves the latency,
+and increasing $P$ reduces latency near-linearly until the non-GEMM
+cycles become the bottleneck.
+
+\begin{table}[!ht]
+\caption{Estimated AWN per-sample inference latency on the int8 Verilog
+  implementation as a function of GEMM parallelism $P$ and system clock
+  $f_{\text{clk}}$. Latency is computed from the cycle budget in
+  Table~\ref{tab:fpga_macs}. DSP usage scales approximately linearly with
+  $P$ (e.g., $P = 64$ requires roughly 64 DSP48 slices on a Xilinx
+  device).}
+\label{tab:fpga_latency}
+\centering
+\small
+\begin{tabular}{rrrr}
+\toprule
+$P$ (MACs/cycle) & $f_{\text{clk}} = 50$\,MHz & $f_{\text{clk}} = 100$\,MHz & $f_{\text{clk}} = 200$\,MHz \\
+\midrule
+1   & 123\,ms  & 61.5\,ms  & 30.8\,ms \\
+16  & 7.7\,ms  & 3.8\,ms   & 1.9\,ms  \\
+64  & 1.9\,ms  & 0.96\,ms  & 0.48\,ms \\
+128 & 0.96\,ms & 0.48\,ms  & 0.24\,ms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Verification Status}
+
+The AWN hardware pipeline is validated at three levels.
+First, each of the 10 distinct op-level Verilog modules passes bit-exact
+testbenches against a numpy fixed-point reference that uses the same
+$\bigl(x \cdot \text{mul} + \text{half}\bigr) \gg \text{shift}$ saturating
+arithmetic as the hardware.
+Second, the end-to-end int8 inference produces logits that match the
+fp32 PyTorch reference at the argmax level on the RML2016.10a checkpoint.
+Third, the cycle-accurate testbench traces give per-op latency that can be
+summed to the values in Table~\ref{tab:fpga_latency}, providing a direct
+sanity check against the analytical formula above.
+
+\subsection{Implications for End-to-End Deployment}
+
+Combining the Adaptive-$K$ defense (sub-millisecond per batch on GPU,
+Table~\ref{tab:latency}) with the AWN classifier on FPGA, the
+recovery-plus-classification stack at $P = 64, f_{\text{clk}} = 100$\,MHz
+fits within a per-sample budget of roughly $1\,\text{ms}$, which is
+compatible with the 1--10\,ms burst processing budget assumed in
+Chapter~\ref{ch:architecture} for spectrum-monitoring and ESC-style
+receivers. Pushing $P$ to 128 or raising $f_{\text{clk}}$ further (via
+pipeline-register insertion in \texttt{gemm\_s8}) brings the AWN inference
+itself below half a millisecond, in which case the spectral defense
+becomes a free addition relative to the classifier cost.
+
+\section{Frequency-Domain Visualization}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.95\textwidth]{img/freq_spectra_cw.pdf}
+  \caption{Frequency-domain magnitude spectra for a QPSK signal at
+    SNR $= 18$\,dB. \emph{Left:} clean signal. \emph{Center:} after CW
+    attack ($c = 1.0$). \emph{Right:} after Adaptive-$K$ recovery.
+    The adversarial perturbation injects energy into non-dominant
+    spectral bins (center), which the Top-$K$ operator removes (right),
+    restoring the original spectral shape.}
+  \label{fig:freq_spectra}
+\end{figure}
+
+Figure~\ref{fig:freq_spectra} illustrates the mechanism underlying
+Adaptive-$K$ by showing the frequency-domain magnitude spectrum of a
+representative QPSK signal at SNR $= 18$\,dB.
+
+\section{Discussion}
+
+\textbf{Why a unified defense outperforms separate methods.}
+In early prototypes of this work we tried two separate defenses ---
+a fixed-$K$ Top-$K$ operator for optimization attacks (CW, EAD) and a
+per-sample knee-based Top-$K$ for gradient attacks (FGSM, PGD) ---
+because no single fixed rule worked well across attack families.
+Adaptive-$K$ replaces both by combining three mechanisms in a single
+shared-FFT pass:
+(i)~spectral-flatness routing for wideband modulations,
+(ii)~SNR-adaptive K-cap to balance aggressiveness with signal
+preservation, and
+(iii)~per-sample knee estimation to adapt to each modulation's spectral
+concentration. The result is a single method that matches or exceeds both
+predecessors on every attack type evaluated.
+
+\textbf{Why classical filters fail on gradient attacks.}
+On FGSM, all five classical filters reduce accuracy below the undefended
+baseline (Table~\ref{tab:main}). FGSM perturbations are computed from the
+gradient sign, producing perturbations correlated with the signal.
+Time-domain smoothing removes signal energy alongside perturbation energy.
+In contrast, the frequency-domain Top-$K$ operator selectively retains
+the strongest spectral components, preserving signal structure while
+discarding lower-energy bins.
+
+\textbf{Why the EAD-L1 recovery gain exceeds CW.}
+EAD-L1's $\ell_1$-minimizing penalty produces sparser perturbations than
+CW's $\ell_2$ penalty: EAD-L1 achieves only 6.6\% undefended accuracy
+vs.\ 35.4\% for CW (a stronger attack at the same budget), yet
+Adaptive-$K$'s recovery gain on EAD-L1 is larger (64.2\,pp vs.\
+35.9\,pp). This is consistent with the working hypothesis that
+$\ell_1$-sparse perturbations concentrate in fewer spectral bins, making
+them more amenable to Top-$K$ removal than the more broadly distributed
+CW perturbations.
+
+\textbf{Limitation: defense-aware attacks.}
+The evaluation in this thesis assumes a defense-unaware attacker
+(Chapter~\ref{ch:architecture}). A white-box adversary that incorporates
+the Top-$K$ operator into the attack optimization could potentially
+circumvent the defense by crafting perturbations that survive the Top-$K$
+mask. We leave the evaluation of such adaptive defense-aware attacks to
+future work; we do not claim formal robustness in that setting.

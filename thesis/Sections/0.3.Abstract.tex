@@ -1,12 +1,13 @@
+%!TEX root = ../main.tex
 \begin{center}
     \large
-    
+
     \begin{singlespace}
         \textbf{\englishTitle{}} \\[0.5cm]
     \end{singlespace}
-    
+
     \begin{singlespace}
-        Student : \studentEnName{}  \hspace{1.0cm} 
+        Student : \studentEnName{}  \hspace{1.0cm}
         % 兩個指導教授要寫 Advisors
         \ifdefined\advisorCnNameB
             Advisors: Dr.\, \advisorEnName \\
@@ -15,23 +16,56 @@
             Advisor: Dr.\, \advisorEnName \\
         \fi
     \end{singlespace}
-    
+
     \vspace{0.5cm}
     \begin{singlespace}
         \NameofDepartmentInstituteEN\\
         National Yang Ming Chiao Tung University\\[0.2cm]
     \end{singlespace}
-    
+
     \textbf{Abstract} \\[0.5cm]
 
 \end{center}
 
-\normalsize 
-  
-Write your abstract here. Through computer vision technologies, ...
+\normalsize
 
+Deep-learning-based automatic modulation classifiers (AMC) achieve high
+accuracy under benign channel conditions but are vulnerable to adversarial
+perturbations. Optimization-based attacks such as the Carlini--Wagner ($L_2$)
+attack (CW) and the Elastic-Net Attack on Deep Neural Networks (EAD) can
+substantially reduce the accuracy of an Adaptive Wavelet Network (AWN)
+classifier on RML2016.10a, even when the underlying waveform remains largely
+decodable. This thesis proposes \emph{Adaptive-K}, a receiver-side
+frequency-domain input-transformation defense that recovers classification
+accuracy without retraining the classifier.
+
+Adaptive-K combines three mechanisms in a single shared-FFT pass:
+spectral-flatness routing for wideband signals, an SNR-adaptive K-cap that
+balances perturbation suppression against signal preservation, and per-sample
+magnitude-knee estimation to select the number of retained spectral
+components. The method preserves the dominant modulation-carrying spectral
+components while suppressing non-dominant attack-induced spectral artifacts.
+
+We evaluate Adaptive-K against five attacks---CW, EAD-L1, EAD-EN, FGSM, and
+PGD---on RML2016.10a using a pretrained AWN classifier. We compare against
+five per-SNR-calibrated classical filters (Kalman, Wiener, Savitzky-Golay,
+Gaussian, FIR) and an empirical randomized-smoothing baseline
+($k = 20$ noisy copies, $\sigma = 0.01$; no formal certificate). Across SNR $\geq 0$\,dB, CW reduces weighted-average accuracy to
+35.4\% and EAD-L1 to 6.6\%. Adaptive-K recovers CW accuracy to 71.3\% and
+EAD-L1 accuracy to 70.8\%, outperforming the strongest classical baseline by
+6.2 and 8.5 percentage points respectively. On PGD it improves accuracy from
+32.6\% to 43.4\%. Clean accuracy degrades by less than 0.5 percentage points,
+and the defense adds less than 0.1\,ms latency per batch of 64 samples in our
+GPU implementation.
+
+These results show that adaptive spectral filtering is an effective
+lightweight defense for recovering AMC performance under defense-unaware
+adversarial attacks. The current evaluation does not claim robustness against
+adaptive defense-aware attacks; evaluating such attacks remains an important
+direction for future work.
 
 \vspace{1cm}
 
-% 5-7 Keywords (English) 
-\textbf{Keywords: English, keywords, five to seven, computer vision, IoT.} 
+% 5-7 Keywords (English)
+\textbf{Keywords: automatic modulation classification, adversarial robustness,
+spectral defense, FFT Top-$K$, RML2016.10a, signal processing.}

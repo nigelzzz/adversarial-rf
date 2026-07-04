@@ -40,7 +40,12 @@ from util.defense import (
 )
 from util.detector import normalize_for_detector, kl_divergence_timewise
 
-__all__ = ['DEFENSE_REGISTRY', 'defend', 'randomized_smoothing_predict']
+__all__ = [
+    'DEFENSE_REGISTRY',
+    'defend',
+    'randomized_smoothing_predict',
+    'randomized_smoothing_predict_art',
+]
 
 logger = logging.getLogger(__name__)
 
@@ -252,6 +257,78 @@ def randomized_smoothing_predict(
 
 
 # ---------------------------------------------------------------------------
+# Randomized smoothing via ART (opt-in, replaces re-implementation when
+# available and enabled)
+# ---------------------------------------------------------------------------
+
+try:
+    from art.estimators.classification import PyTorchClassifier
+    from art.estimators.certification.randomized_smoothing import (
+        PyTorchRandomizedSmoothing,
+    )
+    _ART_AVAILABLE = True
+except ImportError:
+    _ART_AVAILABLE = False
+
+
+class _AWNLogitsOnly(torch.nn.Module):
+    """Adapter: AWN forward() returns (logits, regu_sum); ART needs logits only."""
+    def __init__(self, awn):
+        super().__init__()
+        self.awn = awn
+
+    def forward(self, x):
+        logits, _ = self.awn(x)
+        return logits
+
+
+def randomized_smoothing_predict_art(
+    model,
+    x: torch.Tensor,
+    *,
+    k: int = 20,
+    sigma: float = 0.01,
+    num_classes: int = 11,
+    input_shape: tuple = (2, 128),
+) -> torch.Tensor:
+    """
+    Randomized smoothing via IBM ART's PyTorchRandomizedSmoothing.
+
+    Identical math to randomized_smoothing_predict() (Cohen et al.'s
+    majority-vote rule with the same k and sigma), but delegates the
+    noisy-copy generation and majority vote to the ART reference
+    implementation. Enable this path in place of the re-implementation
+    by setting cfg.use_art_rs = True.
+    """
+    if not _ART_AVAILABLE:
+        raise ImportError(
+            "adversarial-robustness-toolbox is not installed. "
+            "Install with `pip install adversarial-robustness-toolbox` "
+            "or set cfg.use_art_rs = False to use the re-implementation."
+        )
+
+    device = x.device
+    x_np = x.detach().cpu().numpy()
+
+    wrapped = PyTorchClassifier(
+        model=_AWNLogitsOnly(model),
+        loss=torch.nn.CrossEntropyLoss(),
+        input_shape=input_shape,
+        nb_classes=num_classes,
+        clip_values=(-1.0, 1.0),
+        device_type='gpu' if device.type == 'cuda' else 'cpu',
+    )
+    rs = PyTorchRandomizedSmoothing(
+        classifier=wrapped,
+        sample_size=k,
+        scale=sigma,
+        alpha=0.001,
+    )
+    preds_np = rs.predict(x_np).argmax(axis=1)
+    return torch.from_numpy(preds_np).to(device=device, dtype=torch.int64)
+
+
+# ---------------------------------------------------------------------------
 # Unified defense pipeline (D-07, D-11 through D-14)
 # ---------------------------------------------------------------------------
 
@@ -309,27 +386,45 @@ def defend(
     if defense_name == 'rand_smooth':
         rs_k     = int(getattr(cfg, 'rs_k', 20))
         rs_sigma = float(getattr(cfg, 'rs_sigma', 0.01))
+        use_art  = bool(getattr(cfg, 'use_art_rs', False))
 
-        # Warmup (D-13): one noisy forward pass
-        def _rs_call():
-            return randomized_smoothing_predict(model, x, k=rs_k, sigma=rs_sigma)
-        _warmup(_rs_call, n=3)
+        # Select backend: ART reference impl (opt-in) or in-tree re-impl.
+        if use_art:
+            if not _ART_AVAILABLE:
+                warnings.warn(
+                    "cfg.use_art_rs=True but ART is not installed; "
+                    "falling back to the in-tree re-implementation.",
+                    RuntimeWarning,
+                )
+                _rs_fn = functools.partial(
+                    randomized_smoothing_predict, model, k=rs_k, sigma=rs_sigma,
+                )
+            else:
+                num_classes = int(getattr(cfg, 'num_classes', 11))
+                _rs_fn = functools.partial(
+                    randomized_smoothing_predict_art, model,
+                    k=rs_k, sigma=rs_sigma, num_classes=num_classes,
+                    input_shape=tuple(x.shape[1:]),
+                )
+        else:
+            _rs_fn = functools.partial(
+                randomized_smoothing_predict, model, k=rs_k, sigma=rs_sigma,
+            )
+
+        # Warmup (D-13): a few noisy forward passes
+        _warmup(lambda: _rs_fn(x), n=3)
 
         if torch.cuda.is_available():
             t0 = torch.cuda.Event(enable_timing=True)
             t1 = torch.cuda.Event(enable_timing=True)
             t0.record()
-            predictions = randomized_smoothing_predict(
-                model, x, k=rs_k, sigma=rs_sigma
-            )
+            predictions = _rs_fn(x)
             t1.record()
             torch.cuda.synchronize()
             total_gpu_ms = t0.elapsed_time(t1)
         else:
             t_cpu = time.perf_counter()
-            predictions = randomized_smoothing_predict(
-                model, x, k=rs_k, sigma=rs_sigma
-            )
+            predictions = _rs_fn(x)
             total_gpu_ms = (time.perf_counter() - t_cpu) * 1000.0
 
         per_sample_ms = total_gpu_ms / N

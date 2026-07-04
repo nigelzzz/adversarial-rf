@@ -3,6 +3,7 @@ torch
 torchvision
 torchaudio
 torchattacks
+adversarial-robustness-toolbox  # ART -- randomized smoothing reference impl (opt-in via cfg.use_art_rs)
 scikit-learn
 matplotlib
 pyyaml

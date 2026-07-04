@@ -1,44 +1,161 @@
-\chapter{System Model}
+%!TEX root = ../main.tex
+\chapter{System Model and Threat Model}
 \label{ch:architecture}
 
-如果想在latex裡面插入表格, 可以搜尋latex table generator, 有很多線上網站可以參考. 我個人都是使用線上網站去產生大致的語法, 然後再根據個人喜好去做微調, wikibook有很多資料可以參考, 網址在這邊: https://en.wikibooks.org/wiki/LaTeX/Tables
+\section{Signal Representation and Dataset}
 
-如果要引用表格, 記得在table裡加上label的語法, 然後就可以呼叫 Tab~\ref{tab1}, 寫中文的就是表~\ref{tab1}. 通常Table的caption是寫在表格的上面, 圖片則是放在下面.
+We consider complex baseband IQ signals represented as real-valued tensors
+$\mathbf{x} \in \mathbb{R}^{2 \times T}$, where the first dimension indexes
+the in-phase (I) and quadrature (Q) channels and $T$ is the number of time
+samples. Each channel captures a different aspect of the baseband signal;
+their joint representation encodes the amplitude and phase of the modulated
+carrier. Following the RML2016.10a dataset convention~\cite{otoole2016rml},
+we use $T = 128$ samples, corresponding to 16 symbols at 8 samples-per-symbol
+with a root-raised-cosine pulse shape.
 
-\begin{table}[!ht]
-    \centering
-    \caption{This is a table.}
-    \label{tab1}
-    \begin{tabular}{|l|l|l|l|}
-    \hline
-        A & 1 & 4 & 7 \\ \hline
-        B & 2 & 5 & 8 \\ \hline
-        C & 3 & 6 & 9 \\ \hline
-    \end{tabular}
-\end{table}
+The RML2016.10a dataset contains 220{,}000 IQ bursts drawn from 11 modulation
+classes: BPSK, QPSK, 8PSK, QAM16, QAM64, PAM4, AM-DSB, AM-SSB, WBFM, GFSK,
+and CPFSK. Each burst is labeled with the modulation type and the
+signal-to-noise ratio (SNR) at which it was recorded, spanning $-20$ to
+$+18$\,dB in 2\,dB steps. At high SNR ($\geq 0$\,dB), the AWN
+classifier~\cite{li2023awn} achieves above 91\% overall accuracy across all
+11 classes.
 
-後來在圖書館的``2022 研究攻略營 論文寫作實戰技巧(顏安孜老師)''看到另一種作法，網址: http://bit.ly/3yE06Hx
+\section{AWN Classifier Architecture}
 
-裡面的講義有提到Excel2LaTeX，細節可以去看圖書館的連結，裡面有放講義，下方是顏安孜老師的講義截圖。(不過我個人偏好直接使用latex的表格語法, 這種轉檔的東西有時候會怪怪的)
+The Adaptive Wavelet Network (AWN)~\cite{li2023awn} takes batched IQ tensors
+of shape $[N, 2, T]$ and predicts one of $C = 11$ modulation classes. The
+forward pass has three stages.
 
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=0.8\textwidth]{img/excel2latex.png}
-	\caption{Excel2LaTeX.}
-	\label{fig:excel2latex}
-\end{figure}
+\textbf{Convolutional feature extraction.}
+A 2D convolution with kernel size $[2, 7]$ integrates the I and Q channels,
+yielding a feature map of shape $[N, 64, 1, T]$, which is squeezed to
+$[N, 64, T]$. A second 1D convolution with batch
+normalization~\cite{ioffe2015batch} and LeakyReLU extracts temporal features,
+producing $[N, 64, T]$ feature maps.
 
+\textbf{Adaptive wavelet decomposition.}
+The core module applies a learnable lifting scheme~\cite{li2023awn} that
+recursively splits the feature map into even and odd subsequences, applies
+learnable Predictor ($P$) and Updator ($U$) operators to produce
+approximation coefficients $\mathbf{c}$ and detail coefficients $\mathbf{d}$,
+and repeats for \texttt{num\_levels} levels. The regularization losses are:
+\begin{equation}
+  \mathcal{R}_d = \sum_{\ell=1}^{L} \lambda_d \,\|\mathbf{d}_\ell\|_2^2,
+  \qquad
+  \mathcal{R}_c = \lambda_c \,|\bar{\mathbf{c}}|,
+\end{equation}
+where $\bar{\mathbf{c}}$ is the mean of the final approximation. The total
+training loss is
+\begin{equation}
+  \mathcal{L} = \mathcal{L}_{\mathrm{CE}} + \mathcal{R}_d + \mathcal{R}_c,
+\end{equation}
+where $\mathcal{L}_{\mathrm{CE}}$ is the cross-entropy classification loss.
 
-\begin{table} [h]
-\centering
-\caption{Comparison on model efficiency and model size.}
-\begin{tabular}{c|c|c}
-\toprule[1.25pt]
-Model   & {Training \& Test }  & {Model Size }      \\ 
-\midrule
-LTD-GCN   & \textbf{11ms}    \& \textbf{4.5ms}       & 2.50M             \& 2.50M     \\ 
-LTD-GCN-i & \underline{13ms} \& \underline{4.6ms}    & 2.75M             \& 2.76M     \\  
-\bottomrule[1.25pt]
-\end{tabular}
-\label{table:model_com}
-\end{table}
+\textbf{Attention and classification.}
+Squeeze-excitation (SE) attention~\cite{hu2018squeeze} computes per-level
+weights for the multi-scale approximation and detail coefficient tensors.
+The attention-weighted features are pooled and passed through two
+fully-connected layers with dropout and LeakyReLU activations to produce the
+final class logits. The model is trained using the Adam
+optimizer~\cite{kingma2015adam} with early stopping.
+
+\section{Attack Models}
+
+We evaluate five attacks that span the gradient-based and optimization-based
+families. All attacks use the \texttt{torchattacks}
+library~\cite{kim2020torchattacks} with per-sample min--max normalization:
+each IQ sample is mapped to $[0, 1]$ via
+$\tilde{x} = (x - x_{\min}) / (x_{\max} - x_{\min})$ before attack generation
+and mapped back afterward. This makes the perturbation budget $\varepsilon$
+interpretable relative to the per-sample signal range.
+
+\textbf{FGSM.}
+The Fast Gradient Sign Method~\cite{goodfellow2015fgsm} computes a single
+gradient step:
+\begin{equation}
+  \mathbf{x}_{\mathrm{adv}} = \mathbf{x} + \varepsilon \cdot
+    \mathrm{sign}\!\bigl(\nabla_{\mathbf{x}}\,\mathcal{L}_{\mathrm{CE}}
+    (\mathbf{x}, y)\bigr),
+\end{equation}
+where $\varepsilon$ bounds the $L_\infty$ perturbation magnitude.
+
+\textbf{PGD.}
+Projected Gradient Descent~\cite{madry2018pgd} iterates multiple gradient
+steps with projection onto the $\varepsilon$-ball:
+\begin{equation}
+  \mathbf{x}^{(t+1)} = \Pi_{\mathcal{B}_\varepsilon(\mathbf{x})}
+    \!\left(\mathbf{x}^{(t)} + \alpha\,\mathrm{sign}\!\bigl(
+    \nabla_{\mathbf{x}}\,\mathcal{L}_{\mathrm{CE}}(\mathbf{x}^{(t)}, y)
+    \bigr)\right),
+\end{equation}
+where $\Pi$ denotes projection and $\alpha$ is the step size. PGD with a
+random start is regarded as a strong first-order
+attack~\cite{croce2020reliable}.
+
+\textbf{CW~($L_2$).}
+The Carlini--Wagner attack~\cite{carlini2017towards} solves the constrained
+optimization
+\begin{equation}
+  \min_{\boldsymbol{\delta}}\; \|\boldsymbol{\delta}\|_2 + c\, f(\mathbf{x} + \boldsymbol{\delta}),
+\end{equation}
+where $f(\cdot)$ is a surrogate misclassification objective and $c$ balances
+perturbation norm against attack success.
+
+\textbf{EAD ($L_1$ and EN).}
+The Elastic-Net Attack on Deep Neural Networks~\cite{chen2020ead} adds an
+$L_1$ regularization term to the CW objective:
+\begin{equation}
+  \min_{\boldsymbol{\delta}}\; \beta\|\boldsymbol{\delta}\|_1 +
+    \|\boldsymbol{\delta}\|_2 + c\, f(\mathbf{x} + \boldsymbol{\delta}),
+\end{equation}
+where $\beta$ controls the sparsity of the perturbation. We evaluate the
+$L_1$ variant (EAD-L1, $\beta$ large) and the elastic-net variant (EAD-EN,
+$\beta$ moderate).
+
+\section{Threat Model}
+
+\textbf{Attacker capabilities.}
+We consider a white-box adversary with full knowledge of the AWN classifier
+architecture, trained weights, and input normalization procedure. The
+attacker can query the classifier and compute exact gradients. This
+establishes a worst-case \emph{defense-unaware} white-box baseline for
+the classifier: the attacker does not know that spectral preprocessing
+is applied at inference time (see the ``defense-unaware'' paragraph
+below); an adaptive defense-aware attacker is explicitly out of scope
+for this thesis.
+
+\textbf{Attacker goal.}
+The adversary seeks untargeted misclassification: any prediction other than
+the true modulation class is considered a success. The attacker does not
+attempt to cause the classifier to predict any specific wrong class.
+
+\textbf{Attacker constraint.}
+Perturbations are bounded by the chosen attack norm:
+$\|\boldsymbol{\delta}\|_\infty \leq \varepsilon$ for FGSM and PGD,
+$\|\boldsymbol{\delta}\|_2$ (implicit, via CW minimization) for CW, and
+elastic-net bounded for EAD. We evaluate $\varepsilon \in \{0.05, 0.1\}$ in
+the per-sample min--max-normalized space (equivalent to 5--10\% of the
+per-sample signal range).
+
+\textbf{Defense-unaware white-box setting.}
+We focus on a defense-unaware setting: adversarial examples are crafted
+against the undefended AWN classifier without knowledge of the spectral
+preprocessing. This corresponds to a deployment scenario in which the
+defense is applied transparently as a receiver-side input transformation.
+We do not claim robustness against \emph{adaptive defense-aware} attacks
+that incorporate the Top-$K$ operator into the attack optimization, and we
+explicitly leave evaluation of such adaptive attacks as future work
+(Chapter~\ref{ch:conclusion}).
+
+\textbf{Defender capabilities.}
+The defender can preprocess each IQ burst before classification, with access
+only to the received signal. The defender does not know the true modulation
+class, the attack type, or the attack parameters. To remain compatible with
+practical AMC deployment contexts---including ITU/FCC spectrum monitoring
+stations, CBRS Environmental Sensing Capability (ESC) nodes, and military
+electronic support measures (ESM) systems~\cite{proakis2008digital}, which
+operate at 25--100\,Msps IQ digitization rates with burst processing latency
+budgets of 1--10\,ms per channel---we require the defense to add only
+low-latency overhead relative to the classifier's own forward pass. Concrete
+latency measurements are reported in Chapter~\ref{ch:evaluation}.

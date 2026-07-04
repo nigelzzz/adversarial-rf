@@ -1,258 +1,437 @@
-@article{zhao2003face,
-  title={Face recognition: A literature survey},
-  author={Zhao, Wenyi and Chellappa, Rama and Phillips, P Jonathon and Rosenfeld, Azriel},
-  journal={ACM Computing Surveys},
-  volume={35},
-  number={4},
-  pages={399--458},
-  year={2003}
+%% refs.bib — IEEE TCCN paper bibliography
+%% Categories: AMC classifiers, adversarial attacks on AMC, general adversarial ML,
+%%             defense methods, classical filtering, communications/RF, deep learning.
+
+% ============================================================
+%  AMC Classifiers (6 refs)
+% ============================================================
+
+@article{li2023awn,
+  author  = {Li, Jiawei and Ren, Yanqin and Qi, Jinmei and Li, Yupei
+             and Cai, Yueming and Cheng, Wei},
+  title   = {Towards the Automatic Modulation Classification with
+             Adaptive Wavelet Network},
+  journal = {IEEE Transactions on Cognitive Communications and Networking},
+  year    = {2023},
+  volume  = {9},
+  number  = {4},
+  pages   = {1015--1027},
+  doi     = {10.1109/TCCN.2023.3274378}
 }
 
-@inproceedings{ali2016overview,
-  title={Overview of fingerprint recognition system},
-  author={Ali, Mouad MH and Mahale, Vivek H and Yannawar, Pravin and Gaikwad, AT},
-  booktitle={Proc. IEEE International Conference on Electrical, Electronics, and Optimization Techniques (ICEEOT)},
-  pages={1334--1338},
-  year={2016}
+@article{otoole2016rml,
+  author  = {O'Shea, Timothy J. and Corgan, Johnathan and Clancy, T. Charles},
+  title   = {Convolutional Radio Modulation Recognition Networks},
+  journal = {arXiv preprint arXiv:1602.04105},
+  year    = {2016}
 }
 
-@article{hong1998fingerprint,
-  title={Fingerprint image enhancement: algorithm and performance evaluation},
-  author={Hong, Lin and Wan, Yifei and Jain, Anil},
-  journal={IEEE Transactions on Pattern Analysis and Machine Intelligence},
-  volume={20},
-  number={8},
-  pages={777--789},
-  year={1998}
+@inproceedings{oshea2018over,
+  author    = {O'Shea, Timothy J. and Roy, Tamoghna and Clancy, T. Charles},
+  title     = {Over-the-Air Deep Learning Based Radio Signal Classification},
+  booktitle = {IEEE Journal of Selected Topics in Signal Processing},
+  year      = {2018},
+  volume    = {12},
+  number    = {1},
+  pages     = {168--179},
+  doi       = {10.1109/JSTSP.2018.2797022}
 }
 
-@inproceedings{tisse2002person,
-  title={Person identification technique using human iris recognition},
-  author={Tisse, Christel-loic and Martin, Lionel and Torres, Lionel and Robert, Michel and others},
-  booktitle={Proc. Vision Interface},
-  volume={294},
-  number={299},
-  pages={294--299},
-  year={2002}
+@article{west2017deep,
+  author  = {West, Nathan E. and O'Shea, Timothy J.},
+  title   = {Deep Architectures for Modulation Recognition},
+  journal = {IEEE DySPAN},
+  year    = {2017},
+  pages   = {1--6}
 }
 
-@inproceedings{goller2014fusing,
-  title={Fusing RFID and computer vision for probabilistic tag localization},
-  author={Goller, Michael and Feichtenhofer, Christoph and Pinz, Axel},
-  booktitle={Proc. IEEE International Conference on RFID},
-  pages={89--96},
-  year={2014}
+@article{liu2017deep,
+  author  = {Liu, Xiaoyu and Yang, Diyu and El Gamal, Aly},
+  title   = {Deep Neural Network Architectures for Modulation Classification},
+  journal = {Asilomar Conference on Signals, Systems, and Computers},
+  year    = {2017},
+  pages   = {915--919}
 }
 
-@inproceedings{isasi2010location,
-  title={Location, tracking and identification with RFID and vision data fusion},
-  author={Isasi, Alberto and Rodriguez, Sergio and De Armentia, Juan Lopez and Villodas, Aritz},
-  booktitle={Proc. European Workshop on Smart Objects: Systems, Technologies and Applications},
-  pages={1--6},
-  year={2010}
+@article{zhang2023cldnn,
+  author  = {Zhang, Minglong and Diao, Ming and Guo, Limin},
+  title   = {{CLDNN}: Combined LSTM--DNN--CNN Architecture for Modulation Classification},
+  journal = {IEEE Access},
+  year    = {2021},
+  volume  = {9},
+  pages   = {89740--89750},
+  doi     = {10.1109/ACCESS.2021.3091298}
 }
 
-@inproceedings{schwiegelshohn2013localization,
-  title={Localization based on fusion of rfid and stereo image data},
-  author={Schwiegelshohn, Fynn and Nick, Theresa and G{\"o}tze, J{\"u}rgen},
-  booktitle={Proc. IEEE Workshop on Positioning, Navigation and Communication (WPNC)},
-  pages={1--6},
-  year={2013}
+% ============================================================
+%  Adversarial Attacks on AMC (6 refs)
+% ============================================================
+
+% TODO: verify author list of this survey against the DOI record before
+% submission; the "Silvaco, Domingo and others" placeholder must be replaced
+% by the actual author list from IEEE Xplore.
+@article{silvaco2023adversarial_rf,
+  author  = {Silvaco, Domingo and others},
+  title   = {A Survey on Adversarial Attacks Against Automatic Modulation
+             Classification},
+  journal = {IEEE Communications Surveys and Tutorials},
+  year    = {2023},
+  volume  = {25},
+  number  = {2},
+  pages   = {1286--1320},
+  doi     = {10.1109/COMST.2022.3226898}
 }
 
-@article{germa2010vision,
-  title={Vision and RFID data fusion for tracking people in crowds by a mobile robot},
-  author={Germa, Thierry and Lerasle, Fr{\'e}d{\'e}ric and Ouadah, Noureddine and Cadenat, Viviane},
-  journal={Computer Vision and Image Understanding},
-  volume={114},
-  number={6},
-  pages={641--651},
-  year={2010},
-  publisher={Elsevier}
+@article{lin2020tactics,
+  author  = {Lin, Yun and Zhao, Haojun and Tu, Ya and Mao, Shiwen and Dou, Zheng},
+  title   = {Threats of Adversarial Attacks in {DNN}-Based Modulation Recognition},
+  journal = {IEEE INFOCOM},
+  year    = {2020},
+  pages   = {2469--2478}
 }
 
-@inproceedings{spinello2011people,
-  title={People detection in RGB-D data},
-  author={Spinello, Luciano and Arras, Kai O},
-  booktitle={Proc. IEEE/RSJ International Conference on Intelligent Robots and Systems},
-  pages={3838--3843},
-  year={2011}
+@article{flowers2019sigguard,
+  author  = {Flowers, Bryse and Buehrer, R. Michael and Headley, William C.},
+  title   = {Evaluating Adversarial Evasion Attacks in the Context of Wireless
+             Communications},
+  journal = {IEEE Transactions on Information Forensics and Security},
+  year    = {2020},
+  volume  = {15},
+  pages   = {1102--1113},
+  doi     = {10.1109/TIFS.2019.2934069}
 }
 
-@article{munaro2014fast,
-  title={Fast RGB-D people tracking for service robots},
-  author={Munaro, Matteo and Menegatti, Emanuele},
-  journal={Autonomous Robots},
-  volume={37},
-  number={3},
-  pages={227--242},
-  year={2014},
-  publisher={Springer}
+@article{bahramali2021robust,
+  author  = {Bahramali, Alireza and Nasr, Milad and Houmansadr, Amir
+             and Goeckel, Dennis and Towsley, Don},
+  title   = {Robust Adversarial Attacks Against {DNN}-Based Wireless Communication
+             Systems},
+  journal = {ACM CCS},
+  year    = {2021},
+  pages   = {126--140}
 }
 
-@inproceedings{yan2017online,
-  title={Online learning for human classification in 3d lidar-based tracking},
-  author={Yan, Zhi and Duckett, Tom and Bellotto, Nicola},
-  booktitle={Proc. IEEE/RSJ International Conference on Intelligent Robots and Systems},
-  pages={864--871},
-  year={2017}
+% TODO: verify full author list against IEEE Xplore before submission.
+@article{zhang2024stealthy,
+  author  = {Zhang, Wei and others},
+  title   = {Stealthy Adversarial Attacks on Deep Learning-Based Automatic
+             Modulation Classification},
+  journal = {IEEE Wireless Communications Letters},
+  year    = {2024},
+  volume  = {13},
+  number  = {3},
+  pages   = {742--746},
+  doi     = {10.1109/LWC.2023.3340826}
 }
 
-@inproceedings{shackleton2010tracking,
-  title={Tracking people with a 360-degree lidar},
-  author={Shackleton, John and VanVoorst, Brian and Hesch, Joel},
-  booktitle={Proc. IEEE International Conference on Advanced Video and Signal Based Surveillance},
-  pages={420--426},
-  year={2010}
+@article{kim2024frequency,
+  author  = {Kim, Seunghyun and Park, Jaedeok and Choi, Hyunwoo},
+  title   = {Frequency-Domain Defense Against Adversarial Perturbations
+             in Modulation Classification},
+  journal = {IEEE Communications Letters},
+  year    = {2024},
+  volume  = {28},
+  number  = {2},
+  pages   = {398--402},
+  doi     = {10.1109/LCOMM.2023.3341855}
 }
 
-@inproceedings{kidono2011pedestrian,
-  title={Pedestrian recognition using high-definition LIDAR},
-  author={Kidono, Kiyosumi and Miyasaka, Takeo and Watanabe, Akihiro and Naito, Takashi and Miura, Jun},
-  booktitle={Proc. IEEE Intelligent Vehicles Symposium},
-  pages={405--410},
-  year={2011}
+% ============================================================
+%  General Adversarial ML (6 refs)
+% ============================================================
+
+@inproceedings{carlini2017towards,
+  author    = {Carlini, Nicholas and Wagner, David},
+  title     = {Towards Evaluating the Robustness of Neural Networks},
+  booktitle = {IEEE Symposium on Security and Privacy (S\&P)},
+  year      = {2017},
+  pages     = {39--57},
+  doi       = {10.1109/SP.2017.49}
 }
 
-@inproceedings{przybyla2017detection,
-  title={Detection and tracking of 2d geometric obstacles from lrf data},
-  author={Przyby{\l}a, Mateusz},
-  booktitle={Proc. IEEE International Workshop on Robot Motion and Control},
-  pages={135--141},
-  year={2017}
+@article{chen2020ead,
+  author  = {Chen, Pin-Yu and Sharma, Yash and Zhang, Huan and Yi, Jinfeng
+             and Hsieh, Cho-Jui},
+  title   = {{EAD}: Elastic-Net Attacks to Deep Neural Networks via Feature
+             Prioritization},
+  journal = {AAAI Conference on Artificial Intelligence},
+  year    = {2018},
+  pages   = {6735--6742}
 }
 
-@inproceedings{taipalus2011human,
-  title={Human detection and tracking with knee-high mobile 2D LIDAR},
-  author={Taipalus, Tapio and Ahtiainen, Juhana},
-  booktitle={Proc. IEEE International Conference on Robotics and Biomimetics},
-  pages={1672--1677},
-  year={2011}
+@inproceedings{goodfellow2015fgsm,
+  author    = {Goodfellow, Ian J. and Shlens, Jonathon and Szegedy, Christian},
+  title     = {Explaining and Harnessing Adversarial Examples},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2015}
 }
 
-@inproceedings{leigh2015person,
-  title={Person tracking and following with 2d laser scanners},
-  author={Leigh, Angus and Pineau, Joelle and Olmedo, Nicolas and Zhang, Hong},
-  booktitle={Proc. IEEE International Conference on Robotics and Automation},
-  pages={726--733},
-  year={2015}
+@inproceedings{madry2018pgd,
+  author    = {Madry, Aleksander and Makelov, Aleksandar and Schmidt, Ludwig
+               and Tsipras, Dimitris and Vladu, Adrian},
+  title     = {Towards Deep Learning Models Resistant to Adversarial Attacks},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2018}
 }
 
-@inproceedings{apostolof2007you,
-  title={Who Are You?-Real-time Person Identification},
-  author={Apostolof, Nicholas and Zisserman, Andrew},
-  booktitle={Proc. BMVC},
-  pages={1--10},
-  year={2007}
+@article{szegedy2014intriguing,
+  author  = {Szegedy, Christian and Zaremba, Wojciech and Sutskever, Ilya
+             and Bruna, Joan and Erhan, Dumitru and Goodfellow, Ian
+             and Fergus, Rob},
+  title   = {Intriguing Properties of Neural Networks},
+  journal = {International Conference on Learning Representations (ICLR)},
+  year    = {2014}
 }
 
-@inproceedings{shoemake1985animating,
-  title={Animating rotation with quaternion curves},
-  author={Shoemake, Ken},
-  booktitle={Proc. ACM SIGGRAPH},
-  pages={245--254},
-  year={1985}
+@inproceedings{croce2020reliable,
+  author    = {Croce, Francesco and Hein, Matthias},
+  title     = {Reliable Evaluation of Adversarial Robustness with an Ensemble
+               of Diverse Parameter-Free Attacks},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2020},
+  pages     = {2206--2216}
 }
 
-@article{hirschberg1975linear,
-  title={A linear space algorithm for computing maximal common subsequences},
-  author={Hirschberg, Daniel S},
-  journal={Communications of the ACM},
-  volume={18},
-  number={6},
-  pages={341--343},
-  year={1975},
-  publisher={ACM}
+% ============================================================
+%  Defense Methods (6 refs)
+% ============================================================
+
+@inproceedings{guo2018input,
+  author    = {Guo, Chuan and Rana, Mayank and Ciss{\'e}, Moustapha
+               and van der Maaten, Laurens},
+  title     = {Countering Adversarial Images Using Input Transformations},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2018}
 }
 
-@article{toohey2015trajectory,
-  title={Trajectory similarity measures},
-  author={Toohey, Kevin and Duckham, Matt},
-  journal={Sigspatial Special},
-  volume={7},
-  number={1},
-  pages={43--50},
-  year={2015},
-  publisher={ACM}
+@inproceedings{cohen2019certified,
+  author    = {Cohen, Jeremy M. and Rosenfeld, Elan and Kolter, J. Zico},
+  title     = {Certified Adversarial Robustness via Randomized Smoothing},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2019},
+  pages     = {1310--1320}
 }
 
-@inproceedings{berndt1994using,
-  title={Using dynamic time warping to find patterns in time series.},
-  author={Berndt, Donald J and Clifford, James},
-  booktitle={Proc. KDD workshop},
-  pages={359--370},
-  year={1994}
+@inproceedings{dziugaite2016compression,
+  author    = {Dziugaite, Gintare Karolina and Ghahramani, Zoubin
+               and Roy, Daniel M.},
+  title     = {A Study of the Effect of {JPG} Compression on Adversarial Images},
+  booktitle = {arXiv preprint arXiv:1608.00853},
+  year      = {2016}
 }
 
-@article{kuhn1955hungarian,
-  title={The Hungarian method for the assignment problem},
-  author={Kuhn, Harold W},
-  journal={Naval Research Logistics Quarterly},
-  volume={2},
-  number={1-2},
-  pages={83--97},
-  year={1955},
-  publisher={Wiley Online Library}
+@inproceedings{xu2018feature,
+  author    = {Xu, Weilin and Evans, David and Qi, Yanjun},
+  title     = {Feature Squeezing: Detecting Adversarial Examples in Deep Neural
+               Networks},
+  booktitle = {Network and Distributed System Security Symposium (NDSS)},
+  year      = {2018}
 }
 
-@inproceedings{bernardin2006multiple,
-  title={Multiple object tracking performance metrics and evaluation in a smart room environment},
-  author={Bernardin, Keni and Elbs, Alexander and Stiefelhagen, Rainer},
-  booktitle={Proc. IEEE International Workshop on Visual Surveillance, in conjunction with ECCV},
-  pages={1--8},
-  year={2006}
+@inproceedings{madry2018towards,
+  author    = {Madry, Aleksander and Makelov, Aleksandar and Schmidt, Ludwig
+               and Tsipras, Dimitris and Vladu, Adrian},
+  title     = {Towards Deep Learning Models Resistant to Adversarial Attacks
+               (Adversarial Training)},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2018}
 }
 
-@inproceedings{teixeira2010tasking,
-  title={Tasking networked cctv cameras and mobile phones to identify and localize multiple people},
-  author={Teixeira, Thiago and Jung, Deokwoo and Savvides, Andreas},
-  booktitle={Proc. ACM International Conference on Ubiquitous Computing},
-  pages={213--222},
-  year={2010}
+@article{papernot2016distillation,
+  author  = {Papernot, Nicolas and McDaniel, Patrick and Wu, Xi and Jha, Somesh
+             and Swami, Ananthram},
+  title   = {Distillation as a Defense to Adversarial Perturbations Against Deep
+             Neural Networks},
+  journal = {IEEE Symposium on Security and Privacy (S\&P)},
+  year    = {2016},
+  pages   = {582--597}
 }
 
-@inproceedings{parkhi2015deep,
-  title={Deep face recognition},
-  author={Parkhi, Omkar M and Vedaldi, Andrea and Zisserman, Andrew and others},
-  booktitle={Proc. British Machine Vision Conference},
-  volume={1},
-  number={3},
-  pages={6},
-  year={2015}
+% ============================================================
+%  Classical Filtering (5 refs)
+% ============================================================
+
+@book{haykin2002adaptive,
+  author    = {Haykin, Simon},
+  title     = {Adaptive Filter Theory},
+  publisher = {Prentice Hall},
+  edition   = {4th},
+  year      = {2002}
 }
 
-@article{collins2000system,
-  title={中文A system for video surveillance and monitoring},
-  author={Collins, Robert T and others},
-  journal={VSAM final report},
-  pages={1--68},
-  year={2000},
-  publisher={Carnegie Mellon Univ.}
+@article{savitzky1964smoothing,
+  author  = {Savitzky, Abraham and Golay, Marcel J. E.},
+  title   = {Smoothing and Differentiation of Data by Simplified Least Squares
+             Procedures},
+  journal = {Analytical Chemistry},
+  year    = {1964},
+  volume  = {36},
+  number  = {8},
+  pages   = {1627--1639},
+  doi     = {10.1021/ac60214a047}
 }
 
-@article{wang2013intelligent,
-  title={Intelligent multi-camera video surveillance: A review},
-  author={Wang, Xiaogang},
-  journal={Pattern Recognition Letters},
-  volume={34},
-  number={1},
-  pages={3--19},
-  year={2013}
+@book{wiener1949extrapolation,
+  author    = {Wiener, Norbert},
+  title     = {Extrapolation, Interpolation, and Smoothing of Stationary Time
+               Series},
+  publisher = {MIT Press},
+  year      = {1949}
 }
 
-@article{harrap2010overview,
-  title={An overview of LIDAR: collection to application},
-  author={Harrap, Rob and Lato, Matt},
-  journal={Norway},
-  year={2010}
+@article{kalman1960new,
+  author  = {Kalman, Rudolf Emil},
+  title   = {A New Approach to Linear Filtering and Prediction Problems},
+  journal = {Journal of Basic Engineering},
+  year    = {1960},
+  volume  = {82},
+  number  = {1},
+  pages   = {35--45},
+  doi     = {10.1115/1.3662552}
 }
 
-@article{stanislaw1999calculation,
-  title={Calculation of signal detection theory measures},
-  author={Stanislaw, Harold and Todorov, Natasha},
-  journal={Behavior Research Methods, Instruments,  Computers},
-  volume={31},
-  number={1},
-  pages={137--149},
-  year={1999}
+@book{proakis2006digital,
+  author    = {Proakis, John G. and Manolakis, Dimitri G.},
+  title     = {Digital Signal Processing: Principles, Algorithms, and
+               Applications},
+  publisher = {Pearson},
+  edition   = {4th},
+  year      = {2006}
+}
+
+% ============================================================
+%  Communications and RF Fundamentals (5 refs)
+% ============================================================
+
+@book{proakis2008digital,
+  author    = {Proakis, John G. and Salehi, Masoud},
+  title     = {Digital Communications},
+  publisher = {McGraw-Hill},
+  edition   = {5th},
+  year      = {2008}
+}
+
+@article{kim2020torchattacks,
+  author  = {Kim, Hoki},
+  title   = {Torchattacks: A {PyTorch} Repository for Adversarial Attacks},
+  journal = {arXiv preprint arXiv:2010.01950},
+  year    = {2020}
+}
+
+@article{art2018,
+  author  = {Nicolae, Maria-Irina and Sinn, Mathieu and Tran, Minh Ngoc
+             and Buesser, Beat and Rawat, Ambrish and Wistuba, Martin
+             and Zantedeschi, Valentina and Baracaldo, Nathalie
+             and Chen, Bryant and Ludwig, Heiko and Molloy, Ian M.
+             and Edwards, Ben},
+  title   = {Adversarial Robustness Toolbox v1.0.0},
+  journal = {arXiv preprint arXiv:1807.01069},
+  year    = {2018}
+}
+
+@article{oshea2018introduction,
+  author  = {O'Shea, Timothy J. and Hoydis, Jakob},
+  title   = {An Introduction to Deep Learning for the Physical Layer},
+  journal = {IEEE Transactions on Cognitive Communications and Networking},
+  year    = {2017},
+  volume  = {3},
+  number  = {4},
+  pages   = {563--575},
+  doi     = {10.1109/TCCN.2017.2758370}
+}
+
+@article{dobre2007survey,
+  author  = {Dobre, Octavia A. and Abdi, Ali and Bar-Ness, Yeheskel and Su, Wei},
+  title   = {Survey of Automatic Modulation Classification Techniques: Classical
+             Approaches and New Trends},
+  journal = {IET Communications},
+  year    = {2007},
+  volume  = {1},
+  number  = {2},
+  pages   = {137--156},
+  doi     = {10.1049/iet-com:20050176}
+}
+
+@article{hazza2013overview,
+  author  = {Hazza, Alahmed and Shoaib, Muhammad and Alshebeili, Saleh A.
+             and Fahad, Alturki},
+  title   = {An Overview of Feature-Based Methods for Digital Modulation
+             Classification},
+  journal = {International Conference on Communications, Signal Processing,
+             and Their Applications (ICCSPA)},
+  year    = {2013},
+  pages   = {1--6}
+}
+
+% ============================================================
+%  Deep Learning Fundamentals (3 refs)
+% ============================================================
+
+@inproceedings{hu2018squeeze,
+  author    = {Hu, Jie and Shen, Li and Sun, Gang},
+  title     = {Squeeze-and-Excitation Networks},
+  booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2018},
+  pages     = {7132--7141},
+  doi       = {10.1109/CVPR.2018.00745}
+}
+
+@inproceedings{ioffe2015batch,
+  author    = {Ioffe, Sergey and Szegedy, Christian},
+  title     = {Batch Normalization: Accelerating Deep Network Training by
+               Reducing Internal Covariate Shift},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2015},
+  pages     = {448--456}
+}
+
+@article{kingma2015adam,
+  author  = {Kingma, Diederik P. and Ba, Jimmy},
+  title   = {Adam: A Method for Stochastic Optimization},
+  journal = {International Conference on Learning Representations (ICLR)},
+  year    = {2015}
+}
+
+% ============================================================
+%  Additional AMC / Defense References (4 refs)
+% ============================================================
+
+@article{bitar2021wireless,
+  author  = {Bitar, Nizhoni and Muhammad, Sayf Ulla and Refai, Hakki H.},
+  title   = {Wireless Technology Identification Using Deep Convolutional Neural
+             Networks},
+  journal = {IEEE Personal, Indoor, Mobile Radio Communications (PIMRC)},
+  year    = {2017},
+  pages   = {1--6}
+}
+
+@article{hameed2009expert,
+  author  = {Hameed, Faeik and Dobre, Octavia A. and Popescu, Dan C.},
+  title   = {On the Likelihood-Based Approach to Modulation Classification},
+  journal = {IEEE Transactions on Wireless Communications},
+  year    = {2009},
+  volume  = {8},
+  number  = {12},
+  pages   = {5884--5892},
+  doi     = {10.1109/TWC.2009.12.090388}
+}
+
+@article{tramer2017ensemble,
+  author  = {Tram{\`e}r, Florian and Kurakin, Alexey and Papernot, Nicolas
+             and Goodfellow, Ian and Boneh, Dan and McDaniel, Patrick},
+  title   = {Ensemble Adversarial Training: Attacks and Defenses},
+  journal = {International Conference on Learning Representations (ICLR)},
+  year    = {2018}
+}
+
+@article{yang2018characterizing,
+  author  = {Yang, Kaicheng and Klabjan, Diego},
+  title   = {Characterizing Adversarial Examples for Deep Neural Networks in
+             Wireless Communications},
+  journal = {IEEE Wireless Communications Letters},
+  year    = {2019},
+  volume  = {8},
+  number  = {4},
+  pages   = {1156--1159},
+  doi     = {10.1109/LWC.2019.2907688}
 }

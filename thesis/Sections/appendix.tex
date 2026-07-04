@@ -1,38 +1,110 @@
-\chapter{Appendix 附錄}
+%!TEX root = ../main.tex
+\chapter{Appendix}
 \label{ch:appendix}
 
-本附錄整理撰寫論文時常見的排版與語法注意事項，供大家撰寫與校稿時參考，請記得看latex的語法。(此段落主要由ChatGPT撰寫整理 XD)
+This appendix collects supplementary material referenced throughout the
+main text: (i)~confusion matrices at SNR $= 18$\,dB before and after
+Adaptive-$K$ defense on the three optimization-based attacks, and
+(ii)~representative per-SNR calibration values for the five classical
+filter baselines used in Chapter~\ref{ch:evaluation}. All figures and
+tables here support numbers reported in Chapter~\ref{ch:evaluation};
+they are placed in the appendix to keep the main text focused on the
+principal comparisons.
 
-\section*{文字與標點}
-\begin{itemize}
-  \item 英文引號請使用成對反引號與直引號：``text'' → “text”。
-  \item 破折號（dash）有三種：`-`（連字號，如 \textit{pre-trained}）、`--`（範圍，如 10--20）、`---`（句中強調，如 the result---as expected---was correct）。
-  \item 省略號請使用 \verb|\ldots| 而非三個句點：A, B, C\ldots, Z。
-  \item 數值與單位間需留不換行空白：10~km，30$^\circ$C。
-  \item 中英文混排時，中文與英文之間宜留一半形空白，例如：中文 English 中文。
-\end{itemize}
+\section{Confusion Matrices under Optimization Attacks (SNR $= 18$\,dB)}
+\label{app:confmat}
 
-\section*{數學與符號}
-\begin{itemize}
-  \item 數學變數自動為斜體，單位或文字常數須使用 \verb|\mathrm{}| 或 \verb|\text{}|，如 $v=10~\mathrm{m/s}$。
-  \item 三角函數、極值運算等應以數學命令表示：$\sin\theta$, $\max(x,y)$。
-  \item 向量或矩陣可用粗體：$\mathbf{x}=[x_1,x_2]^\top$。
-  \item 多行方程式請使用 \texttt{align} 環境，勿以多個 \texttt{equation} 拆寫。
-\end{itemize}
+Figure~\ref{fig:confmat} shows the per-class confusion structure after
+Adaptive-$K$ recovery for CW, EAD-L1, and EAD-EN at SNR $= 18$\,dB.
+Across all three attacks, the recovered predictions concentrate on the
+diagonal for the eight digital modulations, with residual confusion
+localized to acoustically similar classes (QAM16 $\leftrightarrow$
+QAM64) rather than distributed across all 11 classes as in the
+undefended case. AM-SSB is preserved by the spectral-flatness routing
+path (Chapter~\ref{ch:method}), which explains its consistent diagonal
+recovery.
 
+\begin{figure}[!ht]
+  \centering
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/confmat_cw_snr18.pdf}
+    \caption{CW (Adaptive-$K$).}
+    \label{fig:confmat_cw}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/confmat_eadl1_snr18.pdf}
+    \caption{EAD-L1 (Adaptive-$K$).}
+    \label{fig:confmat_eadl1}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.31\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{img/confmat_eaden_snr18.pdf}
+    \caption{EAD-EN (Adaptive-$K$).}
+    \label{fig:confmat_eaden}
+  \end{subfigure}
+  \caption{Confusion matrices after Adaptive-$K$ recovery at
+    SNR $= 18$\,dB. Residual off-diagonal mass is dominated by
+    QAM16/QAM64 confusion (constellations that are hard to separate
+    at any SNR), not by classifier collapse.}
+  \label{fig:confmat}
+\end{figure}
 
-\section*{圖表與引用}
-\begin{itemize}
-  \item 圖片標題（caption）置於圖下方
-  \item 表格標題置於表上方。
-  \item 參照圖表時請使用 \verb|\ref{}| 或 \verb|\autoref{}|，勿手動輸入編號。\\
-        例：As shown in Fig.~\ref{fig:excel2latex}.
-  \item 表格建議使用 \texttt{booktabs} 套件：\verb|\toprule|、\verb|\midrule|、\verb|\bottomrule|。
-\end{itemize}
+\section{Classical-Filter Calibration}
+\label{app:calibration}
 
-\section*{文獻與引用}
-\begin{itemize}
-  \item 文獻引用使用 \verb|\cite{key}| 或 \verb|\parencite{key}|。
-  \item 多篇同時引用可寫為 \verb|\cite{a,b,c}| → [1–3]。
-  \item 特殊大小寫（如 GPU, LaTeX）須以大括號保留：\verb|{GPU}|。
-\end{itemize}
+Table~\ref{tab:calibration} lists the per-SNR-calibrated hyperparameters
+selected on the CW-adversarial validation set for the five classical
+filters, at three representative SNR levels ($0$, $10$, $18$\,dB). These
+values were obtained by grid search maximizing post-filter classification
+accuracy on the undefended AWN model. The full calibration file
+(\texttt{calibration\_params.json}) is loaded at test time; the settings
+below are extracted from that file for illustration.
+
+\begin{table}[!ht]
+\caption{Representative per-SNR calibrated hyperparameters for the
+  classical filter baselines. Values are the best-scoring configuration
+  from the CW-adversarial validation grid search; the same
+  configuration is applied to all attacks at test time, consistent
+  with a deployment scenario in which the attack type is unknown.}
+\label{tab:calibration}
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Filter & Parameter & $0$\,dB & $10$\,dB & $18$\,dB \\
+\midrule
+Kalman         & $Q$              & 0.010 & 0.005 & 0.003 \\
+               & $R$              & 0.010 & 0.001 & 0.001 \\
+Wiener         & noise floor      & 0.020 & 0.010 & 0.005 \\
+               & filter length    & 5     & 3     & 3     \\
+Savitzky-Golay & window $w$       & 7     & 5     & 5     \\
+               & polynomial deg.\ & 2     & 1     & 1     \\
+Gaussian       & $\sigma$         & 0.8   & 0.5   & 0.3   \\
+FIR            & cutoff $f_c$     & 0.10  & 0.15  & 0.20  \\
+               & taps $M$         & 63    & 63    & 63    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Attack-Generation Latency}
+\label{app:attack_latency}
+
+Figure~\ref{fig:attack_bench} reports the per-batch generation latency
+of the five evaluated attacks on our hardware. Optimization-based
+attacks (CW, EAD-L1, EAD-EN) are one to two orders of magnitude slower
+than gradient attacks (FGSM, PGD), reflecting the number of inner
+optimization steps. Adaptive-$K$ defense latency (Table~\ref{tab:latency})
+is comparable to a single FGSM invocation and negligible compared to
+CW/EAD, supporting its use as an always-on receiver-side preprocessor.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{img/attack_bench_latency.pdf}
+  \caption{Attack-generation latency per batch of 64 samples for the
+    five evaluated attacks. CW and EAD are dominated by their inner
+    optimization loops (100 steps each); FGSM and PGD require only a
+    small number of gradient evaluations.}
+  \label{fig:attack_bench}
+\end{figure}
