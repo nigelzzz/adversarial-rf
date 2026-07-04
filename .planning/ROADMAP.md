@@ -54,6 +54,23 @@ Plans:
   4. Per-SNR accuracy curve plots exist for both `at` and `at_adaptive_k` defenses alongside the existing v1.0 curves
 **Plans**: TBD
 
+### Phase 05.1: Certified Randomized Smoothing Baseline (Cohen et al. 2019) — L2-certified baseline defense: certify()/predict() module, noise-augmented finetune, certify_rs eval mode, thesis baseline writeup (INSERTED)
+
+**Goal:** A certified L2-robustness randomized-smoothing baseline exists for AWN — noise-augmented checkpoints, a Cohen 2019 certify()/predict() module, a certify_rs sweep producing certified-accuracy-vs-L2-radius CSVs + curve and a CW L2-bucketed empirical comparison, and a self-contained thesis section citing Cohen 2019 — feeding Phase 6 camera-ready Table I
+**Requirements**: RS-01, RS-02, RS-03, RS-04
+**Depends on:** Phase 5
+**Success Criteria** (what must be TRUE):
+  1. `util/randomized_smoothing.py` exposes `certify()`/`predict()` (scipy-only Clopper-Pearson) and a passing unit test pins the CP bound to 0.3744139230995136
+  2. Four noise-augmented checkpoints `checkpoint/2016.10a_AWN_rs{0.002,0.005,0.01,0.02}.pkl` exist and load with `weights_only=True`
+  3. `main.py --mode certify_rs` writes `certify_rs_certified_acc.csv` (snr,modulation,sigma,radius,certified_acc,n_samples) + `certify_rs_curve.png` + `certify_rs_cw_compare.csv`, gated by a leading timing smoke test
+  4. The thesis has a Cohen 2019 bib entry, a Related Work paragraph, and a self-contained `\section{Certified Robustness via Randomized Smoothing}`; `paper/latex/` is untouched
+**Plans:** 4 plans
+Plans:
+- [ ] 05.1-01-PLAN.md — SmoothedClassifier (certify/predict) module + Clopper-Pearson unit test [RS-01]
+- [ ] 05.1-02-PLAN.md — `--rs_sigma` single-stage noise-augmented finetune + 4 sigma checkpoints [RS-02]
+- [ ] 05.1-03-PLAN.md — `--mode certify_rs`: timing smoke test, certify sweep, CW L2-bucketed comparison, CSV+curve [RS-03]
+- [ ] 05.1-04-PLAN.md — Thesis: Cohen bib entry + Related Work + self-contained Evaluation section [RS-04]
+
 ### Phase 6: Paper Update + Camera-Ready
 **Goal**: The manuscript reflects v1.1 findings with AT baseline rows in Table I and all v1.0 camera-ready debt resolved
 **Depends on**: Phase 5 (requires evaluation CSVs for Table I values); CRTD requirements are independent
@@ -76,4 +93,5 @@ Plans:
 | 3. Paper                       | v1.0      | 3/3            | Complete    | 2026-04-06 |
 | 4. Adversarial Training        | v1.1      | 0/2            | Planning    | -          |
 | 5. AT Evaluation               | v1.1      | 0/TBD          | Not started | -          |
+| 05.1 Certified Rand. Smoothing | v1.1      | 0/4            | Planned     | -          |
 | 6. Paper Update + Camera-Ready | v1.1      | 0/TBD          | Not started | -          |

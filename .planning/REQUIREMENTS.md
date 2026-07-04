@@ -22,6 +22,13 @@ adversarial-training baseline and closing camera-ready tech debt.
 - [ ] **ATEVAL-04**: Two new rows (`at`, `at_adaptive_k`) added to `defense_compare.csv` with per-attack, per-SNR accuracies
 - [ ] **ATEVAL-05**: Per-SNR accuracy curves generated for AT and AT+Adaptive-K defenses
 
+### Certified Randomized Smoothing (Phase 05.1)
+
+- [ ] **RS-01**: `util/randomized_smoothing.py` implements Cohen et al. 2019 `SmoothedClassifier` with `certify(x, n0, n, alpha, batch_size) -> (class, L2_radius)` (ABSTAIN = (-1, 0.0)) and `predict(...)`, using a scipy-only Clopper-Pearson lower bound (`beta.ppf(alpha, NA, N-NA+1)`) and `binomtest` — no `statsmodels`, no removed `binom_test` — with a unit test pinning the CP bound to the verified value 0.3744139230995136; unwraps AWN's `(logit, regu_sum)`
+- [ ] **RS-02**: `synth_finetune.py --rs_sigma` runs a SINGLE-STAGE Gaussian-noise-augmented finetune (warm-started from `checkpoint/2016.10a_AWN.pkl`, `x += randn_like(x)*sigma` per train and val batch), saving `checkpoint/2016.10a_AWN_rs{sigma}.pkl` for each sigma in {0.002, 0.005, 0.01, 0.02}; does NOT compose with `--curriculum`
+- [ ] **RS-03**: `main.py --mode certify_rs` runs a leading timing smoke test then a per-(SNR,mod) certified-accuracy-vs-L2-radius sweep (n0=100, n=10000, alpha=0.001; SNR points {-6,0,6,12,18}; ~50/cell) across the sigma grid, plus a matched CW comparison bucketing CW's achieved raw-IQ L2 norm against RS certified accuracy — emitting `certify_rs_certified_acc.csv`, `certify_rs_curve.png`, and `certify_rs_cw_compare.csv` consumable by Phase 6; L∞/L1 attacks stay empirical-only
+- [ ] **RS-04**: Thesis writeup — Cohen 2019 `@inproceedings` entry in `thesis/ref.bib`, a self-contained randomized-smoothing paragraph in `thesis/Sections/2.Relatedwork.tex`, and a new self-contained `\section{Certified Robustness via Randomized Smoothing}` (setup/results/CW-comparison) appended to `thesis/Sections/5.Evaluation.tex`; additive-only, `paper/latex/` untouched
+
 ### Paper Update
 
 - [ ] **PAPRU-01**: New "Adversarial Training" row added to Table I (defense comparison matrix) in `paper/latex/sections/results.tex`
@@ -58,34 +65,42 @@ Deferred from v1.0 and v1.1 discussion — revisit in a later milestone:
 | Adversarial training as **primary** defense | Adaptive-K remains main contribution; AT is a baseline |
 | Training AT from scratch (no warm-start) | Saves ~10× compute; warm-start is standard practice |
 | Adaptive attacks on AT | Deferred — v1.1 uses standard attacks only; BPDA goes to EXTEVAL-01 |
+| Certified L∞/L1 radii | Cohen 2019 certifies L2 only; FGSM/PGD/EAD stay empirical-only comparisons |
+| `paper/latex/` edits in Phase 05.1 | Camera-ready Table I integration is Phase 6's responsibility (PAPRU-01..04) |
+| Noise-augmented finetune composed with 3-stage curriculum | Cohen protocol is single-stage; keeps checkpoint naming `2016.10a_AWN_rs{sigma}.pkl` clean |
 
 ## Traceability
 
-| Requirement  | Phase   | Status     |
-|--------------|---------|------------|
-| AT-01        | Phase 4 | Pending    |
-| AT-02        | Phase 4 | Pending    |
-| AT-03        | Phase 4 | Pending    |
-| AT-04        | Phase 4 | Pending    |
-| AT-05        | Phase 4 | Pending    |
-| ATEVAL-01    | Phase 5 | Pending    |
-| ATEVAL-02    | Phase 5 | Pending    |
-| ATEVAL-03    | Phase 5 | Pending    |
-| ATEVAL-04    | Phase 5 | Pending    |
-| ATEVAL-05    | Phase 5 | Pending    |
-| PAPRU-01     | Phase 6 | Pending    |
-| PAPRU-02     | Phase 6 | Pending    |
-| PAPRU-03     | Phase 6 | Pending    |
-| PAPRU-04     | Phase 6 | Pending    |
-| CRTD-01      | Phase 6 | Pending    |
-| CRTD-02      | Phase 6 | Pending    |
-| CRTD-03      | Phase 6 | Pending    |
-| CRTD-04      | Phase 6 | Pending    |
+| Requirement  | Phase     | Status     |
+|--------------|-----------|------------|
+| AT-01        | Phase 4   | Pending    |
+| AT-02        | Phase 4   | Pending    |
+| AT-03        | Phase 4   | Pending    |
+| AT-04        | Phase 4   | Pending    |
+| AT-05        | Phase 4   | Pending    |
+| ATEVAL-01    | Phase 5   | Pending    |
+| ATEVAL-02    | Phase 5   | Pending    |
+| ATEVAL-03    | Phase 5   | Pending    |
+| ATEVAL-04    | Phase 5   | Pending    |
+| ATEVAL-05    | Phase 5   | Pending    |
+| RS-01        | Phase 05.1 | Pending   |
+| RS-02        | Phase 05.1 | Pending   |
+| RS-03        | Phase 05.1 | Pending   |
+| RS-04        | Phase 05.1 | Pending   |
+| PAPRU-01     | Phase 6   | Pending    |
+| PAPRU-02     | Phase 6   | Pending    |
+| PAPRU-03     | Phase 6   | Pending    |
+| PAPRU-04     | Phase 6   | Pending    |
+| CRTD-01      | Phase 6   | Pending    |
+| CRTD-02      | Phase 6   | Pending    |
+| CRTD-03      | Phase 6   | Pending    |
+| CRTD-04      | Phase 6   | Pending    |
 
 **Coverage:**
-- v1.1 requirements: 18 total
-- Mapped to phases: 18
+- v1.1 requirements: 22 total
+- Mapped to phases: 22
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-15*
+*Phase 05.1 (RS-01..RS-04) inserted: 2026-07-04*
