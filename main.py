@@ -610,6 +610,10 @@ if __name__ == "__main__":
     elif args.mode == 'defense_compare':
         from util.defense_compare import run_defense_compare
         model.load_state_dict(torch.load(resolve_ckpt_path(args.ckpt_path), map_location=cfg.device))
+        # cuDNN LSTM backward fails in eval mode (MCLDNN); same fix as multi_attack_eval
+        if any(isinstance(m, torch.nn.LSTM) for m in model.modules()):
+            logger.info("Model contains LSTM layers - disabling cuDNN for adversarial generation")
+            torch.backends.cudnn.enabled = False
         # Load detector if checkpoint provided
         detector = None
         if args.detector_ckpt is not None:
